@@ -1,0 +1,203 @@
+// Types for EWCCMS MAPIMS / Adhiparasakthi Hospitals
+
+export type UserRole = 'Super Admin' | 'Admin' | 'Campaign Creator' | 'Approver' | 'Viewer';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  departmentScope?: string;
+  active: boolean;
+  lastLogin: string;
+  avatar?: string;
+}
+
+export type ConsentStatus = 'Opted-In' | 'Opted-Out' | 'Pending Verification' | 'Unknown';
+
+export interface Employee {
+  id: string;
+  employeeId: string;
+  name: string;
+  category: string;
+  department: string;
+  designation: string;
+  whatsappNumber: string;
+  maskedNumber: string;
+  consentStatus: ConsentStatus;
+  consentSource?: string;
+  consentDate?: string;
+  optOutDate?: string;
+  active: boolean;
+  lastUpdated: string;
+}
+
+export interface EmployeeCategory {
+  id: string;
+  name: string;
+  description: string;
+  employeeCount: number;
+  departmentCount: number;
+  active: boolean;
+  displayOrder: number;
+  updatedAt: string;
+}
+
+export interface Department {
+  id: string;
+  code: string;
+  name: string;
+  categoryName: string;
+  employeeCount: number;
+  hodName?: string;
+  active: boolean;
+  updatedAt: string;
+}
+
+export type TemplateStatus = 'APPROVED' | 'PENDING' | 'REJECTED' | 'DRAFT';
+export type HeaderType = 'NONE' | 'TEXT' | 'IMAGE' | 'DOCUMENT' | 'VIDEO';
+
+export interface TemplateVariable {
+  key: string;
+  sampleValue: string;
+  description: string;
+}
+
+export interface TemplateButton {
+  type: 'QUICK_REPLY' | 'PHONE_NUMBER' | 'URL';
+  text: string;
+  value?: string;
+}
+
+export interface WhatsAppTemplate {
+  id: string;
+  watiTemplateId?: string;
+  name: string;
+  category: 'MARKETING' | 'UTILITY' | 'AUTHENTICATION';
+  language: string;
+  headerType: HeaderType;
+  headerContent?: string;
+  body: string;
+  footer?: string;
+  buttons: TemplateButton[];
+  variables: TemplateVariable[];
+  status: TemplateStatus;
+  rejectionReason?: string;
+  lastSynced?: string;
+  createdAt: string;
+}
+
+export interface MediaAsset {
+  id: string;
+  filename: string;
+  fileType: 'image' | 'pdf' | 'video';
+  mimeType: string;
+  size: string;
+  url: string;
+  uploadedBy: string;
+  uploadDate: string;
+  usageCount: number;
+}
+
+export type CampaignStatus = 
+  | 'Draft' 
+  | 'Pending Approval' 
+  | 'Approved' 
+  | 'Rejected' 
+  | 'Scheduled' 
+  | 'Processing' 
+  | 'Completed' 
+  | 'Partial Failure' 
+  | 'Cancelled';
+
+export interface RecipientBreakdown {
+  totalMatching: number;
+  selected: number;
+  eligible: number;
+  optedOut: number;
+  duplicate: number;
+  invalid: number;
+}
+
+export interface Campaign {
+  id: string;
+  campaignId: string;
+  title: string;
+  description: string;
+  categoryScope: string;
+  departmentScope: string;
+  templateId: string;
+  templateName: string;
+  templateVariables: Record<string, string>;
+  headerMediaUrl?: string;
+  recipientBreakdown: RecipientBreakdown;
+  selectedRecipientsCount: number;
+  createdBy: string;
+  createdById: string;
+  createdAt: string;
+  status: CampaignStatus;
+  approvedBy?: string;
+  approvedAt?: string;
+  rejectionComment?: string;
+  scheduledAt?: string;
+  completedAt?: string;
+  submittedCount: number;
+  deliveredCount: number;
+  readCount: number;
+  failedCount: number;
+  priority: 'Normal' | 'Urgent' | 'Emergency';
+}
+
+export interface DeliveryMessage {
+  id: string;
+  campaignId: string;
+  campaignName: string;
+  employeeId: string;
+  employeeName: string;
+  maskedNumber: string;
+  templateName: string;
+  submittedAt: string;
+  providerStatus: 'queued' | 'submitted' | 'sent' | 'delivered' | 'read' | 'failed';
+  statusTimestamp: string;
+  errorCode?: string;
+  errorDescription?: string;
+  canRetry: boolean;
+  retryAttempts: number;
+}
+
+export interface AuditLog {
+  id: string;
+  timestamp: string;
+  actor: string;
+  actorRole: UserRole;
+  action: string;
+  module: string;
+  resourceId: string;
+  details: string;
+  ipAddress: string;
+  status: 'SUCCESS' | 'WARNING' | 'FAILED';
+}
+
+export interface ExportJob {
+  id: string;
+  reportType: string;
+  dateRange: string;
+  format: 'CSV' | 'XLSX';
+  requestedBy: string;
+  requestedAt: string;
+  status: 'QUEUED' | 'GENERATING' | 'READY' | 'FAILED';
+  fileSize?: string;
+  downloadUrl?: string;
+}
+
+export interface WatiConfig {
+  endpoint: string;
+  accountName: string;
+  maskedToken: string;
+  connectionStatus: 'CONNECTED' | 'DISCONNECTED' | 'DEGRADED';
+  lastSyncedAt: string;
+  webhookStatus: 'ACTIVE' | 'INACTIVE';
+  webhookLastReceived: string;
+  dailyQuotaUsed: number;
+  dailyQuotaLimit: number;
+}
