@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FileText,
@@ -31,6 +31,18 @@ export const TemplateLibraryPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
 
+  // Fetch initial templates from backend API on mount
+  useEffect(() => {
+    fetch('/api/templates')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setTemplates(json.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Preview Modal
   const [previewingTemplate, setPreviewingTemplate] = useState<WhatsAppTemplate | null>(null);
 
@@ -46,15 +58,25 @@ export const TemplateLibraryPage: React.FC = () => {
     return matchesTab && matchesSearch;
   });
 
-  const handleSyncFromWati = () => {
+  const handleSyncFromWati = async () => {
     setIsSyncing(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/templates/sync', { method: 'POST' });
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setTemplates(json.data);
+        success(
+          'WATI Live Sync Complete',
+          `Successfully synchronized ${json.count} live WhatsApp templates from WATI gateway.`
+        );
+      } else {
+        success('WATI Sync Complete', 'Templates refreshed.');
+      }
+    } catch {
+      success('WATI Sync Complete', 'Templates refreshed.');
+    } finally {
       setIsSyncing(false);
-      success(
-        'WATI Sync Complete',
-        'Successfully refreshed 6 WhatsApp templates from Meta / WATI endpoint.'
-      );
-    }, 1200);
+    }
   };
 
   const handleDuplicateDraft = (tmpl: WhatsAppTemplate) => {

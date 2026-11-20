@@ -17,6 +17,7 @@ export interface ICampaign extends Document {
   description: string;
   categoryScope: string;
   departmentScope: string;
+  designationScope?: string;
   templateId: string;
   templateName: string;
   templateVariables: Map<string, string>;
@@ -53,6 +54,7 @@ const CampaignSchema = new Schema<ICampaign>(
     description: { type: String, default: '' },
     categoryScope: { type: String, required: true },
     departmentScope: { type: String, required: true },
+    designationScope: { type: String, default: 'All' },
     templateId: { type: String, required: true },
     templateName: { type: String, required: true },
     templateVariables: { type: Map, of: String },

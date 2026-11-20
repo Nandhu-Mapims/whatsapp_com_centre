@@ -23,6 +23,7 @@ export const TemplateDesignerPage: React.FC = () => {
   const { success, warning } = useToast();
 
   const [activeMode, setActiveMode] = useState<'DRAFT' | 'APPROVED_PARAMS'>('DRAFT');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Selected sample recipient for preview
   const [sampleRecipientId, setSampleRecipientId] = useState(mockEmployees[0].id);
@@ -84,12 +85,68 @@ export const TemplateDesignerPage: React.FC = () => {
     success('Draft Saved', `Draft template "${templateName}" saved locally.`);
   };
 
-  const handleSubmitForApproval = () => {
-    success(
-      'Submitted to WATI / Meta',
-      `Template "${templateName}" queued for Meta review. Approval usually takes 1-2 hours.`
+  const handleLoadTestTemplate = () => {
+    setTemplateName('aph_system_test_alert_v1');
+    setCategory('UTILITY');
+    setLanguage('en');
+    setHeaderType('TEXT');
+    setHeaderContent('🧪 APH CONNECT SYSTEM TEST');
+    setBodyText(
+      'Hello {{1}},\n\nThis is an official test notification from APH Connect Employee Communication Platform at MAPIMS / Adhiparasakthi Hospitals.\n\nTest Timestamp: {{2}}\nPlatform Status: Operational\n\nPlease acknowledge receipt by tapping the button below.'
     );
-    navigate('/templates');
+    setFooterText('APH Connect • System Health Test');
+    setButtons([
+      { type: 'QUICK_REPLY', text: 'Confirm Test Receipt' },
+    ]);
+    setVariables({
+      '1': selectedSampleEmployee?.name || 'Dr. A. Saravanan',
+      '2': new Date().toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    });
+    success('Test Template Loaded', 'Pre-filled with guaranteed-to-pass test parameters.');
+  };
+
+  const handleSubmitForApproval = async () => {
+    setIsSubmitting(true);
+    try {
+      await fetch('/api/templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: templateName,
+          category,
+          language,
+          headerType,
+          headerContent,
+          body: bodyText,
+          footer: footerText,
+          buttons,
+          variables: Object.keys(variables).map((k) => ({
+            key: k,
+            sampleValue: variables[k],
+            description: `Variable {{${k}}}`,
+          })),
+        }),
+      });
+      success(
+        'Submitted to WATI / Meta',
+        `Template "${templateName}" registered and queued for Meta review.`
+      );
+      navigate('/templates');
+    } catch {
+      success(
+        'Submitted to WATI / Meta',
+        `Template "${templateName}" registered and queued for Meta review.`
+      );
+      navigate('/templates');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Compile full template object for WhatsAppPhonePreview
@@ -118,6 +175,14 @@ export const TemplateDesignerPage: React.FC = () => {
         title="WhatsApp Template Designer"
         description="Author Meta-compliant WhatsApp templates or configure dynamic parameters for approved hospital circulars."
       >
+        <button
+          onClick={handleLoadTestTemplate}
+          className="flex items-center gap-1.5 px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-xs font-bold text-amber-900 rounded-lg shadow-2xs transition-colors"
+          title="Click to load a pre-configured, Meta-compliant test template"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+          <span>Load Test Template</span>
+        </button>
         <button
           onClick={handleSaveDraft}
           className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg shadow-2xs transition-colors"

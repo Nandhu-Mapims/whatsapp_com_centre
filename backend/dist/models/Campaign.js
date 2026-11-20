@@ -41,6 +41,7 @@ const CampaignSchema = new mongoose_1.Schema({
     description: { type: String, default: '' },
     categoryScope: { type: String, required: true },
     departmentScope: { type: String, required: true },
+    designationScope: { type: String, default: 'All' },
     templateId: { type: String, required: true },
     templateName: { type: String, required: true },
     templateVariables: { type: Map, of: String },

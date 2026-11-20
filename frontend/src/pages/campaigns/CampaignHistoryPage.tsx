@@ -114,6 +114,11 @@ export const CampaignHistoryPage: React.FC = () => {
                   <td className="py-3 px-4 max-w-xs truncate" title={cmp.departmentScope}>
                     <div className="font-medium text-slate-800">{cmp.categoryScope}</div>
                     <div className="text-[11px] text-slate-400 truncate">{cmp.departmentScope}</div>
+                    {cmp.designationScope && cmp.designationScope !== 'ALL' && (
+                      <div className="text-[10px] text-[#243B67] font-semibold truncate">
+                        🎯 {cmp.designationScope}
+                      </div>
+                    )}
                   </td>
                   <td className="py-3 px-4 font-mono text-slate-500">{cmp.createdAt}</td>
                   <td className="py-3 px-4 text-slate-700 font-medium">
@@ -208,6 +213,22 @@ export const CampaignHistoryPage: React.FC = () => {
               <div className="space-y-2">
                 <h4 className="font-bold text-slate-900">Frozen Recipient Snapshot</h4>
                 <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-2">
+                  <div className="grid grid-cols-3 gap-2 pb-2 border-b border-slate-200 text-[11px]">
+                    <div>
+                      <span className="text-slate-400 block">Category</span>
+                      <strong className="text-slate-800 block truncate">{selectedCampaign.categoryScope}</strong>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block">Department</span>
+                      <strong className="text-slate-800 block truncate">{selectedCampaign.departmentScope}</strong>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block">Designation</span>
+                      <strong className="text-slate-800 block truncate">
+                        {selectedCampaign.designationScope || 'All'}
+                      </strong>
+                    </div>
+                  </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500 font-medium">Matching Database Filter:</span>
                     <span className="font-bold text-slate-900">

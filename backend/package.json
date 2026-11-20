@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "EWCCMS Backend API for MAPIMS / Adhiparasakthi Hospitals",
+  "description": "APH Connect Backend API - Employee Communication Platform for MAPIMS / Adhiparasakthi Hospitals",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",

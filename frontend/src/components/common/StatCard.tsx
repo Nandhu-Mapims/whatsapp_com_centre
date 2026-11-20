@@ -25,52 +25,65 @@ export const StatCard: React.FC<StatCardProps> = ({
   accentColor = 'primary',
   className,
 }) => {
-  const getIconWrapper = () => {
+  const getIconStyle = () => {
     switch (accentColor) {
       case 'secondary':
-        return 'bg-[#7B2846]/10 text-[#7B2846]';
+        return 'bg-[#7B2846]/10 text-[#7B2846] ring-1 ring-[#7B2846]/20';
       case 'emerald':
-        return 'bg-emerald-50 text-emerald-600';
+        return 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200';
       case 'amber':
-        return 'bg-amber-50 text-amber-600';
+        return 'bg-amber-50 text-amber-600 ring-1 ring-amber-200';
       case 'rose':
-        return 'bg-rose-50 text-rose-600';
+        return 'bg-rose-50 text-rose-600 ring-1 ring-rose-200';
       case 'blue':
-        return 'bg-blue-50 text-blue-600';
+        return 'bg-blue-50 text-blue-600 ring-1 ring-blue-200';
       default:
-        return 'bg-[#243B67]/10 text-[#243B67]';
+        return 'bg-[#243B67]/10 text-[#243B67] ring-1 ring-[#243B67]/20';
     }
   };
 
   return (
     <div
       className={cn(
-        'bg-white rounded-xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between',
+        'group bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between relative overflow-hidden',
         className
       )}
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{title}</p>
-          <h3 className="text-2xl font-bold text-slate-900 mt-1">{value}</h3>
+      <div>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider truncate">
+            {title}
+          </p>
+          <div className={cn('p-2 rounded-xl shrink-0 transition-transform group-hover:scale-105', getIconStyle())}>
+            <Icon className="w-4 h-4" />
+          </div>
         </div>
-        <div className={cn('p-2.5 rounded-xl shrink-0', getIconWrapper())}>
-          <Icon className="w-5 h-5" />
+
+        <div className="mt-2.5">
+          <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            {value}
+          </h3>
         </div>
       </div>
 
       {(subtitle || trend) && (
-        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-          {subtitle && <span>{subtitle}</span>}
+        <div className="mt-3.5 pt-3 border-t border-slate-100/90 flex items-center justify-between text-xs gap-1">
+          {subtitle && (
+            <span className="text-[11px] text-slate-500 font-medium truncate" title={subtitle}>
+              {subtitle}
+            </span>
+          )}
           {trend && (
             <span
               className={cn(
-                'inline-flex items-center font-medium ml-auto',
-                trend.isPositive ? 'text-emerald-600' : 'text-rose-600'
+                'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold shrink-0 ml-auto',
+                trend.isPositive
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  : 'bg-rose-50 text-rose-700 border border-rose-200'
               )}
             >
               {trend.isPositive ? '↑' : '↓'} {trend.value}
-              {trend.label && <span className="text-slate-400 font-normal ml-1">{trend.label}</span>}
+              {trend.label && <span className="text-slate-400 font-normal ml-0.5">{trend.label}</span>}
             </span>
           )}
         </div>

@@ -122,8 +122,13 @@ export const ScheduleCampaignsPage: React.FC = () => {
                       <div className="text-[11px] font-mono text-slate-400">{cmp.campaignId}</div>
                     </td>
                     <td className="py-3 px-4 text-slate-700">
-                      <div>{cmp.categoryScope}</div>
+                      <div className="font-medium text-slate-900">{cmp.categoryScope}</div>
                       <div className="text-[11px] text-slate-400">{cmp.departmentScope}</div>
+                      {cmp.designationScope && cmp.designationScope !== 'ALL' && (
+                        <div className="text-[10px] text-[#243B67] font-semibold truncate">
+                          🎯 {cmp.designationScope}
+                        </div>
+                      )}
                     </td>
                     <td className="py-3 px-4 font-bold text-slate-800">
                       <span className="flex items-center gap-1.5">

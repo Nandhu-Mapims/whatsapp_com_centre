@@ -25,7 +25,8 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'HEALTHY',
-        service: 'EWCCMS API - MAPIMS Hospitals',
+        service: 'APH Connect API - Employee Communication Platform (MAPIMS Hospitals)',
+        tagline: 'One Platform. Every Employee. Connected.',
         time: new Date().toISOString(),
         env: env_js_1.ENV.NODE_ENV,
     });
@@ -44,8 +45,8 @@ app.use((err, req, res, next) => {
 async function startServer() {
     await (0, db_js_1.connectDB)();
     app.listen(env_js_1.ENV.PORT, () => {
-        console.log(`[EWCCMS Backend] Server running on http://localhost:${env_js_1.ENV.PORT}`);
-        console.log(`[EWCCMS Backend] Health endpoint available at http://localhost:${env_js_1.ENV.PORT}/api/health`);
+        console.log(`[APH Connect Backend] Server running on http://localhost:${env_js_1.ENV.PORT}`);
+        console.log(`[APH Connect Backend] Health endpoint available at http://localhost:${env_js_1.ENV.PORT}/api/health`);
     });
 }
 startServer();

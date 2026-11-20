@@ -214,6 +214,21 @@ export const mockDepartments: Department[] = [
 
 export const mockEmployees: Employee[] = [
   {
+    id: 'emp-test-9551',
+    employeeId: 'MAP-9551',
+    name: 'Shreya (Test Lead)',
+    category: 'Medical / Clinical',
+    department: 'Emergency & Trauma Care',
+    designation: 'Senior Consultant - ER',
+    whatsappNumber: '+919551382296',
+    maskedNumber: '+91 95513 82296',
+    consentStatus: 'Opted-In',
+    consentSource: 'WATI Verified Contact',
+    consentDate: '2026-11-16',
+    active: true,
+    lastUpdated: '2026-11-16',
+  },
+  {
     id: 'emp-01',
     employeeId: 'MAP-1021',
     name: 'Dr. A. Saravanan',
@@ -396,6 +411,27 @@ export const mockEmployees: Employee[] = [
 ];
 
 export const mockTemplates: WhatsAppTemplate[] = [
+  {
+    id: 'tmpl-test-01',
+    watiTemplateId: 'aph_system_test_alert_v1',
+    name: 'aph_system_test_alert_v1',
+    category: 'UTILITY',
+    language: 'en',
+    headerType: 'TEXT',
+    headerContent: '🧪 APH CONNECT SYSTEM TEST',
+    body: 'Hello {{1}},\n\nThis is an official test notification from APH Connect Employee Communication Platform at MAPIMS / Adhiparasakthi Hospitals.\n\nTest Timestamp: {{2}}\nPlatform Status: Operational\n\nPlease acknowledge receipt by tapping the button below.',
+    footer: 'APH Connect • System Health Test',
+    buttons: [
+      { type: 'QUICK_REPLY', text: 'Confirm Test Receipt' },
+    ],
+    variables: [
+      { key: '1', sampleValue: 'Dr. A. Saravanan', description: 'Employee Name' },
+      { key: '2', sampleValue: '16 Nov 2026, 12:30 PM', description: 'Test Timestamp' },
+    ],
+    status: 'APPROVED',
+    lastSynced: '2026-11-16 12:30',
+    createdAt: '2026-11-16',
+  },
   {
     id: 'tmpl-01',
     watiTemplateId: 'mapims_emergency_duty_alert_v1',
@@ -998,14 +1034,14 @@ export const mockAuditLogs: AuditLog[] = [
 ];
 
 export const mockWatiConfig: WatiConfig = {
-  endpoint: 'https://live-server-1082.wati.io/api/v1',
+  endpoint: 'https://live-mt-server.wati.io/10190409',
   accountName: 'MAPIMS / Adhiparasakthi Hospitals',
-  maskedToken: 'wati_live_sec_••••••••••••••••••••••••94af',
+  maskedToken: 'wati_23e7b9c8-••••••••••••••••••••••••JUsx',
   connectionStatus: 'CONNECTED',
-  lastSyncedAt: '2026-10-30 08:00:15',
+  lastSyncedAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
   webhookStatus: 'ACTIVE',
-  webhookLastReceived: '2026-10-30 14:32:08 (2 mins ago)',
-  dailyQuotaUsed: 1420,
+  webhookLastReceived: 'Just now (Live Gateway Connected)',
+  dailyQuotaUsed: 13,
   dailyQuotaLimit: 10000,
 };
 

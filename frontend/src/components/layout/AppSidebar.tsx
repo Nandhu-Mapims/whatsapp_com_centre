@@ -150,12 +150,12 @@ export const AppSidebar: React.FC<SidebarProps> = ({
           {!isCollapsed && (
             <div>
               <div className="font-bold text-sm tracking-wide text-white flex items-center gap-1.5">
-                <span>MAPIMS</span>
+                <span>APH Connect</span>
                 <span className="text-[10px] font-normal px-1.5 py-0.2 bg-[#7B2846] text-white rounded">
-                  EWCCMS
+                  MAPIMS
                 </span>
               </div>
-              <p className="text-[10px] text-slate-300 leading-tight">Adhiparasakthi Hospitals</p>
+              <p className="text-[10px] text-slate-300 leading-tight">Employee Communication Platform</p>
             </div>
           )}
         </div>

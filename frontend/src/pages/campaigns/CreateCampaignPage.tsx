@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Send,
@@ -19,8 +19,8 @@ import {
 } from 'lucide-react';
 import { PageHeader } from '../../components/common/PageHeader';
 import { WhatsAppPhonePreview } from '../../components/common/WhatsAppPhonePreview';
-import { mockCategories, mockDepartments, mockEmployees, mockTemplates } from '../../data/mockData';
-import { WhatsAppTemplate, Employee } from '../../types';
+import { mockCategories, mockDepartments, mockEmployees, mockTemplates, mockCampaigns } from '../../data/mockData';
+import { WhatsAppTemplate, Employee, Campaign } from '../../types';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -38,12 +38,26 @@ export const CreateCampaignPage: React.FC = () => {
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<'Normal' | 'Urgent' | 'Emergency'>('Normal');
 
-  // Step 2: Recipients (Cascading filtering)
+  // Step 2: Recipients (Cascading filtering: Category -> Department -> Designation)
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedDepartment, setSelectedDepartment] = useState<string>('ALL');
+  const [selectedDesignation, setSelectedDesignation] = useState<string>('ALL');
   const [selectedStaffIds, setSelectedStaffIds] = useState<string[]>(
     mockEmployees.map((e) => e.id)
   );
+
+  // Available designations dynamically based on selected category & department
+  const availableDesignations = useMemo(() => {
+    const desigs = new Set<string>();
+    mockEmployees.forEach((emp) => {
+      const matchCat = selectedCategory === 'ALL' || emp.category === selectedCategory;
+      const matchDept = selectedDepartment === 'ALL' || emp.department === selectedDepartment;
+      if (matchCat && matchDept && emp.designation) {
+        desigs.add(emp.designation);
+      }
+    });
+    return Array.from(desigs).sort();
+  }, [selectedCategory, selectedDepartment]);
 
   // Step 3: Template & Variables
   // Only Approved templates can be used in campaigns!
@@ -63,19 +77,29 @@ export const CreateCampaignPage: React.FC = () => {
     '6': 'Ext 104 / 27568100',
   });
 
+  // Calculate live recipient breakdown with Category, Department and Designation filters
+  const matchingEmployees = useMemo(() => {
+    return mockEmployees.filter((emp) => {
+      const matchCat = selectedCategory === 'ALL' || emp.category === selectedCategory;
+      const matchDept = selectedDepartment === 'ALL' || emp.department === selectedDepartment;
+      const matchDesig = selectedDesignation === 'ALL' || emp.designation === selectedDesignation;
+      return matchCat && matchDept && matchDesig;
+    });
+  }, [selectedCategory, selectedDepartment, selectedDesignation]);
+
   // Step 4: Preview Recipient
   const [previewStaffId, setPreviewStaffId] = useState<string>(mockEmployees[0].id);
+
+  // Synchronize preview recipient when matching employees change
+  useEffect(() => {
+    if (matchingEmployees.length > 0 && !matchingEmployees.some((e) => e.id === previewStaffId)) {
+      setPreviewStaffId(matchingEmployees[0].id);
+    }
+  }, [matchingEmployees, previewStaffId]);
 
   // Step 5: Dispatch Schedule
   const [dispatchTiming, setDispatchTiming] = useState<'NOW' | 'SCHEDULE'>('NOW');
   const [scheduleDateTime, setScheduleDateTime] = useState('2026-10-31T09:00');
-
-  // Calculate live recipient breakdown
-  const matchingEmployees = mockEmployees.filter((emp) => {
-    const matchCat = selectedCategory === 'ALL' || emp.category === selectedCategory;
-    const matchDept = selectedDepartment === 'ALL' || emp.department === selectedDepartment;
-    return matchCat && matchDept;
-  });
 
   const selectedCount = matchingEmployees.filter((e) => selectedStaffIds.includes(e.id)).length;
   const optedOutCount = matchingEmployees.filter(
@@ -87,7 +111,7 @@ export const CreateCampaignPage: React.FC = () => {
   const duplicateCount = 0;
   const eligibleCount = Math.max(0, selectedCount - optedOutCount - invalidCount);
 
-  const sampleStaff = mockEmployees.find((e) => e.id === previewStaffId) || mockEmployees[0];
+  const sampleStaff = matchingEmployees.find((e) => e.id === previewStaffId) || matchingEmployees[0] || mockEmployees[0];
 
   const handleNext = () => {
     if (step === 1) {
@@ -110,11 +134,75 @@ export const CreateCampaignPage: React.FC = () => {
   };
 
   const handleSaveDraft = () => {
+    const draftCampaign: Campaign = {
+      id: `cmp-${Date.now()}`,
+      campaignId: `CMP-2026-${String(Math.floor(Math.random() * 900) + 100)}`,
+      title: title || 'Untitled Campaign Draft',
+      description,
+      categoryScope: selectedCategory,
+      departmentScope: selectedDepartment,
+      designationScope: selectedDesignation,
+      templateId: activeTemplate.id,
+      templateName: activeTemplate.name,
+      templateVariables: variableValues,
+      recipientBreakdown: {
+        totalMatching: matchingEmployees.length,
+        selected: selectedCount,
+        eligible: eligibleCount,
+        optedOut: optedOutCount,
+        duplicate: 0,
+        invalid: invalidCount,
+      },
+      selectedRecipientsCount: eligibleCount,
+      createdBy: currentUser.name,
+      createdById: currentUser.id,
+      createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      status: 'Draft',
+      submittedCount: 0,
+      deliveredCount: 0,
+      readCount: 0,
+      failedCount: 0,
+      priority,
+    };
+    mockCampaigns.unshift(draftCampaign);
+
     success('Draft Persisted', `Campaign "${title || 'Untitled Campaign'}" saved to drafts.`);
     navigate('/campaigns/drafts');
   };
 
   const handleSubmitForApproval = () => {
+    const newCampaign: Campaign = {
+      id: `cmp-${Date.now()}`,
+      campaignId: `CMP-2026-${String(Math.floor(Math.random() * 900) + 100)}`,
+      title,
+      description,
+      categoryScope: selectedCategory,
+      departmentScope: selectedDepartment,
+      designationScope: selectedDesignation,
+      templateId: activeTemplate.id,
+      templateName: activeTemplate.name,
+      templateVariables: variableValues,
+      recipientBreakdown: {
+        totalMatching: matchingEmployees.length,
+        selected: selectedCount,
+        eligible: eligibleCount,
+        optedOut: optedOutCount,
+        duplicate: 0,
+        invalid: invalidCount,
+      },
+      selectedRecipientsCount: eligibleCount,
+      createdBy: currentUser.name,
+      createdById: currentUser.id,
+      createdAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      status: 'Pending Approval',
+      submittedCount: 0,
+      deliveredCount: 0,
+      readCount: 0,
+      failedCount: 0,
+      priority,
+    };
+    mockCampaigns.unshift(newCampaign);
+
     success(
       'Campaign Submitted for Four-Eyes Review',
       `Campaign "${title}" submitted. Separation of duties requires approval from an authorized approver before sending.`
@@ -126,7 +214,7 @@ export const CreateCampaignPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title="Create WhatsApp Campaign"
-        description="Target hospital employees by category & department, select Meta-approved WATI templates, and queue for clinical review."
+        description="Target hospital employees by category, department & designation, select Meta-approved WATI templates, and queue for clinical review."
       >
         <button
           onClick={handleSaveDraft}
@@ -259,16 +347,17 @@ export const CreateCampaignPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">
-                    Employee Category
+                    1. Employee Category
                   </label>
                   <select
                     value={selectedCategory}
                     onChange={(e) => {
                       setSelectedCategory(e.target.value);
-                      setSelectedDepartment('ALL'); // Reset dependent child filter
+                      setSelectedDepartment('ALL'); // Reset dependent child filters
+                      setSelectedDesignation('ALL');
                     }}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
                   >
@@ -283,11 +372,14 @@ export const CreateCampaignPage: React.FC = () => {
 
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">
-                    Department
+                    2. Department
                   </label>
                   <select
                     value={selectedDepartment}
-                    onChange={(e) => setSelectedDepartment(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedDepartment(e.target.value);
+                      setSelectedDesignation('ALL');
+                    }}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
                   >
                     <option value="ALL">All Departments in Category</option>
@@ -303,6 +395,24 @@ export const CreateCampaignPage: React.FC = () => {
                       ))}
                   </select>
                 </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    3. Designation
+                  </label>
+                  <select
+                    value={selectedDesignation}
+                    onChange={(e) => setSelectedDesignation(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  >
+                    <option value="ALL">All Designations ({availableDesignations.length})</option>
+                    {availableDesignations.map((desig) => (
+                      <option key={desig} value={desig}>
+                        {desig}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Matching Staff List with Checkboxes */}
@@ -312,16 +422,21 @@ export const CreateCampaignPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      if (selectedStaffIds.length === matchingEmployees.length) {
-                        setSelectedStaffIds([]);
+                      const matchingIds = matchingEmployees.map((e) => e.id);
+                      const isAllMatchingSelected =
+                        matchingIds.length > 0 &&
+                        matchingIds.every((id) => selectedStaffIds.includes(id));
+                      if (isAllMatchingSelected) {
+                        setSelectedStaffIds((prev) => prev.filter((id) => !matchingIds.includes(id)));
                       } else {
-                        setSelectedStaffIds(matchingEmployees.map((e) => e.id));
+                        setSelectedStaffIds((prev) => Array.from(new Set([...prev, ...matchingIds])));
                       }
                     }}
                     className="text-xs text-[#243B67] hover:underline"
                   >
-                    {selectedStaffIds.length === matchingEmployees.length
-                      ? 'Deselect All'
+                    {matchingEmployees.length > 0 &&
+                    matchingEmployees.every((e) => selectedStaffIds.includes(e.id))
+                      ? 'Deselect All Filtered'
                       : 'Select All Filtered'}
                   </button>
                 </div>
@@ -500,7 +615,7 @@ export const CreateCampaignPage: React.FC = () => {
               </div>
 
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   <div>
                     <span className="text-slate-400 font-medium block">Campaign Title</span>
                     <strong className="text-slate-900">{title}</strong>
@@ -516,6 +631,18 @@ export const CreateCampaignPage: React.FC = () => {
                   <div>
                     <span className="text-slate-400 font-medium block">Author / Creator</span>
                     <strong className="text-slate-900">{currentUser.name}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 font-medium block">Category & Dept</span>
+                    <strong className="text-slate-900">
+                      {selectedCategory} • {selectedDepartment}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 font-medium block">Designation Scope</span>
+                    <strong className="text-slate-900">
+                      {selectedDesignation === 'ALL' ? 'All Designations' : selectedDesignation}
+                    </strong>
                   </div>
                 </div>
               </div>
@@ -660,6 +787,9 @@ export const CreateCampaignPage: React.FC = () => {
             </div>
             <div>
               <strong>Department Scope:</strong> {selectedDepartment}
+            </div>
+            <div>
+              <strong>Designation Scope:</strong> {selectedDesignation === 'ALL' ? 'All Designations' : selectedDesignation}
             </div>
           </div>
         </div>

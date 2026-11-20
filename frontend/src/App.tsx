@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { AppLayout } from './components/layout/AppLayout';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
+import { RoleRoute } from './components/common/RoleRoute';
+import { LoginPage } from './pages/auth/LoginPage';
 
 // 21 Screen Pages
 import { DashboardPage } from './pages/dashboard/DashboardPage';
@@ -37,43 +40,216 @@ export function App() {
         <ToastProvider>
           <BrowserRouter>
             <Routes>
-              {/* Main Application Shell */}
-              <Route path="/" element={<AppLayout />}>
+              {/* Public Authentication Route */}
+              <Route path="/login" element={<LoginPage />} />
+
+              {/* Protected Hospital Enterprise Shell */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout />
+                  </ProtectedRoute>
+                }
+              >
                 {/* Default redirect to Dashboard */}
                 <Route index element={<Navigate to="/dashboard" replace />} />
 
-                {/* Module 1: Dashboard */}
+                {/* Module 1: Dashboard (All Authenticated Staff) */}
                 <Route path="dashboard" element={<DashboardPage />} />
 
                 {/* Module 2: Employee Management */}
-                <Route path="employees" element={<EmployeeListPage />} />
-                <Route path="employees/import" element={<ImportEmployeesPage />} />
-                <Route path="employees/categories" element={<EmployeeCategoriesPage />} />
-                <Route path="employees/departments" element={<DepartmentManagementPage />} />
+                <Route
+                  path="employees"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator', 'Approver']}
+                      moduleName="Employee Directory"
+                    >
+                      <EmployeeListPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="employees/import"
+                  element={<Navigate to="/employees" replace />}
+                />
+                <Route
+                  path="employees/categories"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin']}
+                      moduleName="Staff Categories & Cadres"
+                    >
+                      <EmployeeCategoriesPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="employees/departments"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin']}
+                      moduleName="Department Management"
+                    >
+                      <DepartmentManagementPage />
+                    </RoleRoute>
+                  }
+                />
 
                 {/* Module 3: WhatsApp Templates */}
-                <Route path="templates" element={<TemplateLibraryPage />} />
-                <Route path="templates/designer" element={<TemplateDesignerPage />} />
-                <Route path="templates/media" element={<MediaLibraryPage />} />
+                <Route
+                  path="templates"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator', 'Approver']}
+                      moduleName="Template Library"
+                    >
+                      <TemplateLibraryPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="templates/designer"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator']}
+                      moduleName="Template Designer"
+                    >
+                      <TemplateDesignerPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="templates/media"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator']}
+                      moduleName="Media Library"
+                    >
+                      <MediaLibraryPage />
+                    </RoleRoute>
+                  }
+                />
 
                 {/* Module 4: Campaign Management */}
-                <Route path="campaigns/create" element={<CreateCampaignPage />} />
-                <Route path="campaigns/drafts" element={<DraftCampaignsPage />} />
-                <Route path="campaigns/scheduled" element={<ScheduleCampaignsPage />} />
+                <Route
+                  path="campaigns/create"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator']}
+                      moduleName="Campaign Creator Wizard"
+                    >
+                      <CreateCampaignPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="campaigns/drafts"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator']}
+                      moduleName="Draft Campaigns"
+                    >
+                      <DraftCampaignsPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="campaigns/scheduled"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator', 'Approver']}
+                      moduleName="Scheduled Dispatches"
+                    >
+                      <ScheduleCampaignsPage />
+                    </RoleRoute>
+                  }
+                />
                 <Route path="campaigns/history" element={<CampaignHistoryPage />} />
-                <Route path="campaigns/approvals" element={<CampaignApprovalPage />} />
+                <Route
+                  path="campaigns/approvals"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Approver']}
+                      moduleName="Four-Eyes Campaign Approval Queue"
+                    >
+                      <CampaignApprovalPage />
+                    </RoleRoute>
+                  }
+                />
 
                 {/* Module 5: Reports & Monitoring */}
                 <Route path="reports/delivery" element={<DeliveryReportsPage />} />
                 <Route path="reports/analytics" element={<CampaignAnalyticsPage />} />
-                <Route path="reports/failed" element={<FailedMessagesPage />} />
-                <Route path="reports/export" element={<ExportReportsPage />} />
+                <Route
+                  path="reports/failed"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Approver']}
+                      moduleName="Delivery Failure Logs"
+                    >
+                      <FailedMessagesPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="reports/export"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin', 'Viewer']}
+                      moduleName="NABH Regulatory Dossier Export"
+                    >
+                      <ExportReportsPage />
+                    </RoleRoute>
+                  }
+                />
 
                 {/* Module 6: Administration */}
-                <Route path="admin/users" element={<UsersRolesPage />} />
-                <Route path="admin/wati" element={<WatiIntegrationPage />} />
-                <Route path="admin/audit" element={<AuditLogsPage />} />
-                <Route path="admin/consent" element={<ConsentOptOutPage />} />
+                <Route
+                  path="admin/users"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin']}
+                      moduleName="User & Role Management"
+                    >
+                      <UsersRolesPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="admin/wati"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin']}
+                      moduleName="WATI Gateway Integration"
+                    >
+                      <WatiIntegrationPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="admin/audit"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin']}
+                      moduleName="System Audit Trail"
+                    >
+                      <AuditLogsPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="admin/consent"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin']}
+                      moduleName="Consent & Opt-Out Registry"
+                    >
+                      <ConsentOptOutPage />
+                    </RoleRoute>
+                  }
+                />
 
                 {/* Catch-all fallback */}
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />

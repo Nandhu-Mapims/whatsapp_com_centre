@@ -1,4 +1,5 @@
-// Types for EWCCMS MAPIMS / Adhiparasakthi Hospitals
+// Types for APH Connect - Employee Communication Platform (MAPIMS / Adhiparasakthi Hospitals)
+// "One Platform. Every Employee. Connected."
 
 export type UserRole = 'Super Admin' | 'Admin' | 'Campaign Creator' | 'Approver' | 'Viewer';
 
@@ -126,6 +127,7 @@ export interface Campaign {
   description: string;
   categoryScope: string;
   departmentScope: string;
+  designationScope?: string;
   templateId: string;
   templateName: string;
   templateVariables: Record<string, string>;

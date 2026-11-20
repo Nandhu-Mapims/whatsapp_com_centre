@@ -279,12 +279,22 @@ export const CampaignApprovalPage: React.FC = () => {
             {/* Recipient Breakdown Summary */}
             <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-2">
               <h4 className="font-bold text-slate-800">Target Audience Scope</h4>
-              <div className="grid grid-cols-2 gap-2 text-slate-600">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-slate-600">
                 <div>
-                  <span>Category:</span> <strong className="text-slate-900">{reviewCampaign.categoryScope}</strong>
+                  <span className="text-[11px] text-slate-400 block">Category</span>
+                  <strong className="text-slate-900 block truncate">{reviewCampaign.categoryScope}</strong>
                 </div>
                 <div>
-                  <span>Department:</span> <strong className="text-slate-900">{reviewCampaign.departmentScope}</strong>
+                  <span className="text-[11px] text-slate-400 block">Department</span>
+                  <strong className="text-slate-900 block truncate">{reviewCampaign.departmentScope}</strong>
+                </div>
+                <div>
+                  <span className="text-[11px] text-slate-400 block">Designation</span>
+                  <strong className="text-slate-900 block truncate">
+                    {reviewCampaign.designationScope && reviewCampaign.designationScope !== 'ALL'
+                      ? reviewCampaign.designationScope
+                      : 'All Designations'}
+                  </strong>
                 </div>
               </div>
 

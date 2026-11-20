@@ -126,6 +126,11 @@ export const DraftCampaignsPage: React.FC = () => {
                     <td className="py-3 px-4 max-w-xs truncate" title={d.departmentScope}>
                       <span className="text-slate-800 font-medium">{d.categoryScope}</span>
                       <div className="text-[11px] text-slate-400 truncate">{d.departmentScope}</div>
+                      {d.designationScope && d.designationScope !== 'ALL' && (
+                        <div className="text-[10px] text-[#243B67] font-semibold truncate">
+                          🎯 {d.designationScope}
+                        </div>
+                      )}
                     </td>
                     <td className="py-3 px-4 font-bold text-slate-800">
                       <span className="flex items-center gap-1.5">
