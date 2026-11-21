@@ -1,0 +1,52 @@
+[
+  {
+    "id": "cat-01",
+    "name": "Medical / Clinical",
+    "description": "Clinical professors, consultants, medical director, specialists, and teaching medical officers.",
+    "employeeCount": 157,
+    "departmentCount": 27,
+    "active": true,
+    "displayOrder": 1,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "cat-02",
+    "name": "Nursing Staff",
+    "description": "Registered staff nurses, ICU nurses, OT nurses, ward supervisors, and nursing leadership.",
+    "employeeCount": 350,
+    "departmentCount": 8,
+    "active": true,
+    "displayOrder": 2,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "cat-03",
+    "name": "Allied Health Sciences",
+    "description": "Diagnostic laboratory technologists, radiographers, pharmacists, dialysis technicians, and OT technicians.",
+    "employeeCount": 197,
+    "departmentCount": 19,
+    "active": true,
+    "displayOrder": 3,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "cat-04",
+    "name": "Administrative & Support",
+    "description": "Hospital operations, finance & accounts, human resources, IT systems, medical records, and store management.",
+    "employeeCount": 160,
+    "departmentCount": 29,
+    "active": true,
+    "displayOrder": 4,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "cat-05",
+    "name": "Housekeeping & Maintenance",
+    "description": "Facility maintenance, electrical, housekeeping, sanitation, security, and hospital transport drivers.",
+    "employeeCount": 183,
+    "departmentCount": 9,
+    "active": true,
+    "displayOrder": 5,
+    "updatedAt": "2026-11-20"
+  }
+]

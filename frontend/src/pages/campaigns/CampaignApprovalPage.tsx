@@ -52,9 +52,21 @@ export const CampaignApprovalPage: React.FC = () => {
 
   // Get matching template object for preview
   const getTemplateForCampaign = (templateId: string): WhatsAppTemplate => {
-    return (
-      mockTemplates.find((t) => t.id === templateId) || mockTemplates[0]
-    );
+    const found = mockTemplates.find((t) => t.id === templateId);
+    if (found) return found;
+    return {
+      id: templateId || 'tmpl-default',
+      name: 'APH Connect Broadcast',
+      category: 'UTILITY',
+      language: 'en',
+      headerType: 'NONE',
+      body: 'Official Hospital Broadcast Notification.',
+      footer: 'APH Connect • MAPIMS Hospitals',
+      buttons: [],
+      variables: [],
+      status: 'APPROVED',
+      createdAt: '2026-11-20',
+    };
   };
 
   // Separation of duties check

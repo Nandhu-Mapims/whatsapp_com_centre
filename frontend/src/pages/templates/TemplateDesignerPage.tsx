@@ -14,22 +14,21 @@ import {
 } from 'lucide-react';
 import { PageHeader } from '../../components/common/PageHeader';
 import { WhatsAppPhonePreview } from '../../components/common/WhatsAppPhonePreview';
-import { mockTemplates, mockEmployees } from '../../data/mockData';
+import { mockEmployees } from '../../data/mockData';
 import { WhatsAppTemplate, HeaderType, TemplateButton, TemplateVariable } from '../../types';
 import { useToast } from '../../context/ToastContext';
 
 export const TemplateDesignerPage: React.FC = () => {
   const navigate = useNavigate();
-  const { success, warning } = useToast();
+  const { success, warning, error } = useToast();
 
-  const [activeMode, setActiveMode] = useState<'DRAFT' | 'APPROVED_PARAMS'>('DRAFT');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Selected sample recipient for preview
   const [sampleRecipientId, setSampleRecipientId] = useState(mockEmployees[0].id);
 
-  // Form Fields for Draft Template
-  const [templateName, setTemplateName] = useState('mapims_clinical_advisory_v1');
+  // Form Fields for Draft Template (Prefixed with aph_ for APH Connect)
+  const [templateName, setTemplateName] = useState('aph_clinical_advisory_v1');
   const [category, setCategory] = useState<'UTILITY' | 'MARKETING' | 'AUTHENTICATION'>('UTILITY');
   const [language, setLanguage] = useState('en');
   const [headerType, setHeaderType] = useState<HeaderType>('TEXT');
@@ -49,7 +48,7 @@ export const TemplateDesignerPage: React.FC = () => {
     '2': 'Annual Bio-Medical Safety Inspection',
     '3': '05 Nov 2026',
     '4': 'Ground Floor Seminar Hall',
-    '5': 'Dr. S. Sundararajan (Medical Director)',
+    '5': 'Hospital Administration',
   });
 
   const selectedSampleEmployee =
@@ -114,7 +113,7 @@ export const TemplateDesignerPage: React.FC = () => {
   const handleSubmitForApproval = async () => {
     setIsSubmitting(true);
     try {
-      await fetch('/api/templates', {
+      const res = await fetch('/api/templates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -126,24 +125,21 @@ export const TemplateDesignerPage: React.FC = () => {
           body: bodyText,
           footer: footerText,
           buttons,
-          variables: Object.keys(variables).map((k) => ({
-            key: k,
-            sampleValue: variables[k],
-            description: `Variable {{${k}}}`,
-          })),
+          variables,
         }),
       });
-      success(
-        'Submitted to WATI / Meta',
-        `Template "${templateName}" registered and queued for Meta review.`
-      );
-      navigate('/templates');
-    } catch {
-      success(
-        'Submitted to WATI / Meta',
-        `Template "${templateName}" registered and queued for Meta review.`
-      );
-      navigate('/templates');
+      const data = await res.json();
+      if (data.success) {
+        success(
+          'Submitted to WATI',
+          data.message || `Template "${templateName}" registered in WATI and submitted for Meta approval.`
+        );
+        navigate('/templates');
+      } else {
+        error('Submission Failed', data.message || 'Could not register template in WATI.');
+      }
+    } catch (err: any) {
+      error('Submission Error', err.message || 'Network error while contacting server.');
     } finally {
       setIsSubmitting(false);
     }
@@ -199,32 +195,17 @@ export const TemplateDesignerPage: React.FC = () => {
         </button>
       </PageHeader>
 
-      {/* Mode Switcher Tabs */}
-      <div className="flex items-center justify-between bg-white p-2 rounded-xl border border-slate-200/80 shadow-2xs">
-        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg text-xs font-medium">
-          <button
-            onClick={() => setActiveMode('DRAFT')}
-            className={`px-4 py-1.5 rounded-md transition-colors ${
-              activeMode === 'DRAFT'
-                ? 'bg-white shadow-2xs font-bold text-[#243B67]'
-                : 'text-slate-600'
-            }`}
-          >
-            Draft Template Editor (Full Composition)
-          </button>
-          <button
-            onClick={() => setActiveMode('APPROVED_PARAMS')}
-            className={`px-4 py-1.5 rounded-md transition-colors ${
-              activeMode === 'APPROVED_PARAMS'
-                ? 'bg-white shadow-2xs font-bold text-[#243B67]'
-                : 'text-slate-600'
-            }`}
-          >
-            Approved Template Parameters (Locked Body)
-          </button>
+      {/* Sample Employee Switcher for Preview */}
+      <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+            Template Authoring & WATI Submission
+          </span>
+          <span className="text-[10px] bg-[#243B67]/10 text-[#243B67] font-semibold px-2 py-0.5 rounded">
+            Meta Compliance Ready
+          </span>
         </div>
 
-        {/* Sample Employee Switcher for Preview */}
         <div className="flex items-center gap-2 text-xs">
           <span className="text-slate-500 font-medium hidden sm:inline flex items-center gap-1">
             <User className="w-3.5 h-3.5 text-slate-400" /> Preview Recipient:
@@ -247,60 +228,7 @@ export const TemplateDesignerPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Editor Forms */}
         <div className="lg:col-span-7 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs space-y-5 text-xs">
-          {activeMode === 'APPROVED_PARAMS' ? (
-            /* Mode 2: Approved Template Parameter Configuration */
-            <div className="space-y-4">
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 leading-relaxed">
-                <strong>Approved Mode Active:</strong> You are populating variables for an approved WATI template. The template body and header rules are locked per Meta compliance.
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  Approved Template
-                </label>
-                <select
-                  value={mockTemplates[0].id}
-                  disabled
-                  className="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg text-slate-700 font-mono"
-                >
-                  <option>{mockTemplates[0].name} (WATI ID: {mockTemplates[0].watiTemplateId})</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  Locked Body Text
-                </label>
-                <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-sans whitespace-pre-wrap">
-                  {mockTemplates[0].body}
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <h4 className="font-bold text-slate-800 mb-3">Map Variable Values</h4>
-                <div className="space-y-2.5">
-                  {mockTemplates[0].variables.map((v) => (
-                    <div key={v.key} className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                      <div className="flex justify-between text-slate-700 font-semibold mb-1">
-                        <span>Variable {'{{' + v.key + '}}'}: {v.description}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">Sample: {v.sampleValue}</span>
-                      </div>
-                      <input
-                        type="text"
-                        value={variables[v.key] || v.sampleValue}
-                        onChange={(e) =>
-                          setVariables((prev) => ({ ...prev, [v.key]: e.target.value }))
-                        }
-                        className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-md text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* Mode 1: Draft Template Authoring */
-            <div className="space-y-4">
+          <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="sm:col-span-2">
                   <label className="block font-semibold text-slate-700 mb-1">
@@ -362,6 +290,15 @@ export const TemplateDesignerPage: React.FC = () => {
                   <input
                     type="text"
                     placeholder="Sample image URL (e.g. https://.../banner.jpg)"
+                    value={headerContent}
+                    onChange={(e) => setHeaderContent(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-800 font-mono text-[11px]"
+                  />
+                )}
+                {headerType === 'DOCUMENT' && (
+                  <input
+                    type="text"
+                    placeholder="Sample PDF document URL (e.g. https://.../roster.pdf)"
                     value={headerContent}
                     onChange={(e) => setHeaderContent(e.target.value)}
                     className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-800 font-mono text-[11px]"
@@ -507,8 +444,7 @@ export const TemplateDesignerPage: React.FC = () => {
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          </div>
 
         {/* Right Column: Sticky WhatsApp Live Preview */}
         <div className="lg:col-span-5 lg:sticky lg:top-24 flex justify-center">

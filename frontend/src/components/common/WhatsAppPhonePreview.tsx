@@ -36,11 +36,11 @@ export const WhatsAppPhonePreview: React.FC<WhatsAppPhonePreviewProps> = ({
   });
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-full">
       {/* Device frame container */}
-      <div className="w-[340px] rounded-[36px] p-3 bg-slate-900 shadow-2xl border-4 border-slate-700/60 ring-1 ring-slate-800">
+      <div className="w-full max-w-[340px] rounded-[36px] p-2 sm:p-3 bg-slate-900 shadow-2xl border-4 border-slate-700/60 ring-1 ring-slate-800">
         {/* Phone screen */}
-        <div className="w-full bg-[#EFEAE2] rounded-[28px] overflow-hidden flex flex-col h-[580px] relative shadow-inner">
+        <div className="w-full bg-[#EFEAE2] rounded-[28px] overflow-hidden flex flex-col h-[500px] sm:h-[580px] relative shadow-inner">
           {/* WhatsApp Header Bar */}
           <div className="bg-[#243B67] text-white px-4 py-3 flex items-center gap-3 shrink-0 shadow-sm">
             <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-[#243B67] font-bold text-xs ring-2 ring-white/20">

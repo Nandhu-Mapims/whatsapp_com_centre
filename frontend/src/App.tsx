@@ -75,11 +75,22 @@ export function App() {
                   element={<Navigate to="/employees" replace />}
                 />
                 <Route
+                  path="employees/designations"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'Admin']}
+                      moduleName="Hospital Staff Designations"
+                    >
+                      <EmployeeCategoriesPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
                   path="employees/categories"
                   element={
                     <RoleRoute
                       allowedRoles={['Super Admin', 'Admin']}
-                      moduleName="Staff Categories & Cadres"
+                      moduleName="Hospital Staff Designations"
                     >
                       <EmployeeCategoriesPage />
                     </RoleRoute>
@@ -113,7 +124,7 @@ export function App() {
                   path="templates/designer"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator']}
+                      allowedRoles={['Super Admin']}
                       moduleName="Template Designer"
                     >
                       <TemplateDesignerPage />
@@ -146,66 +157,38 @@ export function App() {
                 />
                 <Route
                   path="campaigns/drafts"
-                  element={
-                    <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator']}
-                      moduleName="Draft Campaigns"
-                    >
-                      <DraftCampaignsPage />
-                    </RoleRoute>
-                  }
+                  element={<Navigate to="/campaigns/history" replace />}
                 />
                 <Route
                   path="campaigns/scheduled"
-                  element={
-                    <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator', 'Approver']}
-                      moduleName="Scheduled Dispatches"
-                    >
-                      <ScheduleCampaignsPage />
-                    </RoleRoute>
-                  }
+                  element={<Navigate to="/campaigns/history" replace />}
                 />
                 <Route path="campaigns/history" element={<CampaignHistoryPage />} />
                 <Route
                   path="campaigns/approvals"
-                  element={
-                    <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Approver']}
-                      moduleName="Four-Eyes Campaign Approval Queue"
-                    >
-                      <CampaignApprovalPage />
-                    </RoleRoute>
-                  }
+                  element={<Navigate to="/campaigns/history" replace />}
                 />
 
-                {/* Module 5: Reports & Monitoring */}
+                {/* Module 5: Reports & Monitoring - Unified into Delivery Reports */}
                 <Route path="reports/delivery" element={<DeliveryReportsPage />} />
-                <Route path="reports/analytics" element={<CampaignAnalyticsPage />} />
+                <Route
+                  path="reports/analytics"
+                  element={<Navigate to="/dashboard" replace />}
+                />
                 <Route
                   path="reports/failed"
-                  element={
-                    <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Approver']}
-                      moduleName="Delivery Failure Logs"
-                    >
-                      <FailedMessagesPage />
-                    </RoleRoute>
-                  }
+                  element={<Navigate to="/reports/delivery" replace />}
                 />
                 <Route
                   path="reports/export"
-                  element={
-                    <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Viewer']}
-                      moduleName="NABH Regulatory Dossier Export"
-                    >
-                      <ExportReportsPage />
-                    </RoleRoute>
-                  }
+                  element={<Navigate to="/reports/delivery" replace />}
                 />
 
-                {/* Module 6: Administration */}
+                {/* Module 6: Administration - Strictly Super Admin Alone */}
+                <Route
+                  path="admin"
+                  element={<Navigate to="/admin/users" replace />}
+                />
                 <Route
                   path="admin/users"
                   element={
@@ -232,7 +215,7 @@ export function App() {
                   path="admin/audit"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin']}
+                      allowedRoles={['Super Admin']}
                       moduleName="System Audit Trail"
                     >
                       <AuditLogsPage />
@@ -243,7 +226,7 @@ export function App() {
                   path="admin/consent"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin']}
+                      allowedRoles={['Super Admin']}
                       moduleName="Consent & Opt-Out Registry"
                     >
                       <ConsentOptOutPage />

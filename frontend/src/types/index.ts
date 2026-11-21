@@ -21,6 +21,7 @@ export interface Employee {
   employeeId: string;
   name: string;
   category: string;
+  staffType?: 'Teaching' | 'Non-Teaching';
   department: string;
   designation: string;
   whatsappNumber: string;
@@ -31,6 +32,17 @@ export interface Employee {
   optOutDate?: string;
   active: boolean;
   lastUpdated: string;
+}
+
+export interface StaffDesignation {
+  id: string;
+  name: string;
+  cadre: 'Teaching' | 'Non-Teaching' | 'Both';
+  employeeCount: number;
+  departmentCount: number;
+  departments: string[];
+  active: boolean;
+  updatedAt: string;
 }
 
 export interface EmployeeCategory {

@@ -7,11 +7,13 @@ class WatiService {
     static token = env_js_1.ENV.WATI_ACCESS_TOKEN;
     /**
      * Fetch approved WhatsApp templates from live WATI API
+     * STRICT FILTER: Only returns APH Connect templates (prefixed with 'aph_').
+     * Completely excludes other hospital applications' templates (PACS, MHC, Incident, Lab, etc.)
      */
     static async fetchTemplates() {
         try {
             const url = `${this.endpoint}/api/v1/getMessageTemplates`;
-            console.log(`[WATI Service] Synchronizing templates from ${url}`);
+            console.log(`[WATI Service] Synchronizing APH Connect templates from ${url}`);
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -24,7 +26,26 @@ class WatiService {
             }
             const json = (await response.json());
             if (json.result === 'success' && Array.isArray(json.messageTemplates)) {
-                return json.messageTemplates.map((t) => ({
+                // Filter strictly for APH Connect templates (prefix 'aph_')
+                // Exclude PACS, Incident, MHC, Lab, Discharge, etc.
+                const aphOnly = json.messageTemplates.filter((t) => {
+                    const name = String(t.elementName || '').toLowerCase();
+                    const isOtherApp = name.includes('pacs') ||
+                        name.includes('incident') ||
+                        name.includes('healthcheck') ||
+                        name.includes('mhc') ||
+                        name.includes('discharge') ||
+                        name.includes('lab') ||
+                        name.includes('investigation') ||
+                        name.includes('onboarding');
+                    if (isOtherApp)
+                        return false;
+                    if (t.status === 'DELETED' || t.statusString === 'DELETED')
+                        return false;
+                    return name.startsWith('aph_') || name.startsWith('aphconnect_');
+                });
+                console.log(`[WATI Service] Found ${aphOnly.length} APH Connect templates (filtered out ${json.messageTemplates.length - aphOnly.length} templates from other hospital systems).`);
+                return aphOnly.map((t) => ({
                     id: t.id || `tmpl-${t.elementName}`,
                     watiTemplateId: t.elementName,
                     name: t.elementName,
@@ -48,7 +69,7 @@ class WatiService {
                             description: `Variable {{${p.paramName}}}`,
                         }))
                         : [],
-                    status: t.status || 'APPROVED',
+                    status: t.status || (t.statusString === 'APPROVED' ? 'APPROVED' : 'PENDING'),
                     lastSynced: new Date().toISOString(),
                     createdAt: t.lastModified?.split('T')[0] || new Date().toISOString().split('T')[0],
                 }));
@@ -58,6 +79,69 @@ class WatiService {
         catch (err) {
             console.error(`[WATI Service] Error syncing templates: ${err.message}`);
             return [];
+        }
+    }
+    /**
+     * Submit a new template to WATI & Meta for approval
+     * Appears in WATI application under Templates for verification.
+     * Does NOT disturb or touch any existing templates.
+     */
+    static async createTemplateInWati(payload) {
+        try {
+            const url = `${this.endpoint}/api/v1/whatsApp/templates`;
+            console.log(`[WATI Service] Submitting template "${payload.elementName}" to WATI API (${url})`);
+            const watiPayload = {
+                type: 'template',
+                elementName: payload.elementName,
+                language: payload.language || 'en',
+                category: payload.category || 'UTILITY',
+                body: payload.body,
+            };
+            if (payload.header && payload.header.type !== 'NONE') {
+                watiPayload.header = {
+                    type: payload.header.type,
+                    text: payload.header.text,
+                    link: payload.header.link,
+                };
+            }
+            if (payload.footer) {
+                watiPayload.footer = payload.footer;
+            }
+            if (payload.buttons && payload.buttons.length > 0) {
+                watiPayload.buttons = payload.buttons;
+            }
+            if (payload.customParams && payload.customParams.length > 0) {
+                watiPayload.customParams = payload.customParams;
+            }
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(watiPayload),
+            });
+            const resData = (await response.json());
+            console.log(`[WATI Service] Template submission response:`, resData);
+            if (resData.ok || resData.result) {
+                return {
+                    success: true,
+                    data: resData.result || resData,
+                };
+            }
+            else {
+                return {
+                    success: false,
+                    error: resData.message || resData.error?.message || 'Failed to submit template to WATI',
+                };
+            }
+        }
+        catch (err) {
+            console.error(`[WATI Service] Error creating template in WATI: ${err.message}`);
+            return {
+                success: false,
+                error: err.message,
+            };
         }
     }
     /**

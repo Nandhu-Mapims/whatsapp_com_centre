@@ -1,0 +1,1928 @@
+[
+  {
+    "id": "desig-hod-01",
+    "name": "HOD",
+    "cadre": "Both",
+    "employeeCount": 8,
+    "departmentCount": 8,
+    "departments": [
+      "Anaesthesiology",
+      "General Medicine",
+      "General Surgery",
+      "Obstetrics and Gynaecology",
+      "Ophthalmology",
+      "Orthopaedics",
+      "Paediatrics",
+      "Radiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-1795170343508",
+    "name": "Chief Medical Officer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 0,
+    "departmentCount": 0,
+    "departments": [],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-001",
+    "name": "Staff Nurse",
+    "cadre": "Non-Teaching",
+    "employeeCount": 169,
+    "departmentCount": 4,
+    "departments": [
+      "Gummidipoondi Centre",
+      "Marketing",
+      "Nursing",
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-002",
+    "name": "Housemaid",
+    "cadre": "Non-Teaching",
+    "employeeCount": 73,
+    "departmentCount": 1,
+    "departments": [
+      "House Keeping"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-003",
+    "name": "Female Nursing Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 68,
+    "departmentCount": 5,
+    "departments": [
+      "CSSD",
+      "Nursing",
+      "Radiology",
+      "Training and Development",
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-004",
+    "name": "Senior Resident",
+    "cadre": "Teaching",
+    "employeeCount": 51,
+    "departmentCount": 11,
+    "departments": [
+      "Anaesthesiology",
+      "Dermatology",
+      "General Medicine",
+      "General Surgery",
+      "Obstetrics and Gynaecology",
+      "Ophthalmology",
+      "Orthopaedics",
+      "Otorhinolaryngology",
+      "Paediatrics",
+      "Psychiatry",
+      "Radiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-005",
+    "name": "Trainee Staff Nurse",
+    "cadre": "Non-Teaching",
+    "employeeCount": 50,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-006",
+    "name": "Lab Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 43,
+    "departmentCount": 1,
+    "departments": [
+      "Central Laboratory"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-007",
+    "name": "Assistant Professor",
+    "cadre": "Teaching",
+    "employeeCount": 34,
+    "departmentCount": 12,
+    "departments": [
+      "Anaesthesiology",
+      "Dermatology",
+      "General Medicine",
+      "General Surgery",
+      "Ophthalmology",
+      "Orthopaedics",
+      "Otorhinolaryngology",
+      "Paediatrics",
+      "Psychiatry",
+      "Radiology",
+      "Transfusion Medicine & Bloodbank",
+      "Tuberculosis and Chest"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-008",
+    "name": "Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 32,
+    "departmentCount": 4,
+    "departments": [
+      "Blood Bank",
+      "Medical Record Department",
+      "Nephrology (DIALYSIS)",
+      "Operation Theatre"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-009",
+    "name": "Ward Boy",
+    "cadre": "Non-Teaching",
+    "employeeCount": 21,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-010",
+    "name": "Steno Typist",
+    "cadre": "Non-Teaching",
+    "employeeCount": 20,
+    "departmentCount": 14,
+    "departments": [
+      "Anaesthesiology",
+      "Central Laboratory",
+      "Emergency",
+      "General Medicine",
+      "General Surgery",
+      "ICU",
+      "Nephrology (DIALYSIS)",
+      "Obstetrics and Gynaecology",
+      "Operations",
+      "Ophthalmology",
+      "Orthopaedics",
+      "Otorhinolaryngology",
+      "Paediatrics",
+      "Radiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-011",
+    "name": "Guest Relations Executive",
+    "cadre": "Non-Teaching",
+    "employeeCount": 19,
+    "departmentCount": 1,
+    "departments": [
+      "Operations"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-012",
+    "name": "Optometrist",
+    "cadre": "Non-Teaching",
+    "employeeCount": 18,
+    "departmentCount": 2,
+    "departments": [
+      "Ophthalmology",
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-013",
+    "name": "Professor",
+    "cadre": "Teaching",
+    "employeeCount": 15,
+    "departmentCount": 9,
+    "departments": [
+      "Anaesthesiology",
+      "General Medicine",
+      "General Surgery",
+      "Obstetrics and Gynaecology",
+      "Orthopaedics",
+      "Paediatrics",
+      "Pathology",
+      "Psychiatry",
+      "Radiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-014",
+    "name": "Junior Resident",
+    "cadre": "Teaching",
+    "employeeCount": 15,
+    "departmentCount": 10,
+    "departments": [
+      "Cardiology",
+      "Dermatology",
+      "Emergency",
+      "General Medicine",
+      "ICU",
+      "Plastic Surgery",
+      "Psychiatry",
+      "Special Ward",
+      "Urology",
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-015",
+    "name": "Junior Executive",
+    "cadre": "Non-Teaching",
+    "employeeCount": 15,
+    "departmentCount": 3,
+    "departments": [
+      "Billing",
+      "Human Resources",
+      "Operations"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-016",
+    "name": "Gardener",
+    "cadre": "Non-Teaching",
+    "employeeCount": 14,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-017",
+    "name": "Executive",
+    "cadre": "Non-Teaching",
+    "employeeCount": 13,
+    "departmentCount": 5,
+    "departments": [
+      "Accounts",
+      "Operation",
+      "Operations",
+      "Purchase & Store",
+      "Training and Development"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-018",
+    "name": "Electrician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 13,
+    "departmentCount": 2,
+    "departments": [
+      "Electrical",
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-019",
+    "name": "Lift Operator",
+    "cadre": "Non-Teaching",
+    "employeeCount": 13,
+    "departmentCount": 1,
+    "departments": [
+      "Electrical"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-020",
+    "name": "Ward Incharge",
+    "cadre": "Non-Teaching",
+    "employeeCount": 13,
+    "departmentCount": 2,
+    "departments": [
+      "Nursing",
+      "Ophthalmology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-021",
+    "name": "ICU Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 12,
+    "departmentCount": 1,
+    "departments": [
+      "ICU"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-022",
+    "name": "Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 12,
+    "departmentCount": 6,
+    "departments": [
+      "Laundry",
+      "Medical Record Department",
+      "Operations",
+      "Pharmacy",
+      "Purchase & Store",
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-023",
+    "name": "Emergency Care Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 11,
+    "departmentCount": 1,
+    "departments": [
+      "Emergency"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-024",
+    "name": "Driver",
+    "cadre": "Non-Teaching",
+    "employeeCount": 11,
+    "departmentCount": 2,
+    "departments": [
+      "Gummidipoondi Centre",
+      "Transport"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-025",
+    "name": "Senior Staff Nurse",
+    "cadre": "Non-Teaching",
+    "employeeCount": 11,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-026",
+    "name": "Supervisor",
+    "cadre": "Non-Teaching",
+    "employeeCount": 10,
+    "departmentCount": 3,
+    "departments": [
+      "House Keeping",
+      "Laundry",
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-027",
+    "name": "Consultant",
+    "cadre": "Teaching",
+    "employeeCount": 9,
+    "departmentCount": 6,
+    "departments": [
+      "Central Laboratory",
+      "Gastroenterology",
+      "ICU",
+      "Medical Oncology",
+      "Ophthalmology",
+      "Plastic Surgery"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-028",
+    "name": "Associate Professor",
+    "cadre": "Teaching",
+    "employeeCount": 9,
+    "departmentCount": 5,
+    "departments": [
+      "General Surgery",
+      "Obstetrics and Gynaecology",
+      "Orthopaedics",
+      "Paediatrics",
+      "Radiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-029",
+    "name": "Operations Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 9,
+    "departmentCount": 1,
+    "departments": [
+      "Operations"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-030",
+    "name": "Radiographer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 9,
+    "departmentCount": 1,
+    "departments": [
+      "Radiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-031",
+    "name": "Ambulance Driver",
+    "cadre": "Non-Teaching",
+    "employeeCount": 9,
+    "departmentCount": 1,
+    "departments": [
+      "Transport"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-032",
+    "name": "Plumber",
+    "cadre": "Non-Teaching",
+    "employeeCount": 8,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-033",
+    "name": "Pharmacist",
+    "cadre": "Non-Teaching",
+    "employeeCount": 7,
+    "departmentCount": 3,
+    "departments": [
+      "Gummidipoondi Centre",
+      "Pharmacy",
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-034",
+    "name": "Nursing Supervisor",
+    "cadre": "Non-Teaching",
+    "employeeCount": 7,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-035",
+    "name": "OP Secretary",
+    "cadre": "Non-Teaching",
+    "employeeCount": 7,
+    "departmentCount": 2,
+    "departments": [
+      "Operations",
+      "Ophthalmology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-036",
+    "name": "Casualty Medical Officer",
+    "cadre": "Teaching",
+    "employeeCount": 6,
+    "departmentCount": 1,
+    "departments": [
+      "Emergency"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-037",
+    "name": "Professor & HOD",
+    "cadre": "Teaching",
+    "employeeCount": 6,
+    "departmentCount": 6,
+    "departments": [
+      "General Medicine",
+      "Obstetrics and Gynaecology",
+      "Ophthalmology",
+      "Otorhinolaryngology",
+      "Paediatrics",
+      "Radiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-038",
+    "name": "Biomedical Engineer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 6,
+    "departmentCount": 1,
+    "departments": [
+      "Bio Medical"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-039",
+    "name": "Senior Executive",
+    "cadre": "Non-Teaching",
+    "employeeCount": 5,
+    "departmentCount": 3,
+    "departments": [
+      "Accounts",
+      "Billing",
+      "Operations"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-040",
+    "name": "OT Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 5,
+    "departmentCount": 1,
+    "departments": [
+      "Anaesthesiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-041",
+    "name": "Ward Supervisor",
+    "cadre": "Non-Teaching",
+    "employeeCount": 5,
+    "departmentCount": 1,
+    "departments": [
+      "Laundry"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-042",
+    "name": "Laundry Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 5,
+    "departmentCount": 1,
+    "departments": [
+      "Laundry"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-043",
+    "name": "Manager",
+    "cadre": "Non-Teaching",
+    "employeeCount": 4,
+    "departmentCount": 4,
+    "departments": [
+      "Cardiothoracic Surgery",
+      "Marketing",
+      "Purchase & Store",
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-044",
+    "name": "Gas Plant Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 4,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-045",
+    "name": "Trainee Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 4,
+    "departmentCount": 1,
+    "departments": [
+      "Nephrology (DIALYSIS)"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-046",
+    "name": "Senior Nursing Supervisor",
+    "cadre": "Non-Teaching",
+    "employeeCount": 4,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-047",
+    "name": "Telephone Operator",
+    "cadre": "Non-Teaching",
+    "employeeCount": 4,
+    "departmentCount": 1,
+    "departments": [
+      "Operations"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-048",
+    "name": "Senior Manager",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 3,
+    "departments": [
+      "Bio Medical",
+      "Human Resources",
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-049",
+    "name": "Physician Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 3,
+    "departments": [
+      "Cardiology",
+      "Nephrology (DIALYSIS)",
+      "Neurosurgery"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-050",
+    "name": "Technical Supervisor",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 1,
+    "departments": [
+      "Central Laboratory"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-051",
+    "name": "Paramedical Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 1,
+    "departments": [
+      "Emergency"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-052",
+    "name": "L1 Support Engineer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 1,
+    "departments": [
+      "Information Technology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-053",
+    "name": "AC Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-054",
+    "name": "Fitter",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-055",
+    "name": "Marketing Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 1,
+    "departments": [
+      "Marketing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-056",
+    "name": "CT Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 1,
+    "departments": [
+      "Radiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-057",
+    "name": "House Keeping",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 1,
+    "departments": [
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-058",
+    "name": "Security",
+    "cadre": "Non-Teaching",
+    "employeeCount": 3,
+    "departmentCount": 1,
+    "departments": [
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-059",
+    "name": "HOD & DMS",
+    "cadre": "Teaching",
+    "employeeCount": 2,
+    "departmentCount": 2,
+    "departments": [
+      "Anaesthesiology",
+      "General Surgery"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-060",
+    "name": "Cardiologist",
+    "cadre": "Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Cardiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-061",
+    "name": "Nephrologist",
+    "cadre": "Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Nephrology (DIALYSIS)"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-062",
+    "name": "Senior Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 2,
+    "departments": [
+      "Blood Bank",
+      "Operation Theatre"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-063",
+    "name": "Echo Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Cardiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-064",
+    "name": "Phlebotomist",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Central Laboratory"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-065",
+    "name": "Incharge",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 2,
+    "departments": [
+      "CSSD",
+      "Transport"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-066",
+    "name": "Assistant Manager",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 2,
+    "departments": [
+      "Electrical",
+      "Information Technology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-067",
+    "name": "Junior Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Human Resources"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-068",
+    "name": "Record Clerk",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Medical Record Department"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-069",
+    "name": "Transplant Co-ordinator",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Nephrology (DIALYSIS)"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-070",
+    "name": "Infection Control Nurse",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 2,
+    "departments": [
+      "Nursing",
+      "Quality"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-071",
+    "name": "Attender",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Pharmacy"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-072",
+    "name": "Trainee Pharmacist",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Pharmacy"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-073",
+    "name": "Clinical Pharmacist",
+    "cadre": "Non-Teaching",
+    "employeeCount": 2,
+    "departmentCount": 1,
+    "departments": [
+      "Quality"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-074",
+    "name": "Senior Consultant - ER",
+    "cadre": "Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Emergency & Trauma Care"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-075",
+    "name": "Medical Director",
+    "cadre": "Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "General Medicine"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-076",
+    "name": "Chief Cardiothoracic Surgeon",
+    "cadre": "Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Cardiothoracic Surgery"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-077",
+    "name": "Senior Casualty Medical Officer",
+    "cadre": "Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Emergency"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-078",
+    "name": "Incharge- ICU & Critical Care",
+    "cadre": "Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "ICU"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-079",
+    "name": "Urologist",
+    "cadre": "Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Urology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-080",
+    "name": "DGM - Finance & Accounts",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Accounts"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-081",
+    "name": "Store Keeper",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Anaesthesiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-082",
+    "name": "MS Secretary",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Anaesthesiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-083",
+    "name": "OT Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Anaesthesiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-084",
+    "name": "DGM - Billing & Insurance",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Billing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-085",
+    "name": "Assistant Manager -Billing",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Billing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-086",
+    "name": "Assistant Manager -Billing & Insurance",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Billing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-087",
+    "name": "Assistant Manager -Insurance",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Billing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-088",
+    "name": "Senior Biomedical Engineer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Bio Medical"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-089",
+    "name": "Supervisor - Blood Bank",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Blood Bank"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-090",
+    "name": "Senior Cathlab Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Cardiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-091",
+    "name": "Trainee Cathlab Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Cardiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-092",
+    "name": "Cathlab Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Cardiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-093",
+    "name": "Cardiac Technologist",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Cardiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-094",
+    "name": "Quality Manager Cum Biochemistry Incharge",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Central Laboratory"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-095",
+    "name": "Supervisor Phlebotomy",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Central Laboratory"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-096",
+    "name": "Senior Lab Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Central Laboratory"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-097",
+    "name": "Senior Dietitian",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Dietetics"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-098",
+    "name": "Dietitian",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Dietetics"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-099",
+    "name": "CCTV and PA System",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Electrical"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-100",
+    "name": "CHIEF",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Facility Management & Safety"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-101",
+    "name": "Data Entry Operator",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Gummidipoondi Centre"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-102",
+    "name": "HR Executive",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Human Resources"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-103",
+    "name": "DGM & IT Head",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Information Technology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-104",
+    "name": "Technology Architect",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Information Technology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-105",
+    "name": "Full Stack Developer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Information Technology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-106",
+    "name": "AI Engineer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Information Technology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-107",
+    "name": "Software Engineer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Information Technology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-108",
+    "name": "Assistant General Manager",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Laundry"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-109",
+    "name": "Tailor",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Laundry"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-110",
+    "name": "Supervisor / Quarters",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Laundry"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-111",
+    "name": "Assistant Manager CGSS",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-112",
+    "name": "Furniture Incharge",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-113",
+    "name": "AC Mechanic",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-114",
+    "name": "Incharge - Plumbing",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-115",
+    "name": "Supervisor - Garden",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-116",
+    "name": "Senior AC Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-117",
+    "name": "Junior Officer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-118",
+    "name": "Incharge - Maintenance",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-119",
+    "name": "HVAC Incharge",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-120",
+    "name": "Trainee AC Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Maintenance"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-121",
+    "name": "Medical Record Officer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Medical Record Department"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-122",
+    "name": "Technican",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Medical Record Department"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-123",
+    "name": "Dialysis Unit Manager",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Nephrology (DIALYSIS)"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-124",
+    "name": "Deputy Nursing Superintendent",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-125",
+    "name": "ECG Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-126",
+    "name": "Incharge - OPD",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-127",
+    "name": "Incharge - ICU",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-128",
+    "name": "Incharge - Special Ward",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-129",
+    "name": "Incharge - OT",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-130",
+    "name": "Male Nursing Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Nursing"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-131",
+    "name": "Operation Manager",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Operations"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-132",
+    "name": "Incharge - Guest Relations",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Operations"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-133",
+    "name": "Operation Executive",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Operations"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-134",
+    "name": "Guest Relation Executive",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Operation"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-135",
+    "name": "Operations Manager",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Ophthalmology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-136",
+    "name": "Opticals Incharge",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Ophthalmology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-137",
+    "name": "DBCS Camp Coordinator",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Ophthalmology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-138",
+    "name": "Audiometry Technician",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Otorhinolaryngology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-139",
+    "name": "Chief Supervisor",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Pathology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-140",
+    "name": "Senior Pharmacist",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Pharmacy"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-141",
+    "name": "Pharmacy Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Pharmacy"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-142",
+    "name": "Quality Manager",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Quality"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-143",
+    "name": "Quality Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Quality"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-144",
+    "name": "Chief Radiographer",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Radiology"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-145",
+    "name": "Safety Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Safety"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-146",
+    "name": "Senior Executive & PRO",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-147",
+    "name": "Operation Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-148",
+    "name": "Billing Assistant",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "desig-149",
+    "name": "Executive Billing",
+    "cadre": "Non-Teaching",
+    "employeeCount": 1,
+    "departmentCount": 1,
+    "departments": [
+      "Uthiramerur Center"
+    ],
+    "active": true,
+    "updatedAt": "2026-11-20"
+  }
+]

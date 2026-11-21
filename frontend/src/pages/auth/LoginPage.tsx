@@ -24,8 +24,8 @@ export const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const { success, error } = useToast();
 
-  const [email, setEmail] = useState('medical.director@mapims.org');
-  const [password, setPassword] = useState('••••••••••••');
+  const [email, setEmail] = useState('superadmin@mapims.org');
+  const [password, setPassword] = useState('mapims2026');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -150,7 +150,7 @@ export const LoginPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="doctor.name@mapims.org"
+                    placeholder="superadmin@mapims.org"
                     className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]/20 focus:border-[#243B67] font-medium transition-all"
                   />
                 </div>
@@ -183,8 +183,9 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="p-1 text-slate-400 hover:text-slate-600 absolute right-3 top-2.5"
-                    tabIndex={-1}
+                    className="p-1 text-slate-400 hover:text-slate-600 absolute right-3 top-2.5 transition-colors cursor-pointer"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    title={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -221,79 +222,30 @@ export const LoginPage: React.FC = () => {
             </form>
           </div>
 
-          {/* Quick Demo Accounts (1-Click Login) */}
+          {/* Quick Demo Accounts (1-Click Login: Admin & Super Admin) */}
           <div className="mt-8 pt-6 border-t border-slate-100">
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                1-Click Role Login (Demo Accounts)
+                Quick Role Sign-In
               </span>
-              <span className="text-[10px] text-slate-400">Click to switch & test</span>
+              <span className="text-[10px] text-slate-400">Select authorized role</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px]">
+            <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
-                onClick={() => handleQuickLogin('medical.director@mapims.org')}
-                className="p-2 rounded-xl bg-slate-50 hover:bg-[#243B67] hover:text-white border border-slate-200/80 text-left transition-all group"
+                onClick={() => handleQuickLogin('superadmin@mapims.org')}
+                className="py-3 px-4 rounded-xl bg-slate-50 hover:bg-[#243B67] hover:text-white border border-slate-200/80 text-center transition-all group shadow-2xs font-bold text-slate-800 text-xs"
               >
-                <div className="font-bold text-slate-900 group-hover:text-white truncate">
-                  Super Admin
-                </div>
-                <div className="text-[10px] text-slate-500 group-hover:text-slate-200 truncate">
-                  Dr. Sundararajan
-                </div>
+                Super Admin
               </button>
 
               <button
                 type="button"
-                onClick={() => handleQuickLogin('kavitha.hr@mapims.org')}
-                className="p-2 rounded-xl bg-slate-50 hover:bg-emerald-700 hover:text-white border border-slate-200/80 text-left transition-all group"
+                onClick={() => handleQuickLogin('admin@mapims.org')}
+                className="py-3 px-4 rounded-xl bg-slate-50 hover:bg-[#243B67] hover:text-white border border-slate-200/80 text-center transition-all group shadow-2xs font-bold text-slate-800 text-xs"
               >
-                <div className="font-bold text-slate-900 group-hover:text-white truncate">
-                  HR Admin
-                </div>
-                <div className="text-[10px] text-slate-500 group-hover:text-slate-200 truncate">
-                  Mrs. K. Kavitha
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('dean.approver@mapims.org')}
-                className="p-2 rounded-xl bg-slate-50 hover:bg-[#7B2846] hover:text-white border border-slate-200/80 text-left transition-all group"
-              >
-                <div className="font-bold text-slate-900 group-hover:text-white truncate">
-                  Approver (Dean)
-                </div>
-                <div className="text-[10px] text-slate-500 group-hover:text-slate-200 truncate">
-                  Prof. Vijayalakshmi
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('rajesh.comms@mapims.org')}
-                className="p-2 rounded-xl bg-slate-50 hover:bg-blue-700 hover:text-white border border-slate-200/80 text-left transition-all group"
-              >
-                <div className="font-bold text-slate-900 group-hover:text-white truncate">
-                  Campaign Creator
-                </div>
-                <div className="text-[10px] text-slate-500 group-hover:text-slate-200 truncate">
-                  P. Rajesh Kumar
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('ananth.auditor@mapims.org')}
-                className="p-2 rounded-xl bg-slate-50 hover:bg-slate-700 hover:text-white border border-slate-200/80 text-left transition-all group"
-              >
-                <div className="font-bold text-slate-900 group-hover:text-white truncate">
-                  Auditor (Viewer)
-                </div>
-                <div className="text-[10px] text-slate-500 group-hover:text-slate-200 truncate">
-                  R. Ananth
-                </div>
+                Admin
               </button>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   History,
   Search,
@@ -14,6 +15,9 @@ import {
   X,
   FileCheck,
   CheckCheck,
+  Plus,
+  Send,
+  BarChart3,
 } from 'lucide-react';
 import { PageHeader } from '../../components/common/PageHeader';
 import { StatusBadge } from '../../components/common/StatusBadge';
@@ -22,6 +26,7 @@ import { Campaign } from '../../types';
 import { useToast } from '../../context/ToastContext';
 
 export const CampaignHistoryPage: React.FC = () => {
+  const navigate = useNavigate();
   const { success } = useToast();
 
   const [campaigns, setCampaigns] = useState<Campaign[]>(mockCampaigns);
@@ -43,9 +48,16 @@ export const CampaignHistoryPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Campaign History & Audit Log"
-        description="Immutable record of all hospital WhatsApp communications, delivery metrics, and clinical approver sign-offs."
+        title="Broadcast History & Logs"
+        description="Chronological record of all hospital WhatsApp communications, delivery metrics, and dispatch logs."
       >
+        <button
+          onClick={() => navigate('/campaigns/create')}
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          <span>New Broadcast</span>
+        </button>
         <button
           onClick={() => success('Export Generated', 'Downloading campaign audit report in Excel format.')}
           className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg shadow-2xs transition-colors"
@@ -78,8 +90,6 @@ export const CampaignHistoryPage: React.FC = () => {
               <option value="ALL">All Statuses</option>
               <option value="Completed">Completed</option>
               <option value="Scheduled">Scheduled</option>
-              <option value="Pending Approval">Pending Approval</option>
-              <option value="Rejected">Rejected</option>
               <option value="Draft">Draft</option>
             </select>
           </div>
@@ -131,12 +141,23 @@ export const CampaignHistoryPage: React.FC = () => {
                     <StatusBadge status={cmp.status} />
                   </td>
                   <td className="py-3 px-4 text-right">
-                    <button
-                      onClick={() => setSelectedCampaign(cmp)}
-                      className="px-2.5 py-1 bg-slate-100 hover:bg-[#243B67] hover:text-white text-[#243B67] rounded font-semibold transition-colors flex items-center gap-1 ml-auto"
-                    >
-                      <Eye className="w-3.5 h-3.5" /> Details
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => navigate(`/reports/delivery?campaignId=${cmp.id || cmp.campaignId}`)}
+                        className="px-2.5 py-1 bg-blue-50 hover:bg-[#243B67] text-[#243B67] hover:text-white rounded font-semibold transition-colors flex items-center gap-1 border border-blue-200"
+                        title="View Delivery Report for this Campaign"
+                      >
+                        <BarChart3 className="w-3.5 h-3.5" />
+                        <span>Report</span>
+                      </button>
+                      <button
+                        onClick={() => setSelectedCampaign(cmp)}
+                        className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-semibold transition-colors flex items-center gap-1"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Details</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -176,11 +197,28 @@ export const CampaignHistoryPage: React.FC = () => {
 
             {/* Content Body */}
             <div className="flex-1 overflow-y-auto p-5 space-y-5 text-xs">
+              {/* Quick Action: View Delivery Report */}
+              <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-xl flex items-center justify-between gap-3">
+                <div>
+                  <div className="font-bold text-[#243B67] text-xs">Campaign Delivery Breakdown</div>
+                  <div className="text-[11px] text-slate-500">
+                    Inspect individual recipient delivery states (Sent → Delivered → Read).
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate(`/reports/delivery?campaignId=${selectedCampaign.id || selectedCampaign.campaignId}`)}
+                  className="px-3 py-1.5 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold text-xs flex items-center gap-1.5 shadow-2xs transition-colors shrink-0"
+                >
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  <span>View Delivery Report</span>
+                </button>
+              </div>
+
               {/* Delivery Stats if Sent */}
               {selectedCampaign.submittedCount > 0 && (
                 <div className="space-y-2">
                   <h4 className="font-bold text-slate-900">Broadcast Performance</h4>
-                  <div className="grid grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
                     <div>
                       <span className="text-[10px] text-slate-400 uppercase font-semibold">Submitted</span>
                       <div className="text-base font-bold text-slate-800 mt-0.5">

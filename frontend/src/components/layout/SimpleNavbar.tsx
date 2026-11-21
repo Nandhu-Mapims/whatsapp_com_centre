@@ -32,6 +32,8 @@ import {
   User,
   LogOut,
   ExternalLink,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useAuth } from '../../context/AuthContext';
@@ -65,6 +67,28 @@ export const SimpleNavbar: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Sync fullscreen state with native browser event
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.().catch((err) => {
+        console.warn('Could not enter fullscreen:', err);
+      });
+    } else {
+      document.exitFullscreen?.().catch((err) => {
+        console.warn('Could not exit fullscreen:', err);
+      });
+    }
+  };
 
   const navRef = useRef<HTMLDivElement>(null);
   const roleRef = useRef<HTMLDivElement>(null);
@@ -113,8 +137,15 @@ export const SimpleNavbar: React.FC = () => {
           allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver'],
         },
         {
-          title: 'Departments & Roles',
-          description: 'Clinical specialties, wards & ICU stations',
+          title: 'Staff Designations',
+          description: '149 hospital roles across Teaching & Non-Teaching',
+          path: '/employees/designations',
+          icon: Layers,
+          allowedRoles: ['Super Admin', 'Admin'],
+        },
+        {
+          title: 'Departments & Divisions',
+          description: '54 clinical specialties, wards & hospital divisions',
           path: '/employees/departments',
           icon: Building2,
           allowedRoles: ['Super Admin', 'Admin'],
@@ -125,28 +156,21 @@ export const SimpleNavbar: React.FC = () => {
       key: 'templates',
       label: 'Templates',
       basePath: '/templates',
-      allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver'],
+      allowedRoles: ['Super Admin', 'Admin'],
       items: [
         {
           title: 'Template Library',
           description: 'Browse Meta-approved WhatsApp templates',
           path: '/templates',
           icon: FileText,
-          allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver'],
+          allowedRoles: ['Super Admin', 'Admin'],
         },
         {
           title: 'Template Designer',
           description: 'Compose message drafts with live phone preview',
           path: '/templates/designer',
           icon: Palette,
-          allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator'],
-        },
-        {
-          title: 'Media Library',
-          description: 'Duty rosters, PDF circulars & images',
-          path: '/templates/media',
-          icon: ImageIcon,
-          allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator'],
+          allowedRoles: ['Super Admin'],
         },
       ],
     },
@@ -154,48 +178,21 @@ export const SimpleNavbar: React.FC = () => {
       key: 'campaigns',
       label: 'Campaigns',
       basePath: '/campaigns',
-      allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver', 'Viewer'],
+      allowedRoles: ['Super Admin', 'Admin'],
       items: [
         {
-          title: 'Create Campaign',
+          title: 'Create Broadcast',
           description: 'Target staff & broadcast WhatsApp alert',
           path: '/campaigns/create',
           icon: Send,
-          badge: 'New',
-          badgeVariant: 'emerald',
-          allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator'],
+          allowedRoles: ['Super Admin', 'Admin'],
         },
         {
-          title: 'Campaign Approval',
-          description: 'Four-Eyes clinical review & sign-off queue',
-          path: '/campaigns/approvals',
-          icon: CheckSquare,
-          badge: '1 Pending',
-          badgeVariant: 'maroon',
-          allowedRoles: ['Super Admin', 'Admin', 'Approver'],
-        },
-        {
-          title: 'Draft Campaigns',
-          description: 'Resume unfinished campaign configurations',
-          path: '/campaigns/drafts',
-          icon: FileEdit,
-          badge: '1',
-          badgeVariant: 'blue',
-          allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator'],
-        },
-        {
-          title: 'Schedule Campaigns',
-          description: 'Monitor automated future dispatches in Redis',
-          path: '/campaigns/scheduled',
-          icon: CalendarClock,
-          allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver'],
-        },
-        {
-          title: 'Campaign History',
-          description: 'Immutable ledger of completed broadcasts',
+          title: 'Broadcast History',
+          description: 'Log of sent and scheduled broadcasts',
           path: '/campaigns/history',
           icon: History,
-          allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver', 'Viewer'],
+          allowedRoles: ['Super Admin', 'Admin'],
         },
       ],
     },
@@ -207,33 +204,10 @@ export const SimpleNavbar: React.FC = () => {
       items: [
         {
           title: 'Delivery Reports',
-          description: 'Message-level submission & read receipts',
+          description: 'Real-time message telemetry, campaign status & recipient logs',
           path: '/reports/delivery',
           icon: BarChart3,
           allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver', 'Viewer'],
-        },
-        {
-          title: 'Campaign Analytics',
-          description: 'Engagement charts & department response times',
-          path: '/reports/analytics',
-          icon: TrendingUp,
-          allowedRoles: ['Super Admin', 'Admin', 'Approver', 'Viewer'],
-        },
-        {
-          title: 'Failed Messages',
-          description: 'Error diagnostics & safe retry queue',
-          path: '/reports/failed',
-          icon: AlertOctagon,
-          badge: '5 Failed',
-          badgeVariant: 'amber',
-          allowedRoles: ['Super Admin', 'Admin', 'Approver'],
-        },
-        {
-          title: 'Export Reports',
-          description: 'Download NABH audit dossiers in Excel/CSV',
-          path: '/reports/export',
-          icon: DownloadCloud,
-          allowedRoles: ['Super Admin', 'Admin', 'Viewer'],
         },
       ],
     },
@@ -241,7 +215,7 @@ export const SimpleNavbar: React.FC = () => {
       key: 'admin',
       label: 'Admin',
       basePath: '/admin',
-      allowedRoles: ['Super Admin', 'Admin'],
+      allowedRoles: ['Super Admin'],
       items: [
         {
           title: 'Users & Roles',
@@ -262,14 +236,14 @@ export const SimpleNavbar: React.FC = () => {
           description: 'Chronological security & dispatch trail',
           path: '/admin/audit',
           icon: FileSearch,
-          allowedRoles: ['Super Admin', 'Admin'],
+          allowedRoles: ['Super Admin'],
         },
         {
           title: 'Consent & Opt-Outs',
           description: 'Legal compliance & WhatsApp STOP suppression',
           path: '/admin/consent',
           icon: UserCheck,
-          allowedRoles: ['Super Admin', 'Admin'],
+          allowedRoles: ['Super Admin'],
         },
       ],
     },
@@ -289,9 +263,6 @@ export const SimpleNavbar: React.FC = () => {
   const roles: UserRole[] = [
     'Super Admin',
     'Admin',
-    'Campaign Creator',
-    'Approver',
-    'Viewer',
   ];
 
   const isCurrentSection = (basePath: string) => {
@@ -314,7 +285,7 @@ export const SimpleNavbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left: Brand Identity */}
           <div className="flex items-center gap-3 shrink-0">
@@ -535,22 +506,22 @@ export const SimpleNavbar: React.FC = () => {
                     <div
                       onClick={() => {
                         setShowNotifications(false);
-                        navigate('/campaigns/approvals');
+                        navigate('/campaigns/history');
                       }}
                       className="p-3 hover:bg-slate-50 transition-colors cursor-pointer"
                     >
                       <p className="text-xs font-semibold text-slate-800">
-                        Campaign Pending Approval
+                        Broadcast Log Updated
                       </p>
                       <p className="text-[11px] text-slate-500 mt-0.5">
-                        "NABH 5th Edition Mock Audit Readiness Notice" awaits review.
+                        New hospital broadcast notice has been registered.
                       </p>
                       <span className="text-[10px] text-slate-400 mt-1 block">10 mins ago</span>
                     </div>
                     <div
                       onClick={() => {
                         setShowNotifications(false);
-                        navigate('/reports/failed');
+                        navigate('/reports/delivery');
                       }}
                       className="p-3 hover:bg-slate-50 transition-colors cursor-pointer"
                     >
@@ -566,6 +537,21 @@ export const SimpleNavbar: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Fullscreen Kiosk Mode Toggle */}
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              className="p-2 text-slate-500 hover:text-[#243B67] hover:bg-slate-100 rounded-xl transition-colors"
+              title={isFullscreen ? 'Exit Full Screen' : 'Enter Full Screen'}
+              aria-label={isFullscreen ? 'Exit Full Screen' : 'Enter Full Screen'}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="w-4 h-4 text-[#7B2846]" />
+              ) : (
+                <Maximize2 className="w-4 h-4" />
+              )}
+            </button>
 
             {/* User Profile Avatar with sleek popover instead of cropped text */}
             <div ref={profileRef} className="relative pl-1 border-l border-slate-200">

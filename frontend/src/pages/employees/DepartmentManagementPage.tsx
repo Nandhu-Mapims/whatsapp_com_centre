@@ -20,7 +20,7 @@ export const DepartmentManagementPage: React.FC = () => {
   const { success, error } = useToast();
   const [departments, setDepartments] = useState<Department[]>(mockDepartments);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('ALL');
+  
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,8 +38,7 @@ export const DepartmentManagementPage: React.FC = () => {
       d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       d.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (d.hodName && d.hodName.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCat = categoryFilter === 'ALL' || d.categoryName === categoryFilter;
-    return matchesSearch && matchesCat;
+    return matchesSearch;
   });
 
   const handleOpenAdd = () => {
@@ -152,18 +151,7 @@ export const DepartmentManagementPage: React.FC = () => {
               />
             </div>
 
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
-            >
-              <option value="ALL">All Categories</option>
-              {mockCategories.map((c) => (
-                <option key={c.id} value={c.name}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+
           </div>
 
           <span className="text-xs text-slate-500">
@@ -177,7 +165,7 @@ export const DepartmentManagementPage: React.FC = () => {
               <tr>
                 <th className="py-3 px-4">Dept Code</th>
                 <th className="py-3 px-4">Department Name</th>
-                <th className="py-3 px-4">Parent Category</th>
+
                 <th className="py-3 px-4">HOD / Lead Contact</th>
                 <th className="py-3 px-4">Active Staff</th>
                 <th className="py-3 px-4">Status</th>

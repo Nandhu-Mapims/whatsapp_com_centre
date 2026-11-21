@@ -40,8 +40,9 @@ export const Topbar: React.FC<TopbarProps> = ({
         return 'Employee Management';
       case 'import':
         return 'Import Employees';
+      case 'designations':
       case 'categories':
-        return 'Employee Categories';
+        return 'Staff Designations';
       case 'departments':
         return 'Department Management';
       case 'templates':

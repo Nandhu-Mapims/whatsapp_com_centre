@@ -1,0 +1,488 @@
+[
+  {
+    "id": "dept-01",
+    "code": "ACC-01",
+    "name": "Accounts",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 3,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-02",
+    "code": "ANA-02",
+    "name": "Anaesthesiology",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 25,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-03",
+    "code": "BIL-03",
+    "name": "Billing",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 14,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-04",
+    "code": "BM-04",
+    "name": "Bio Medical",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 8,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-05",
+    "code": "BB-05",
+    "name": "Blood Bank",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 8,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-06",
+    "code": "CSS-06",
+    "name": "CSSD",
+    "categoryName": "Nursing Staff",
+    "employeeCount": 5,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-07",
+    "code": "CAR-07",
+    "name": "Cardiology",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 10,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-08",
+    "code": "CS-08",
+    "name": "Cardiothoracic Surgery",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 2,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-09",
+    "code": "CL-09",
+    "name": "Central Laboratory",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 54,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-10",
+    "code": "DER-10",
+    "name": "Dermatology",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 4,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-11",
+    "code": "DIE-11",
+    "name": "Dietetics",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 2,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-12",
+    "code": "ELE-12",
+    "name": "Electrical",
+    "categoryName": "Housekeeping & Maintenance",
+    "employeeCount": 27,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-13",
+    "code": "EME-13",
+    "name": "Emergency",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 23,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-14",
+    "code": "ETC-14",
+    "name": "Emergency & Trauma Care",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 1,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-15",
+    "code": "FMS-15",
+    "name": "Facility Management & Safety",
+    "categoryName": "Housekeeping & Maintenance",
+    "employeeCount": 1,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-16",
+    "code": "GAS-16",
+    "name": "Gastroenterology",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 1,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-17",
+    "code": "GM-17",
+    "name": "General Medicine",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 18,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-18",
+    "code": "GS-18",
+    "name": "General Surgery",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 18,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-19",
+    "code": "GC-19",
+    "name": "Gummidipoondi Centre",
+    "categoryName": "Nursing Staff",
+    "employeeCount": 4,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-20",
+    "code": "HK-20",
+    "name": "House Keeping",
+    "categoryName": "Housekeeping & Maintenance",
+    "employeeCount": 81,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-21",
+    "code": "HR-21",
+    "name": "Human Resources",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 5,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-22",
+    "code": "ICU-22",
+    "name": "ICU",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 19,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-23",
+    "code": "IT-23",
+    "name": "Information Technology",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 9,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-24",
+    "code": "LAU-24",
+    "name": "Laundry",
+    "categoryName": "Housekeeping & Maintenance",
+    "employeeCount": 15,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-25",
+    "code": "MAI-25",
+    "name": "Maintenance",
+    "categoryName": "Housekeeping & Maintenance",
+    "employeeCount": 43,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-26",
+    "code": "MAR-26",
+    "name": "Marketing",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 7,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-27",
+    "code": "MO-27",
+    "name": "Medical Oncology",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 1,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-28",
+    "code": "MRD-28",
+    "name": "Medical Record Department",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 6,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-29",
+    "code": "NEP-29",
+    "name": "Nephrology (DIALYSIS)",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 25,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-30",
+    "code": "NEU-30",
+    "name": "Neurosurgery",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 1,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-31",
+    "code": "NUR-31",
+    "name": "Nursing",
+    "categoryName": "Nursing Staff",
+    "employeeCount": 333,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-32",
+    "code": "OAG-32",
+    "name": "Obstetrics and Gynaecology",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 13,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-33",
+    "code": "OPE-33",
+    "name": "Operation",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 2,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-34",
+    "code": "OT-34",
+    "name": "Operation Theatre",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 12,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-35",
+    "code": "OPE-35",
+    "name": "Operations",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 60,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-36",
+    "code": "OPH-36",
+    "name": "Ophthalmology",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 33,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-37",
+    "code": "ORT-37",
+    "name": "Orthopaedics",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 13,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-38",
+    "code": "OTO-38",
+    "name": "Otorhinolaryngology",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 9,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-39",
+    "code": "PAE-39",
+    "name": "Paediatrics",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 12,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-40",
+    "code": "PAT-40",
+    "name": "Pathology",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 2,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-41",
+    "code": "PHA-41",
+    "name": "Pharmacy",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 16,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-42",
+    "code": "PS-42",
+    "name": "Plastic Surgery",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 2,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-43",
+    "code": "PSY-43",
+    "name": "Psychiatry",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 5,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-44",
+    "code": "PS-44",
+    "name": "Purchase & Store",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 4,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-45",
+    "code": "QUA-45",
+    "name": "Quality",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 5,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-46",
+    "code": "RAD-46",
+    "name": "Radiology",
+    "categoryName": "Allied Health Sciences",
+    "employeeCount": 32,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-47",
+    "code": "SAF-47",
+    "name": "Safety",
+    "categoryName": "Housekeeping & Maintenance",
+    "employeeCount": 1,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-48",
+    "code": "SW-48",
+    "name": "Special Ward",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 5,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-49",
+    "code": "TAD-49",
+    "name": "Training and Development",
+    "categoryName": "Nursing Staff",
+    "employeeCount": 2,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-50",
+    "code": "TMB-50",
+    "name": "Transfusion Medicine & Bloodbank",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 1,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-51",
+    "code": "TRA-51",
+    "name": "Transport",
+    "categoryName": "Housekeeping & Maintenance",
+    "employeeCount": 20,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-52",
+    "code": "TAC-52",
+    "name": "Tuberculosis and Chest",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 1,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-53",
+    "code": "URO-53",
+    "name": "Urology",
+    "categoryName": "Medical / Clinical",
+    "employeeCount": 2,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  },
+  {
+    "id": "dept-54",
+    "code": "UC-54",
+    "name": "Uthiramerur Center",
+    "categoryName": "Administrative & Support",
+    "employeeCount": 22,
+    "active": true,
+    "updatedAt": "2026-11-20"
+  }
+]

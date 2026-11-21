@@ -28,6 +28,8 @@ import {
   X,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
+import { useAuth } from '../../context/AuthContext';
+import { UserRole } from '../../types';
 
 interface SidebarProps {
   isMobileOpen: boolean;
@@ -42,12 +44,14 @@ interface NavItem {
   icon: React.ElementType;
   badge?: number | string;
   badgeVariant?: 'maroon' | 'amber' | 'blue';
+  allowedRoles?: UserRole[];
 }
 
 interface NavSection {
   title: string;
   key: string;
   icon: React.ElementType;
+  allowedRoles?: UserRole[];
   items: NavItem[];
 }
 
@@ -56,6 +60,8 @@ export const AppSidebar: React.FC<SidebarProps> = ({
   onMobileClose,
   isCollapsed,
 }) => {
+  const { currentUser } = useAuth();
+
   // Collapsible section state
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     employees: true,
@@ -77,7 +83,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
       items: [
         { title: 'Employee List', path: '/employees', icon: Users },
         { title: 'Import Employees', path: '/employees/import', icon: UserPlus },
-        { title: 'Employee Categories', path: '/employees/categories', icon: Layers },
+        { title: 'Staff Designations', path: '/employees/designations', icon: Layers },
         { title: 'Department Mgmt', path: '/employees/departments', icon: Building2 },
       ],
     },
@@ -96,17 +102,8 @@ export const AppSidebar: React.FC<SidebarProps> = ({
       key: 'campaigns',
       icon: Send,
       items: [
-        { title: 'Create Campaign', path: '/campaigns/create', icon: Send },
-        { title: 'Draft Campaigns', path: '/campaigns/drafts', icon: FileEdit, badge: 1 },
-        { title: 'Schedule Campaigns', path: '/campaigns/scheduled', icon: CalendarClock },
-        { title: 'Campaign History', path: '/campaigns/history', icon: History },
-        {
-          title: 'Campaign Approval',
-          path: '/campaigns/approvals',
-          icon: CheckSquare,
-          badge: 1,
-          badgeVariant: 'maroon',
-        },
+        { title: 'Create Broadcast', path: '/campaigns/create', icon: Send },
+        { title: 'Broadcast History', path: '/campaigns/history', icon: History },
       ],
     },
     {
@@ -115,29 +112,29 @@ export const AppSidebar: React.FC<SidebarProps> = ({
       icon: BarChart3,
       items: [
         { title: 'Delivery Reports', path: '/reports/delivery', icon: BarChart3 },
-        { title: 'Campaign Analytics', path: '/reports/analytics', icon: TrendingUp },
-        {
-          title: 'Failed Messages',
-          path: '/reports/failed',
-          icon: AlertOctagon,
-          badge: 5,
-          badgeVariant: 'amber',
-        },
-        { title: 'Export Reports', path: '/reports/export', icon: DownloadCloud },
       ],
     },
     {
       title: 'Administration',
       key: 'admin',
       icon: ShieldAlert,
+      allowedRoles: ['Super Admin'],
       items: [
-        { title: 'Users & Roles', path: '/admin/users', icon: ShieldAlert },
-        { title: 'WATI Integration', path: '/admin/wati', icon: Radio },
-        { title: 'Audit Logs', path: '/admin/audit', icon: FileSearch },
-        { title: 'Consent & Opt-Outs', path: '/admin/consent', icon: UserCheck },
+        { title: 'Users & Roles', path: '/admin/users', icon: ShieldAlert, allowedRoles: ['Super Admin'] },
+        { title: 'WATI Integration', path: '/admin/wati', icon: Radio, allowedRoles: ['Super Admin'] },
+        { title: 'Audit Logs', path: '/admin/audit', icon: FileSearch, allowedRoles: ['Super Admin'] },
+        { title: 'Consent & Opt-Outs', path: '/admin/consent', icon: UserCheck, allowedRoles: ['Super Admin'] },
       ],
     },
   ];
+
+  const visibleSections = sections
+    .filter((s) => !s.allowedRoles || s.allowedRoles.includes(currentUser.role))
+    .map((s) => ({
+      ...s,
+      items: s.items.filter((item) => !item.allowedRoles || item.allowedRoles.includes(currentUser.role)),
+    }))
+    .filter((s) => s.items.length > 0);
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-[#1b2d50] text-slate-200 select-none">
@@ -190,7 +187,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* 5 Grouped Modules */}
-        {sections.map((section) => {
+        {visibleSections.map((section) => {
           const isOpen = openSections[section.key] ?? true;
           return (
             <div key={section.key} className="space-y-1">

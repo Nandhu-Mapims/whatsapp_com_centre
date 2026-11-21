@@ -22,8 +22,8 @@ import {
 import { PageHeader } from '../../components/common/PageHeader';
 import { StatusBadge } from '../../components/common/StatusBadge';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
-import { mockEmployees, mockCategories, mockDepartments } from '../../data/mockData';
-import { Employee } from '../../types';
+import { mockEmployees, mockDepartments, mockDesignations } from '../../data/mockData';
+import { Employee, StaffDesignation } from '../../types';
 import { useToast } from '../../context/ToastContext';
 
 export const EmployeeListPage: React.FC = () => {
@@ -32,10 +32,108 @@ export const EmployeeListPage: React.FC = () => {
 
   const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('ALL');
+  const [cadreFilter, setCadreFilter] = useState<'ALL' | 'Teaching' | 'Non-Teaching'>('ALL');
   const [departmentFilter, setDepartmentFilter] = useState('ALL');
+  const [designationFilter, setDesignationFilter] = useState('ALL');
   const [consentFilter, setConsentFilter] = useState('ALL');
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 50;
+
+  // Live master designations synchronized with backend API and local storage
+  const [customStoredDesignations, setCustomStoredDesignations] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem('aph_custom_designations');
+      return raw ? JSON.parse(raw) : ['HOD'];
+    } catch {
+      return ['HOD'];
+    }
+  });
+
+  const [designationsList, setDesignationsList] = useState<StaffDesignation[]>(mockDesignations);
+
+  const loadDesignations = () => {
+    try {
+      const raw = localStorage.getItem('aph_custom_designations');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setCustomStoredDesignations(parsed);
+        }
+      }
+    } catch {}
+
+    fetch('/api/designations')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setDesignationsList(json.data);
+        }
+      })
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    loadDesignations();
+    window.addEventListener('aph:designations_updated', loadDesignations);
+    window.addEventListener('storage', loadDesignations);
+    return () => {
+      window.removeEventListener('aph:designations_updated', loadDesignations);
+      window.removeEventListener('storage', loadDesignations);
+    };
+  }, []);
+
+  // Grouped designations for Add/Edit dropdown (always includes custom designations)
+  const teachingDesignations = React.useMemo(() => {
+    const list = designationsList
+      .filter((d) => d.cadre === 'Teaching' || d.cadre === 'Both')
+      .map((d) => d.name);
+    customStoredDesignations.forEach((name) => {
+      if (!list.includes(name)) list.push(name);
+    });
+    return Array.from(new Set(list)).sort();
+  }, [designationsList, customStoredDesignations]);
+
+  const nonTeachingDesignations = React.useMemo(() => {
+    const list = designationsList
+      .filter((d) => d.cadre === 'Non-Teaching' || d.cadre === 'Both')
+      .map((d) => d.name);
+    customStoredDesignations.forEach((name) => {
+      if (!list.includes(name)) list.push(name);
+    });
+    return Array.from(new Set(list)).sort();
+  }, [designationsList, customStoredDesignations]);
+
+  // Available designations based on active cadre & department filters
+  const availableDesignations = React.useMemo(() => {
+    const set = new Set<string>();
+    designationsList.forEach((d) => {
+      const matchCadre =
+        cadreFilter === 'ALL' ||
+        (cadreFilter === 'Teaching'
+          ? d.cadre === 'Teaching' || d.cadre === 'Both'
+          : d.cadre === 'Non-Teaching' || d.cadre === 'Both');
+      if (matchCadre) {
+        set.add(d.name);
+      }
+    });
+    employees.forEach((emp) => {
+      const matchCadre =
+        cadreFilter === 'ALL' ||
+        (cadreFilter === 'Teaching' ? emp.staffType === 'Teaching' : emp.staffType === 'Non-Teaching');
+      const matchDept = departmentFilter === 'ALL' || emp.department === departmentFilter;
+      if (matchCadre && matchDept && emp.designation) {
+        set.add(emp.designation);
+      }
+    });
+    return Array.from(set).sort();
+  }, [designationsList, employees, cadreFilter, departmentFilter]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, cadreFilter, departmentFilter, designationFilter, consentFilter]);
 
   // Bulk Import Modal States
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -173,7 +271,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
   // Form states for Add/Edit
   const [formId, setFormId] = useState('');
   const [formName, setFormName] = useState('');
-  const [formCategory, setFormCategory] = useState(mockCategories[0].name);
+  const [formCadre, setFormCadre] = useState<'Teaching' | 'Non-Teaching'>('Teaching');
   const [formDepartment, setFormDepartment] = useState(mockDepartments[0].name);
   const [formDesignation, setFormDesignation] = useState('');
   const [formPhone, setFormPhone] = useState('');
@@ -186,11 +284,14 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
       emp.employeeId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       emp.whatsappNumber.includes(searchTerm);
 
-    const matchesCategory = categoryFilter === 'ALL' || emp.category === categoryFilter;
+    const matchesCadre =
+      cadreFilter === 'ALL' ||
+      (cadreFilter === 'Teaching' ? emp.staffType === 'Teaching' : emp.staffType === 'Non-Teaching');
     const matchesDepartment = departmentFilter === 'ALL' || emp.department === departmentFilter;
+    const matchesDesignation = designationFilter === 'ALL' || emp.designation === designationFilter;
     const matchesConsent = consentFilter === 'ALL' || emp.consentStatus === consentFilter;
 
-    return matchesSearch && matchesCategory && matchesDepartment && matchesConsent;
+    return matchesSearch && matchesCadre && matchesDepartment && matchesDesignation && matchesConsent;
   });
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -211,9 +312,9 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
     setEditingEmployee(null);
     setFormId(`MAP-${Math.floor(1000 + Math.random() * 9000)}`);
     setFormName('');
-    setFormCategory(mockCategories[0].name);
+    setFormCadre('Teaching');
     setFormDepartment(mockDepartments[0].name);
-    setFormDesignation('');
+    setFormDesignation(mockDesignations[0]?.name || 'Staff Nurse');
     setFormPhone('+91');
     setFormConsent('Opted-In');
     setIsDrawerOpen(true);
@@ -223,7 +324,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
     setEditingEmployee(emp);
     setFormId(emp.employeeId);
     setFormName(emp.name);
-    setFormCategory(emp.category);
+    setFormCadre(emp.staffType === 'Teaching' ? 'Teaching' : 'Non-Teaching');
     setFormDepartment(emp.department);
     setFormDesignation(emp.designation);
     setFormPhone(emp.whatsappNumber);
@@ -251,7 +352,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
             ? {
                 ...emp,
                 name: formName,
-                category: formCategory,
+                staffType: formCadre,
                 department: formDepartment,
                 designation: formDesignation,
                 whatsappNumber: formPhone,
@@ -268,7 +369,8 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
         id: `emp-${Date.now()}`,
         employeeId: formId,
         name: formName,
-        category: formCategory,
+        staffType: formCadre,
+        category: formCadre === 'Teaching' ? 'Medical / Clinical' : 'Hospital Staff',
         department: formDepartment,
         designation: formDesignation,
         whatsappNumber: formPhone,
@@ -379,7 +481,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
 
       {/* Filter Bar */}
       <div className="bg-white rounded-xl p-4 border border-slate-200/80 shadow-xs space-y-3">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {/* Search Input */}
           <div className="relative">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
@@ -392,17 +494,30 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
             />
           </div>
 
-          {/* Category Filter */}
+          {/* Cadre Filter (Teaching vs Non-Teaching) */}
           <div>
             <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              value={cadreFilter}
+              onChange={(e) => setCadreFilter(e.target.value as any)}
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
             >
-              <option value="ALL">All Categories</option>
-              {mockCategories.map((c) => (
-                <option key={c.id} value={c.name}>
-                  {c.name}
+              <option value="ALL">All Cadres (Teaching & Non-Teaching)</option>
+              <option value="Teaching">Teaching Faculty ({employees.filter(e => e.staffType === 'Teaching').length})</option>
+              <option value="Non-Teaching">Non-Teaching Staff ({employees.filter(e => e.staffType === 'Non-Teaching').length})</option>
+            </select>
+          </div>
+
+          {/* Designation Filter */}
+          <div>
+            <select
+              value={designationFilter}
+              onChange={(e) => setDesignationFilter(e.target.value)}
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+            >
+              <option value="ALL">All Designations ({availableDesignations.length})</option>
+              {availableDesignations.map((d) => (
+                <option key={d} value={d}>
+                  {d}
                 </option>
               ))}
             </select>
@@ -476,8 +591,9 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                   />
                 </th>
                 <th className="py-3 px-3">Emp ID</th>
-                <th className="py-3 px-3">Name & Designation</th>
-                <th className="py-3 px-3">Department & Category</th>
+                <th className="py-3 px-3">Name & Cadre</th>
+                <th className="py-3 px-3">Department</th>
+                <th className="py-3 px-3">Designation</th>
                 <th className="py-3 px-3">WhatsApp Number</th>
                 <th className="py-3 px-3">Consent Status</th>
                 <th className="py-3 px-3">Status</th>
@@ -492,7 +608,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                   </td>
                 </tr>
               ) : (
-                filteredEmployees.map((emp) => (
+                filteredEmployees.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((emp) => (
                   <tr
                     key={emp.id}
                     className={`hover:bg-slate-50/80 transition-colors ${
@@ -512,11 +628,21 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                     </td>
                     <td className="py-3 px-3">
                       <div className="font-semibold text-slate-900">{emp.name}</div>
-                      <div className="text-[11px] text-slate-500">{emp.designation}</div>
+                      <span className={`inline-block px-1.5 py-0.5 text-[10px] font-bold rounded mt-0.5 ${
+                        emp.staffType === 'Teaching'
+                          ? 'bg-purple-100 text-purple-700 border border-purple-200'
+                          : 'bg-slate-100 text-slate-600 border border-slate-200'
+                      }`}>
+                        {emp.staffType || 'Staff'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3 font-medium text-slate-800">
+                      {emp.department}
                     </td>
                     <td className="py-3 px-3">
-                      <div className="font-medium text-slate-800">{emp.department}</div>
-                      <div className="text-[11px] text-slate-400">{emp.category}</div>
+                      <span className="inline-block px-2 py-0.5 font-bold text-slate-900 bg-slate-50 border border-slate-200 rounded text-[11px]">
+                        {emp.designation}
+                      </span>
                     </td>
                     <td className="py-3 px-3 font-mono text-slate-700">
                       <span className="inline-flex items-center gap-1.5">
@@ -564,6 +690,34 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Pagination Bar */}
+        <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 bg-slate-50/50">
+          <div>
+            Showing <span className="font-semibold text-slate-700">{filteredEmployees.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}</span> to{' '}
+            <span className="font-semibold text-slate-700">{Math.min(currentPage * pageSize, filteredEmployees.length)}</span> of{' '}
+            <span className="font-semibold text-slate-700">{filteredEmployees.length}</span> staff members
+          </div>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-2.5 py-1.5 bg-white border border-slate-200 rounded-md hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-slate-700 shadow-2xs"
+            >
+              Previous
+            </button>
+            <span className="px-2 font-medium text-slate-600">
+              Page {currentPage} of {Math.max(1, Math.ceil(filteredEmployees.length / pageSize))}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(Math.ceil(filteredEmployees.length / pageSize), p + 1))}
+              disabled={currentPage >= Math.ceil(filteredEmployees.length / pageSize) || filteredEmployees.length === 0}
+              className="px-2.5 py-1.5 bg-white border border-slate-200 rounded-md hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-slate-700 shadow-2xs"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
 
@@ -624,18 +778,15 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
 
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">
-                  Employee Category *
+                  Faculty / Staff Cadre *
                 </label>
                 <select
-                  value={formCategory}
-                  onChange={(e) => setFormCategory(e.target.value)}
+                  value={formCadre}
+                  onChange={(e) => setFormCadre(e.target.value as any)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
                 >
-                  {mockCategories.map((c) => (
-                    <option key={c.id} value={c.name}>
-                      {c.name}
-                    </option>
-                  ))}
+                  <option value="Teaching">Teaching Faculty (Clinical Doctors / Professors)</option>
+                  <option value="Non-Teaching">Non-Teaching Staff (Nursing / Allied / Admin)</option>
                 </select>
               </div>
 
@@ -660,14 +811,43 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                 <label className="block font-semibold text-slate-700 mb-1">
                   Hospital Designation *
                 </label>
-                <input
-                  type="text"
+                <select
                   required
-                  placeholder="e.g. Senior Consultant - Emergency Medicine"
                   value={formDesignation}
                   onChange={(e) => setFormDesignation(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
-                />
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67] bg-white text-xs font-medium"
+                >
+                  <option value="" disabled>Select Designation...</option>
+                  {customStoredDesignations.length > 0 && (
+                    <optgroup label="── Newly Registered Master Designations ──">
+                      {customStoredDesignations.map((d) => (
+                        <option key={`custom-${d}`} value={d}>
+                          ★ {d}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
+                  {formDesignation &&
+                    !teachingDesignations.includes(formDesignation) &&
+                    !nonTeachingDesignations.includes(formDesignation) &&
+                    !customStoredDesignations.includes(formDesignation) && (
+                      <option value={formDesignation}>{formDesignation}</option>
+                    )}
+                  <optgroup label="── Teaching Faculty Roles ──">
+                    {teachingDesignations.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="── Non-Teaching Staff Roles ──">
+                    {nonTeachingDesignations.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
               </div>
 
               <div>

@@ -18,8 +18,8 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
     // For demo/development mode, if token is omitted, provide mock Super Admin user
     req.user = {
       id: 'u-1',
-      name: 'Dr. S. Sundararajan',
-      email: 'medical.director@mapims.org',
+      name: 'Super Admin',
+      email: 'superadmin@mapims.org',
       role: 'Super Admin',
     };
     return next();

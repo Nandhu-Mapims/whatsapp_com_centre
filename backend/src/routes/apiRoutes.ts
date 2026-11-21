@@ -6,8 +6,11 @@ import {
   getEmployees,
   createEmployee,
   bulkImportEmployees,
+  getDesignations,
+  createDesignation,
   getCampaigns,
   createCampaign,
+  testSendTemplate,
   approveCampaign,
   rejectCampaign,
   handleWatiWebhook,
@@ -15,6 +18,7 @@ import {
   getTemplates,
   createTemplate,
   syncTemplates,
+  updateEmployeePhone,
 } from '../controllers/apiController.js';
 
 const router = Router();
@@ -27,6 +31,11 @@ router.get('/auth/me', authenticate, getMe);
 router.get('/employees', authenticate, getEmployees);
 router.post('/employees', authenticate, requireRole('Super Admin', 'Admin'), createEmployee);
 router.post('/employees/bulk', authenticate, requireRole('Super Admin', 'Admin'), bulkImportEmployees);
+router.patch('/employees/phone', authenticate, updateEmployeePhone);
+
+// Designation routes
+router.get('/designations', authenticate, getDesignations);
+router.post('/designations', authenticate, requireRole('Super Admin', 'Admin'), createDesignation);
 
 // Campaign routes
 router.get('/campaigns', authenticate, getCampaigns);
@@ -35,6 +44,12 @@ router.post(
   authenticate,
   requireRole('Super Admin', 'Admin', 'Campaign Creator'),
   createCampaign
+);
+router.post(
+  '/campaigns/test-send',
+  authenticate,
+  requireRole('Super Admin', 'Admin'),
+  testSendTemplate
 );
 router.post(
   '/campaigns/:id/approve',
@@ -54,7 +69,7 @@ router.get('/templates', authenticate, getTemplates);
 router.post(
   '/templates',
   authenticate,
-  requireRole('Super Admin', 'Admin', 'Campaign Creator'),
+  requireRole('Super Admin'),
   createTemplate
 );
 router.post(
@@ -67,7 +82,7 @@ router.post(
 // WATI Webhook callback route (called by WATI servers, unauthenticated by JWT but verified by payload)
 router.post('/wati/webhook', handleWatiWebhook);
 
-// Audit logs
-router.get('/audit', authenticate, requireRole('Super Admin', 'Admin'), getAuditLogs);
+// Audit logs (Super Admin alone)
+router.get('/audit', authenticate, requireRole('Super Admin'), getAuditLogs);
 
 export default router;
