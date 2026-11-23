@@ -53,7 +53,7 @@ export const CampaignHistoryPage: React.FC = () => {
       >
         <button
           onClick={() => navigate('/campaigns/create')}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>New Broadcast</span>
@@ -78,14 +78,14 @@ export const CampaignHistoryPage: React.FC = () => {
                 placeholder="Search by title, ID, template..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             >
               <option value="ALL">All Statuses</option>
               <option value="Completed">Completed</option>
@@ -125,7 +125,7 @@ export const CampaignHistoryPage: React.FC = () => {
                     <div className="font-medium text-slate-800">{cmp.categoryScope}</div>
                     <div className="text-[11px] text-slate-400 truncate">{cmp.departmentScope}</div>
                     {cmp.designationScope && cmp.designationScope !== 'ALL' && (
-                      <div className="text-[10px] text-[#243B67] font-semibold truncate">
+                      <div className="text-[10px] text-[#1E3A8A] font-semibold truncate">
                         🎯 {cmp.designationScope}
                       </div>
                     )}
@@ -144,7 +144,7 @@ export const CampaignHistoryPage: React.FC = () => {
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => navigate(`/reports/delivery?campaignId=${cmp.id || cmp.campaignId}`)}
-                        className="px-2.5 py-1 bg-blue-50 hover:bg-[#243B67] text-[#243B67] hover:text-white rounded font-semibold transition-colors flex items-center gap-1 border border-blue-200"
+                        className="px-2.5 py-1 bg-blue-50 hover:bg-[#1E3A8A] text-[#1E3A8A] hover:text-white rounded font-semibold transition-colors flex items-center gap-1 border border-blue-200"
                         title="View Delivery Report for this Campaign"
                       >
                         <BarChart3 className="w-3.5 h-3.5" />
@@ -200,14 +200,14 @@ export const CampaignHistoryPage: React.FC = () => {
               {/* Quick Action: View Delivery Report */}
               <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-xl flex items-center justify-between gap-3">
                 <div>
-                  <div className="font-bold text-[#243B67] text-xs">Campaign Delivery Breakdown</div>
+                  <div className="font-bold text-[#1E3A8A] text-xs">Campaign Delivery Breakdown</div>
                   <div className="text-[11px] text-slate-500">
                     Inspect individual recipient delivery states (Sent → Delivered → Read).
                   </div>
                 </div>
                 <button
                   onClick={() => navigate(`/reports/delivery?campaignId=${selectedCampaign.id || selectedCampaign.campaignId}`)}
-                  className="px-3 py-1.5 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold text-xs flex items-center gap-1.5 shadow-2xs transition-colors shrink-0"
+                  className="px-3 py-1.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold text-xs flex items-center gap-1.5 shadow-2xs transition-colors shrink-0"
                 >
                   <BarChart3 className="w-3.5 h-3.5" />
                   <span>View Delivery Report</span>
@@ -302,7 +302,7 @@ export const CampaignHistoryPage: React.FC = () => {
                     <span className="text-slate-400 font-medium block">Substituted Parameters:</span>
                     {Object.entries(selectedCampaign.templateVariables).map(([k, v]) => (
                       <div key={k} className="flex justify-between text-[11px]">
-                        <span className="font-mono font-bold text-[#243B67]">{`{{${k}}}`}:</span>
+                        <span className="font-mono font-bold text-[#1E3A8A]">{`{{${k}}}`}:</span>
                         <span className="text-slate-800 font-medium">{v}</span>
                       </div>
                     ))}

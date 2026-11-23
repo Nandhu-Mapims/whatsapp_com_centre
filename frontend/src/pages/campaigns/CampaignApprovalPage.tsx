@@ -159,7 +159,7 @@ export const CampaignApprovalPage: React.FC = () => {
               }}
               className={`px-4 py-1.5 rounded-md transition-colors ${
                 activeTab === tab
-                  ? 'bg-white shadow-2xs font-bold text-[#243B67]'
+                  ? 'bg-white shadow-2xs font-bold text-[#1E3A8A]'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -176,7 +176,7 @@ export const CampaignApprovalPage: React.FC = () => {
             placeholder="Search by title, requester, ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
           />
         </div>
       </div>
@@ -214,7 +214,7 @@ export const CampaignApprovalPage: React.FC = () => {
                       <tr
                         key={cmp.id}
                         className={`hover:bg-slate-50/80 transition-colors ${
-                          reviewCampaign?.id === cmp.id ? 'bg-[#243B67]/5' : ''
+                          reviewCampaign?.id === cmp.id ? 'bg-[#1E3A8A]/5' : ''
                         }`}
                       >
                         <td className="py-3 px-4">
@@ -233,7 +233,7 @@ export const CampaignApprovalPage: React.FC = () => {
                         </td>
                         <td className="py-3 px-4 font-bold text-slate-800">
                           <span className="flex items-center gap-1.5">
-                            <Users className="w-3.5 h-3.5 text-[#243B67]" />
+                            <Users className="w-3.5 h-3.5 text-[#1E3A8A]" />
                             {cmp.selectedRecipientsCount}
                           </span>
                         </td>
@@ -243,7 +243,7 @@ export const CampaignApprovalPage: React.FC = () => {
                         <td className="py-3 px-4 text-right">
                           <button
                             onClick={() => setReviewCampaign(cmp)}
-                            className="px-3 py-1.5 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded font-semibold transition-colors flex items-center gap-1 ml-auto"
+                            className="px-3 py-1.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded font-semibold transition-colors flex items-center gap-1 ml-auto"
                           >
                             <Eye className="w-3.5 h-3.5" /> Review
                           </button>
@@ -321,7 +321,7 @@ export const CampaignApprovalPage: React.FC = () => {
             {/* WhatsApp Preview in Review */}
             <div className="space-y-2">
               <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
-                <Smartphone className="w-4 h-4 text-[#243B67]" />
+                <Smartphone className="w-4 h-4 text-[#1E3A8A]" />
                 Live Message Layout
               </h4>
               <div className="p-3 bg-slate-100/70 rounded-2xl flex justify-center border border-slate-200">

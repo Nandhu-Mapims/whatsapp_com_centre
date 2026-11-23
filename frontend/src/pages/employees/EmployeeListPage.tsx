@@ -434,7 +434,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
         </button>
         <button
           onClick={handleOpenAddDrawer}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>Add Employee</span>
@@ -448,7 +448,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
             <p className="text-[11px] text-slate-500 uppercase font-semibold">Total Filtered</p>
             <h4 className="text-xl font-bold text-slate-900 mt-0.5">{filteredEmployees.length}</h4>
           </div>
-          <Users className="w-6 h-6 text-[#243B67] opacity-40" />
+          <Users className="w-6 h-6 text-[#1E3A8A] opacity-40" />
         </div>
         <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between">
           <div>
@@ -490,7 +490,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
               placeholder="Search by ID, name, or phone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             />
           </div>
 
@@ -499,7 +499,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
             <select
               value={cadreFilter}
               onChange={(e) => setCadreFilter(e.target.value as any)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             >
               <option value="ALL">All Cadres (Teaching & Non-Teaching)</option>
               <option value="Teaching">Teaching Faculty ({employees.filter(e => e.staffType === 'Teaching').length})</option>
@@ -512,7 +512,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
             <select
               value={designationFilter}
               onChange={(e) => setDesignationFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             >
               <option value="ALL">All Designations ({availableDesignations.length})</option>
               {availableDesignations.map((d) => (
@@ -528,7 +528,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
             <select
               value={departmentFilter}
               onChange={(e) => setDepartmentFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             >
               <option value="ALL">All Departments</option>
               {mockDepartments.map((d) => (
@@ -544,7 +544,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
             <select
               value={consentFilter}
               onChange={(e) => setConsentFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             >
               <option value="ALL">All Consent Statuses</option>
               <option value="Opted-In">Opted-In (Consented)</option>
@@ -587,7 +587,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                       selectedEmployees.length === filteredEmployees.length &&
                       filteredEmployees.length > 0
                     }
-                    className="rounded border-slate-300 text-[#243B67] focus:ring-[#243B67]"
+                    className="rounded border-slate-300 text-[#1E3A8A] focus:ring-[#1E3A8A]"
                   />
                 </th>
                 <th className="py-3 px-3">Emp ID</th>
@@ -612,7 +612,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                   <tr
                     key={emp.id}
                     className={`hover:bg-slate-50/80 transition-colors ${
-                      selectedEmployees.includes(emp.id) ? 'bg-[#243B67]/5' : ''
+                      selectedEmployees.includes(emp.id) ? 'bg-[#1E3A8A]/5' : ''
                     }`}
                   >
                     <td className="py-3 px-4">
@@ -620,7 +620,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                         type="checkbox"
                         checked={selectedEmployees.includes(emp.id)}
                         onChange={() => handleSelectOne(emp.id)}
-                        className="rounded border-slate-300 text-[#243B67] focus:ring-[#243B67]"
+                        className="rounded border-slate-300 text-[#1E3A8A] focus:ring-[#1E3A8A]"
                       />
                     </td>
                     <td className="py-3 px-3 font-mono font-medium text-slate-800">
@@ -660,7 +660,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => setViewingEmployee(emp)}
-                          className="p-1.5 text-slate-500 hover:text-[#243B67] hover:bg-slate-100 rounded-md transition-colors"
+                          className="p-1.5 text-slate-500 hover:text-[#1E3A8A] hover:bg-slate-100 rounded-md transition-colors"
                           title="View Profile"
                         >
                           <Eye className="w-4 h-4" />
@@ -758,7 +758,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                   required
                   value={formId}
                   onChange={(e) => setFormId(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
               </div>
 
@@ -772,7 +772,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                   placeholder="e.g. Dr. A. Saravanan"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
               </div>
 
@@ -783,7 +783,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                 <select
                   value={formCadre}
                   onChange={(e) => setFormCadre(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 >
                   <option value="Teaching">Teaching Faculty (Clinical Doctors / Professors)</option>
                   <option value="Non-Teaching">Non-Teaching Staff (Nursing / Allied / Admin)</option>
@@ -797,7 +797,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                 <select
                   value={formDepartment}
                   onChange={(e) => setFormDepartment(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 >
                   {mockDepartments.map((d) => (
                     <option key={d.id} value={d.name}>
@@ -815,7 +815,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                   required
                   value={formDesignation}
                   onChange={(e) => setFormDesignation(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67] bg-white text-xs font-medium"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] bg-white text-xs font-medium"
                 >
                   <option value="" disabled>Select Designation...</option>
                   {customStoredDesignations.length > 0 && (
@@ -860,7 +860,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                   placeholder="+919840123456"
                   value={formPhone}
                   onChange={(e) => setFormPhone(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
                 <span className="text-[10px] text-slate-400 mt-1 block">
                   Must include country code (e.g. +91). Numbers are verified with WATI before sending.
@@ -876,7 +876,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                   onChange={(e) =>
                     setFormConsent(e.target.value as 'Opted-In' | 'Opted-Out' | 'Pending Verification')
                   }
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 >
                   <option value="Opted-In">Opted-In (Written / Portal Consent Confirmed)</option>
                   <option value="Pending Verification">Pending Verification (E-Sign requested)</option>
@@ -897,7 +897,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold shadow-xs"
+                  className="px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold shadow-xs"
                 >
                   {editingEmployee ? 'Save Changes' : 'Register Employee'}
                 </button>
@@ -917,7 +917,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
           <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-300">
             <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#243B67] text-white flex items-center justify-center font-bold text-sm">
+                <div className="w-10 h-10 rounded-full bg-[#1E3A8A] text-white flex items-center justify-center font-bold text-sm">
                   {viewingEmployee.name.charAt(0)}
                 </div>
                 <div>
@@ -991,7 +991,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                     setViewingEmployee(null);
                     handleOpenEditDrawer(emp);
                   }}
-                  className="w-full py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold transition-colors"
+                  className="w-full py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold transition-colors"
                 >
                   Edit Profile
                 </button>
@@ -1007,7 +1007,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150 space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-[#243B67]/10 text-[#243B67]">
+                <div className="p-2.5 rounded-xl bg-[#1E3A8A]/10 text-[#1E3A8A]">
                   <FileSpreadsheet className="w-5 h-5" />
                 </div>
                 <div>
@@ -1031,13 +1031,13 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
             {/* Template Download Prompt */}
             <div className="p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-2xl flex items-center justify-between text-xs">
               <div className="flex items-center gap-2 text-slate-700">
-                <FileCheck className="w-4 h-4 text-[#243B67]" />
+                <FileCheck className="w-4 h-4 text-[#1E3A8A]" />
                 <span>Need the official hospital format?</span>
               </div>
               <button
                 type="button"
                 onClick={handleDownloadSampleTemplate}
-                className="text-[#243B67] font-bold hover:underline inline-flex items-center gap-1"
+                className="text-[#1E3A8A] font-bold hover:underline inline-flex items-center gap-1"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Download Sample Template</span>
@@ -1045,7 +1045,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
             </div>
 
             {/* File Upload Box */}
-            <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-[#243B67]/50 transition-colors bg-slate-50/50">
+            <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-[#1E3A8A]/50 transition-colors bg-slate-50/50">
               <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
               <p className="text-xs font-semibold text-slate-700">
                 {importFileName ? importFileName : 'Choose file or drag and drop'}
@@ -1106,7 +1106,7 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                 type="button"
                 disabled={parsedImportRows.length === 0 || isImporting}
                 onClick={handleExecuteImport}
-                className="px-4 py-2 bg-[#243B67] hover:bg-[#1b2d50] disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-colors shadow-2xs flex items-center gap-1.5"
+                className="px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] disabled:opacity-50 text-white text-xs font-bold rounded-xl transition-colors shadow-2xs flex items-center gap-1.5"
               >
                 <Upload className="w-3.5 h-3.5" />
                 <span>{isImporting ? 'Importing...' : `Import ${parsedImportRows.length > 0 ? parsedImportRows.length : ''} Staff Records`}</span>

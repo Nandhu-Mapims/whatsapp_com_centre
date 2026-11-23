@@ -272,14 +272,14 @@ export const SimpleNavbar: React.FC = () => {
   const getBadgeStyle = (variant?: 'maroon' | 'amber' | 'blue' | 'emerald') => {
     switch (variant) {
       case 'maroon':
-        return 'bg-[#7B2846] text-white';
+        return 'bg-[#059669] text-white';
       case 'amber':
         return 'bg-amber-100 text-amber-800 border border-amber-200';
       case 'emerald':
         return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
       case 'blue':
       default:
-        return 'bg-blue-100 text-[#243B67] border border-blue-200';
+        return 'bg-blue-100 text-[#1E3A8A] border border-blue-200';
     }
   };
 
@@ -293,15 +293,19 @@ export const SimpleNavbar: React.FC = () => {
               to="/dashboard"
               className="flex items-center gap-2.5 group focus:outline-none"
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#7B2846] to-[#243B67] flex items-center justify-center text-white shadow-xs ring-1 ring-black/5 group-hover:scale-105 transition-transform">
-                <Hospital className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow-xs border border-slate-200/90 group-hover:scale-105 transition-transform shrink-0">
+                <img
+                  src="/mapims-logo.png"
+                  alt="MAPIMS Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5 leading-none">
                   <span className="font-extrabold text-sm tracking-tight text-slate-900">
                     APH Connect
                   </span>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[#243B67]/10 text-[#243B67] rounded-md border border-[#243B67]/20">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[#1E3A8A]/10 text-[#1E3A8A] rounded-md border border-[#1E3A8A]/20">
                     MAPIMS
                   </span>
                 </div>
@@ -325,7 +329,7 @@ export const SimpleNavbar: React.FC = () => {
                 cn(
                   'px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5',
                   isActive
-                    ? 'bg-[#243B67] text-white shadow-xs font-bold'
+                    ? 'bg-[#1E3A8A] text-white shadow-xs font-bold'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
                 )
               }
@@ -347,7 +351,7 @@ export const SimpleNavbar: React.FC = () => {
                     className={cn(
                       'px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1 focus:outline-none',
                       isSectionActive
-                        ? 'bg-[#243B67]/10 text-[#243B67] font-bold'
+                        ? 'bg-[#1E3A8A]/10 text-[#1E3A8A] font-bold'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80',
                       isOpen && 'bg-slate-100 text-slate-900'
                     )}
@@ -383,7 +387,7 @@ export const SimpleNavbar: React.FC = () => {
                               className={cn(
                                 'flex items-start gap-3 p-2.5 rounded-xl transition-all group',
                                 isItemActive
-                                  ? 'bg-[#243B67]/10 text-[#243B67]'
+                                  ? 'bg-[#1E3A8A]/10 text-[#1E3A8A]'
                                   : 'hover:bg-slate-50 text-slate-700'
                               )}
                             >
@@ -391,8 +395,8 @@ export const SimpleNavbar: React.FC = () => {
                                 className={cn(
                                   'p-2 rounded-lg shrink-0 mt-0.5 transition-colors',
                                   isItemActive
-                                    ? 'bg-[#243B67] text-white'
-                                    : 'bg-slate-100 text-slate-600 group-hover:bg-[#243B67] group-hover:text-white'
+                                    ? 'bg-[#1E3A8A] text-white'
+                                    : 'bg-slate-100 text-slate-600 group-hover:bg-[#1E3A8A] group-hover:text-white'
                                 )}
                               >
                                 <item.icon className="w-4 h-4" />
@@ -403,8 +407,8 @@ export const SimpleNavbar: React.FC = () => {
                                     className={cn(
                                       'text-xs font-bold truncate',
                                       isItemActive
-                                        ? 'text-[#243B67]'
-                                        : 'text-slate-900 group-hover:text-[#243B67]'
+                                        ? 'text-[#1E3A8A]'
+                                        : 'text-slate-900 group-hover:text-[#1E3A8A]'
                                     )}
                                   >
                                     {item.title}
@@ -445,9 +449,9 @@ export const SimpleNavbar: React.FC = () => {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/90 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors shadow-2xs"
                 title="Switch User Role to test RBAC"
               >
-                <Shield className="w-3.5 h-3.5 text-[#7B2846]" />
+                <Shield className="w-3.5 h-3.5 text-[#059669]" />
                 <span className="hidden sm:inline text-slate-400 font-normal">Role:</span>
-                <span className="text-[#243B67] font-bold">{currentUser.role}</span>
+                <span className="text-[#1E3A8A] font-bold">{currentUser.role}</span>
                 <ChevronDown className="w-3 h-3 text-slate-400 ml-0.5" />
               </button>
 
@@ -470,13 +474,13 @@ export const SimpleNavbar: React.FC = () => {
                       className={cn(
                         'w-full px-3.5 py-2 text-left text-xs flex items-center justify-between hover:bg-slate-50 transition-colors',
                         currentUser.role === r
-                          ? 'font-bold text-[#243B67] bg-[#243B67]/5'
+                          ? 'font-bold text-[#1E3A8A] bg-[#1E3A8A]/5'
                           : 'text-slate-700'
                       )}
                     >
                       <span>{r}</span>
                       {currentUser.role === r && (
-                        <CheckCircle className="w-3.5 h-3.5 text-[#243B67]" />
+                        <CheckCircle className="w-3.5 h-3.5 text-[#1E3A8A]" />
                       )}
                     </button>
                   ))}
@@ -493,7 +497,7 @@ export const SimpleNavbar: React.FC = () => {
                 aria-label="Notifications"
               >
                 <Bell className="w-4 h-4" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#7B2846] ring-2 ring-white" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#059669] ring-2 ring-white" />
               </button>
 
               {showNotifications && (
@@ -542,12 +546,12 @@ export const SimpleNavbar: React.FC = () => {
             <button
               type="button"
               onClick={toggleFullscreen}
-              className="p-2 text-slate-500 hover:text-[#243B67] hover:bg-slate-100 rounded-xl transition-colors"
+              className="p-2 text-slate-500 hover:text-[#1E3A8A] hover:bg-slate-100 rounded-xl transition-colors"
               title={isFullscreen ? 'Exit Full Screen' : 'Enter Full Screen'}
               aria-label={isFullscreen ? 'Exit Full Screen' : 'Enter Full Screen'}
             >
               {isFullscreen ? (
-                <Minimize2 className="w-4 h-4 text-[#7B2846]" />
+                <Minimize2 className="w-4 h-4 text-[#059669]" />
               ) : (
                 <Maximize2 className="w-4 h-4" />
               )}
@@ -558,7 +562,7 @@ export const SimpleNavbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="w-8 h-8 rounded-full bg-gradient-to-br from-[#243B67] to-[#1b2d50] text-white flex items-center justify-center font-bold text-xs ring-2 ring-slate-100 shadow-2xs hover:ring-[#243B67]/30 transition-all focus:outline-none"
+                className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1E3A8A] to-[#172554] text-white flex items-center justify-center font-bold text-xs ring-2 ring-slate-100 shadow-2xs hover:ring-[#1E3A8A]/30 transition-all focus:outline-none"
                 title={`${currentUser.name} (${currentUser.role})`}
               >
                 {currentUser.name.charAt(0)}
@@ -642,7 +646,7 @@ export const SimpleNavbar: React.FC = () => {
                   cn(
                     'flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors',
                     isActive
-                      ? 'bg-[#243B67] text-white shadow-xs'
+                      ? 'bg-[#1E3A8A] text-white shadow-xs'
                       : 'text-slate-800 hover:bg-slate-100'
                   )
                 }
@@ -667,7 +671,7 @@ export const SimpleNavbar: React.FC = () => {
                       className={cn(
                         'flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors',
                         location.pathname === item.path
-                          ? 'bg-[#243B67]/10 text-[#243B67] font-bold'
+                          ? 'bg-[#1E3A8A]/10 text-[#1E3A8A] font-bold'
                           : 'text-slate-700 hover:bg-slate-50'
                       )}
                     >

@@ -93,7 +93,7 @@ export const DashboardPage: React.FC = () => {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="pl-8 pr-3 py-2 bg-white border border-slate-200 text-xs font-semibold rounded-xl text-slate-700 shadow-2xs hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#243B67]/20 transition-all cursor-pointer"
+              className="pl-8 pr-3 py-2 bg-white border border-slate-200 text-xs font-semibold rounded-xl text-slate-700 shadow-2xs hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/20 transition-all cursor-pointer"
             >
               <option>Today</option>
               <option>Last 7 Days</option>
@@ -148,7 +148,7 @@ export const DashboardPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <div>
                 <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-[#243B67]" />
+                  <Activity className="w-4 h-4 text-[#1E3A8A]" />
                   <span>Broadcast Volume & Delivery</span>
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
@@ -178,7 +178,7 @@ export const DashboardPage: React.FC = () => {
                     }}
                     cursor={{ fill: '#f8fafc' }}
                   />
-                  <Bar dataKey="sent" fill="#243B67" radius={[4, 4, 0, 0]} name="Submitted" />
+                  <Bar dataKey="sent" fill="#1E3A8A" radius={[4, 4, 0, 0]} name="Submitted" />
                   <Bar dataKey="delivered" fill="#10B981" radius={[4, 4, 0, 0]} name="Delivered" />
                   <Bar dataKey="failed" fill="#F43F5E" radius={[4, 4, 0, 0]} name="Failed" />
                 </BarChart>
@@ -189,7 +189,7 @@ export const DashboardPage: React.FC = () => {
           {/* Clean chart legend */}
           <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-center gap-5 text-xs text-slate-600">
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-sm bg-[#243B67]" />
+              <span className="w-2.5 h-2.5 rounded-sm bg-[#1E3A8A]" />
               <span className="font-medium">Submitted ({weeklyData.reduce((a, b) => a + b.sent, 0)})</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -209,7 +209,7 @@ export const DashboardPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <div>
                 <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#7B2846]" />
+                  <Building2 className="w-4 h-4 text-[#059669]" />
                   <span>Department Performance (%)</span>
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
@@ -218,7 +218,7 @@ export const DashboardPage: React.FC = () => {
               </div>
               <div className="flex items-center gap-2.5 text-xs">
                 <span className="flex items-center gap-1 text-slate-700 font-semibold">
-                  <span className="w-2.5 h-2.5 bg-[#243B67] rounded-xs" /> Delivered %
+                  <span className="w-2.5 h-2.5 bg-[#1E3A8A] rounded-xs" /> Delivered %
                 </span>
                 <span className="flex items-center gap-1 text-[#0284c7] font-semibold">
                   <span className="w-2.5 h-2.5 bg-[#38bdf8] rounded-xs" /> Read %
@@ -254,7 +254,7 @@ export const DashboardPage: React.FC = () => {
                     }}
                     formatter={(val: any) => [`${val}%`, '']}
                   />
-                  <Bar dataKey="delivered" fill="#243B67" radius={[4, 4, 0, 0]} name="Delivered %" />
+                  <Bar dataKey="delivered" fill="#1E3A8A" radius={[4, 4, 0, 0]} name="Delivered %" />
                   <Bar dataKey="read" fill="#38bdf8" radius={[4, 4, 0, 0]} name="Read %" />
                 </BarChart>
               </ResponsiveContainer>
@@ -263,7 +263,7 @@ export const DashboardPage: React.FC = () => {
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
             <span>Highest Read Cadre: <strong className="text-slate-800 font-bold">Emergency & Trauma (92.1%)</strong></span>
-            <Link to="/reports/delivery" className="text-xs font-bold text-[#243B67] hover:underline flex items-center gap-1">
+            <Link to="/reports/delivery" className="text-xs font-bold text-[#1E3A8A] hover:underline flex items-center gap-1">
               <span>View Recipient Telemetry</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
@@ -289,7 +289,7 @@ export const DashboardPage: React.FC = () => {
             </span>
             <Link
               to="/campaigns/history"
-              className="text-xs font-bold text-[#243B67] hover:underline flex items-center gap-1 transition-colors"
+              className="text-xs font-bold text-[#1E3A8A] hover:underline flex items-center gap-1 transition-colors"
             >
               <span>View All History</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -331,7 +331,7 @@ export const DashboardPage: React.FC = () => {
                   <td className="py-3.5 px-3 text-right">
                     <Link
                       to={`/reports/delivery?campaignId=${cmp.id}`}
-                      className="px-3 py-1.5 bg-slate-100 hover:bg-[#243B67] hover:text-white text-[#243B67] rounded-lg font-bold transition-all inline-block shadow-2xs"
+                      className="px-3 py-1.5 bg-slate-100 hover:bg-[#1E3A8A] hover:text-white text-[#1E3A8A] rounded-lg font-bold transition-all inline-block shadow-2xs"
                     >
                       Report
                     </Link>

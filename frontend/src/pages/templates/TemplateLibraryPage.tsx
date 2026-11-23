@@ -112,7 +112,7 @@ export const TemplateLibraryPage: React.FC = () => {
         {isSuperAdmin && (
           <button
             onClick={() => navigate('/templates/designer')}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Create Template</span>
@@ -129,7 +129,7 @@ export const TemplateLibraryPage: React.FC = () => {
               onClick={() => setActiveTab(tab)}
               className={`px-3 py-1.5 rounded-md transition-colors ${
                 activeTab === tab
-                  ? 'bg-white shadow-2xs font-bold text-[#243B67]'
+                  ? 'bg-white shadow-2xs font-bold text-[#1E3A8A]'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -149,7 +149,7 @@ export const TemplateLibraryPage: React.FC = () => {
             placeholder="Search template name, content..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
           />
         </div>
       </div>
@@ -177,7 +177,7 @@ export const TemplateLibraryPage: React.FC = () => {
                     {tmpl.name}
                   </h4>
                   {tmpl.headerType !== 'NONE' && (
-                    <span className="inline-block mt-1 text-[10px] font-semibold text-[#243B67] bg-[#243B67]/5 px-2 py-0.5 rounded">
+                    <span className="inline-block mt-1 text-[10px] font-semibold text-[#1E3A8A] bg-[#1E3A8A]/5 px-2 py-0.5 rounded">
                       Header: {tmpl.headerType}
                     </span>
                   )}
@@ -199,7 +199,7 @@ export const TemplateLibraryPage: React.FC = () => {
               <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-1 text-xs">
                 <button
                   onClick={() => setPreviewingTemplate(tmpl)}
-                  className="px-2.5 py-1.5 text-slate-600 hover:text-[#243B67] hover:bg-slate-200/60 rounded-md font-semibold flex items-center gap-1 transition-colors"
+                  className="px-2.5 py-1.5 text-slate-600 hover:text-[#1E3A8A] hover:bg-slate-200/60 rounded-md font-semibold flex items-center gap-1 transition-colors"
                 >
                   <Smartphone className="w-3.5 h-3.5" /> Preview
                 </button>
@@ -227,7 +227,7 @@ export const TemplateLibraryPage: React.FC = () => {
                   {tmpl.status === 'APPROVED' ? (
                     <button
                       onClick={() => navigate('/campaigns/create')}
-                      className="px-3 py-1.5 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-md font-semibold flex items-center gap-1 shadow-2xs transition-colors"
+                      className="px-3 py-1.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-md font-semibold flex items-center gap-1 shadow-2xs transition-colors"
                     >
                       <Send className="w-3.5 h-3.5" /> Use in Campaign
                     </button>
@@ -248,7 +248,7 @@ export const TemplateLibraryPage: React.FC = () => {
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-[#243B67]/10 text-[#243B67] flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 rounded-2xl bg-[#1E3A8A]/10 text-[#1E3A8A] flex items-center justify-center mx-auto mb-4">
             <FileText className="w-6 h-6" />
           </div>
           <h3 className="text-base font-bold text-slate-800">No Templates Found</h3>
@@ -260,7 +260,7 @@ export const TemplateLibraryPage: React.FC = () => {
           {isSuperAdmin && (
             <button
               onClick={() => navigate('/templates/designer')}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-bold rounded-xl shadow-xs transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-bold rounded-xl shadow-xs transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>Create New Template</span>
@@ -302,7 +302,7 @@ export const TemplateLibraryPage: React.FC = () => {
               </span>
               <button
                 onClick={() => setPreviewingTemplate(null)}
-                className="px-4 py-1.5 bg-[#243B67] text-white rounded-lg font-semibold"
+                className="px-4 py-1.5 bg-[#1E3A8A] text-white rounded-lg font-semibold"
               >
                 Close Preview
               </button>
@@ -344,7 +344,7 @@ export const TemplateLibraryPage: React.FC = () => {
                     setRejectionModalTemplate(null);
                     handleDuplicateDraft(tmpl);
                   }}
-                  className="px-4 py-2 bg-[#7B2846] hover:bg-[#621f37] text-white rounded-lg font-semibold transition-colors"
+                  className="px-4 py-2 bg-[#059669] hover:bg-[#047857] text-white rounded-lg font-semibold transition-colors"
                 >
                   Duplicate & Fix in Designer
                 </button>

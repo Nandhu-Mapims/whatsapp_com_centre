@@ -56,9 +56,9 @@ export const CampaignAnalyticsPage: React.FC = () => {
   ];
 
   const templateUsageData = [
-    { name: 'Duty Roster Notices', value: 48, color: '#243B67' },
+    { name: 'Duty Roster Notices', value: 48, color: '#1E3A8A' },
     { name: 'Clinical CMEs & Academics', value: 24, color: '#60A5FA' },
-    { name: 'Accreditation / Mock Audits', value: 16, color: '#7B2846' },
+    { name: 'Accreditation / Mock Audits', value: 16, color: '#059669' },
     { name: 'Administrative Advisories', value: 12, color: '#10B981' },
   ];
 
@@ -71,7 +71,7 @@ export const CampaignAnalyticsPage: React.FC = () => {
         <select
           value={dateRange}
           onChange={(e) => setDateRange(e.target.value)}
-          className="px-3 py-2 bg-white border border-slate-200 text-xs font-semibold rounded-lg text-slate-700 shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+          className="px-3 py-2 bg-white border border-slate-200 text-xs font-semibold rounded-lg text-slate-700 shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
         >
           <option>Last 7 Days</option>
           <option>Last 30 Days</option>
@@ -134,7 +134,7 @@ export const CampaignAnalyticsPage: React.FC = () => {
           </div>
           <div className="flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1.5 text-slate-700 font-medium">
-              <span className="w-3 h-3 bg-[#243B67] rounded-xs" /> Delivery Rate (%)
+              <span className="w-3 h-3 bg-[#1E3A8A] rounded-xs" /> Delivery Rate (%)
             </span>
             <span className="flex items-center gap-1.5 text-slate-700 font-medium">
               <span className="w-3 h-3 bg-[#60A5FA] rounded-xs" /> Read Rate (%)
@@ -159,7 +159,7 @@ export const CampaignAnalyticsPage: React.FC = () => {
                   fontSize: '12px',
                 }}
               />
-              <Bar dataKey="delivered" fill="#243B67" radius={[4, 4, 0, 0]} name="Delivery Rate %" />
+              <Bar dataKey="delivered" fill="#1E3A8A" radius={[4, 4, 0, 0]} name="Delivery Rate %" />
               <Bar dataKey="read" fill="#60A5FA" radius={[4, 4, 0, 0]} name="Read Rate %" />
             </BarChart>
           </ResponsiveContainer>
@@ -194,7 +194,7 @@ export const CampaignAnalyticsPage: React.FC = () => {
                 <Line
                   type="monotone"
                   dataKey="sent"
-                  stroke="#243B67"
+                  stroke="#1E3A8A"
                   strokeWidth={2.5}
                   name="Sent"
                   dot={{ r: 4 }}

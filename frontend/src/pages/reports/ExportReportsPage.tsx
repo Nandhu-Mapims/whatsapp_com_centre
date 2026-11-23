@@ -111,7 +111,7 @@ export const ExportReportsPage: React.FC = () => {
               onClick={() => setReportType(card.title)}
               className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-[#243B67]/5 border-[#243B67] shadow-sm ring-1 ring-[#243B67]'
+                  ? 'bg-[#1E3A8A]/5 border-[#1E3A8A] shadow-sm ring-1 ring-[#1E3A8A]'
                   : 'bg-white border-slate-200/80 shadow-xs hover:border-slate-300'
               }`}
             >
@@ -122,7 +122,7 @@ export const ExportReportsPage: React.FC = () => {
                   </span>
                   <card.icon
                     className={`w-5 h-5 ${
-                      isSelected ? 'text-[#243B67]' : 'text-slate-400'
+                      isSelected ? 'text-[#1E3A8A]' : 'text-slate-400'
                     }`}
                   />
                 </div>
@@ -134,7 +134,7 @@ export const ExportReportsPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="mt-4 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-[#243B67] font-semibold">
+              <div className="mt-4 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-[#1E3A8A] font-semibold">
                 <span>{isSelected ? '✓ Selected' : 'Select'}</span>
               </div>
             </div>
@@ -185,7 +185,7 @@ export const ExportReportsPage: React.FC = () => {
                   name="fmt"
                   checked={format === 'XLSX'}
                   onChange={() => setFormat('XLSX')}
-                  className="text-[#243B67] focus:ring-[#243B67]"
+                  className="text-[#1E3A8A] focus:ring-[#1E3A8A]"
                 />
                 <span>Excel (.xlsx)</span>
               </label>
@@ -195,7 +195,7 @@ export const ExportReportsPage: React.FC = () => {
                   name="fmt"
                   checked={format === 'CSV'}
                   onChange={() => setFormat('CSV')}
-                  className="text-[#243B67] focus:ring-[#243B67]"
+                  className="text-[#1E3A8A] focus:ring-[#1E3A8A]"
                 />
                 <span>CSV (.csv)</span>
               </label>
@@ -206,7 +206,7 @@ export const ExportReportsPage: React.FC = () => {
             <button
               type="submit"
               disabled={isGenerating}
-              className="w-full py-2 px-4 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors disabled:opacity-50"
+              className="w-full py-2 px-4 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors disabled:opacity-50"
             >
               <DownloadCloud className={`w-4 h-4 ${isGenerating ? 'animate-bounce' : ''}`} />
               <span>{isGenerating ? 'Compiling Report...' : 'Generate Report'}</span>
@@ -249,7 +249,7 @@ export const ExportReportsPage: React.FC = () => {
                   <td className="py-3 px-4 text-right">
                     <button
                       onClick={() => handleDownloadFile(job)}
-                      className="px-3 py-1 bg-slate-100 hover:bg-[#243B67] hover:text-white text-[#243B67] rounded font-semibold transition-colors inline-flex items-center gap-1"
+                      className="px-3 py-1 bg-slate-100 hover:bg-[#1E3A8A] hover:text-white text-[#1E3A8A] rounded font-semibold transition-colors inline-flex items-center gap-1"
                     >
                       <Download className="w-3.5 h-3.5" /> Download
                     </button>

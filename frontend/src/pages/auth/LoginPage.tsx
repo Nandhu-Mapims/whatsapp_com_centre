@@ -75,15 +75,19 @@ export const LoginPage: React.FC = () => {
       {/* Container */}
       <div className="max-w-4xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 bg-white rounded-3xl shadow-xl border border-slate-200/90 overflow-hidden">
         {/* Left Side: Hospital Branding & Clean Minimalist Panel (5 cols on lg) */}
-        <div className="lg:col-span-5 bg-gradient-to-br from-[#1b2d50] via-[#243B67] to-[#7B2846] p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
+        <div className="lg:col-span-5 bg-gradient-to-br from-[#172554] via-[#1E3A8A] to-[#059669] p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
           {/* Subtle background hospital pattern circles */}
           <div className="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-white/5 blur-2xl pointer-events-none" />
-          <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full bg-[#7B2846]/30 blur-2xl pointer-events-none" />
+          <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full bg-[#059669]/30 blur-2xl pointer-events-none" />
 
           {/* Clean Brand Header */}
           <div className="relative z-10 my-auto py-6">
-            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center ring-1 ring-white/20 shadow-lg mb-6">
-              <Hospital className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 rounded-2xl bg-white/95 p-2 flex items-center justify-center ring-1 ring-white/30 shadow-xl mb-6">
+              <img
+                src="/mapims-logo.png"
+                alt="MAPIMS Logo"
+                className="w-full h-full object-contain drop-shadow-xs"
+              />
             </div>
 
             <div className="flex items-center gap-2">
@@ -97,7 +101,7 @@ export const LoginPage: React.FC = () => {
             </p>
 
             <div className="mt-8 pt-6 border-t border-white/10">
-              <span className="inline-block text-[11px] font-bold text-amber-300 tracking-wider uppercase bg-amber-400/10 px-3 py-1.5 rounded-lg border border-amber-300/20">
+              <span className="inline-block text-[11px] font-bold text-white tracking-wider uppercase bg-white/10 px-3 py-1.5 rounded-lg border border-white/20 shadow-xs">
                 One Platform. Every Employee. Connected.
               </span>
             </div>
@@ -125,7 +129,7 @@ export const LoginPage: React.FC = () => {
                   Authenticate with your official MAPIMS credentials to continue.
                 </p>
               </div>
-              <div className="p-2 bg-slate-100 rounded-xl text-[#243B67] hidden sm:block">
+              <div className="p-2 bg-slate-100 rounded-xl text-[#1E3A8A] hidden sm:block">
                 <Lock className="w-5 h-5" />
               </div>
             </div>
@@ -151,7 +155,7 @@ export const LoginPage: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="superadmin@mapims.org"
-                    className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]/20 focus:border-[#243B67] font-medium transition-all"
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/20 focus:border-[#1E3A8A] font-medium transition-all"
                   />
                 </div>
               </div>
@@ -165,7 +169,7 @@ export const LoginPage: React.FC = () => {
                       e.preventDefault();
                       alert('Hospital Password Reset: Please contact Hospital IT Desk at Ext 104 or it.support@mapims.org.');
                     }}
-                    className="text-[11px] font-semibold text-[#243B67] hover:underline"
+                    className="text-[11px] font-semibold text-[#1E3A8A] hover:underline"
                   >
                     Forgot password?
                   </a>
@@ -178,7 +182,7 @@ export const LoginPage: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter hospital password"
-                    className="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]/20 focus:border-[#243B67] font-medium transition-all"
+                    className="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/20 focus:border-[#1E3A8A] font-medium transition-all"
                   />
                   <button
                     type="button"
@@ -198,7 +202,7 @@ export const LoginPage: React.FC = () => {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="rounded border-slate-300 text-[#243B67] focus:ring-[#243B67]"
+                    className="rounded border-slate-300 text-[#1E3A8A] focus:ring-[#1E3A8A]"
                   />
                   <span>Remember this terminal</span>
                 </label>
@@ -208,7 +212,7 @@ export const LoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-2.5 px-4 bg-[#243B67] hover:bg-[#1a2c4e] text-white text-xs font-bold rounded-xl shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-2 focus:outline-none disabled:opacity-70"
+                className="w-full py-2.5 px-4 bg-[#1E3A8A] hover:bg-[#1a2c4e] text-white text-xs font-bold rounded-xl shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-2 focus:outline-none disabled:opacity-70"
               >
                 {isLoading ? (
                   <span>Authenticating...</span>
@@ -235,7 +239,7 @@ export const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleQuickLogin('superadmin@mapims.org')}
-                className="py-3 px-4 rounded-xl bg-slate-50 hover:bg-[#243B67] hover:text-white border border-slate-200/80 text-center transition-all group shadow-2xs font-bold text-slate-800 text-xs"
+                className="py-3 px-4 rounded-xl bg-slate-50 hover:bg-[#1E3A8A] hover:text-white border border-slate-200/80 text-center transition-all group shadow-2xs font-bold text-slate-800 text-xs"
               >
                 Super Admin
               </button>
@@ -243,7 +247,7 @@ export const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleQuickLogin('admin@mapims.org')}
-                className="py-3 px-4 rounded-xl bg-slate-50 hover:bg-[#243B67] hover:text-white border border-slate-200/80 text-center transition-all group shadow-2xs font-bold text-slate-800 text-xs"
+                className="py-3 px-4 rounded-xl bg-slate-50 hover:bg-[#1E3A8A] hover:text-white border border-slate-200/80 text-center transition-all group shadow-2xs font-bold text-slate-800 text-xs"
               >
                 Admin
               </button>

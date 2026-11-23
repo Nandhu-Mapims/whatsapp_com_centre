@@ -168,7 +168,7 @@ export const ImportEmployeesPage: React.FC = () => {
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
                     currentStep === s.step
-                      ? 'bg-[#243B67] text-white ring-4 ring-[#243B67]/20'
+                      ? 'bg-[#1E3A8A] text-white ring-4 ring-[#1E3A8A]/20'
                       : currentStep > s.step
                       ? 'bg-emerald-600 text-white'
                       : 'bg-slate-100 text-slate-500 border border-slate-300'
@@ -178,7 +178,7 @@ export const ImportEmployeesPage: React.FC = () => {
                 </div>
                 <span
                   className={`text-xs font-semibold hidden sm:inline ${
-                    currentStep === s.step ? 'text-[#243B67]' : 'text-slate-500'
+                    currentStep === s.step ? 'text-[#1E3A8A]' : 'text-slate-500'
                   }`}
                 >
                   {s.label}
@@ -203,7 +203,7 @@ export const ImportEmployeesPage: React.FC = () => {
           <div
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleFileDrop}
-            className="border-2 border-dashed border-slate-300 hover:border-[#243B67] rounded-2xl p-8 text-center bg-slate-50/60 transition-colors cursor-pointer"
+            className="border-2 border-dashed border-slate-300 hover:border-[#1E3A8A] rounded-2xl p-8 text-center bg-slate-50/60 transition-colors cursor-pointer"
           >
             <input
               type="file"
@@ -213,7 +213,7 @@ export const ImportEmployeesPage: React.FC = () => {
               className="hidden"
             />
             <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
-              <div className="p-4 bg-white rounded-2xl text-[#243B67] shadow-xs mb-3 border border-slate-200">
+              <div className="p-4 bg-white rounded-2xl text-[#1E3A8A] shadow-xs mb-3 border border-slate-200">
                 <FileSpreadsheet className="w-8 h-8" />
               </div>
               <p className="text-sm font-semibold text-slate-800">
@@ -239,7 +239,7 @@ export const ImportEmployeesPage: React.FC = () => {
                   name="dup"
                   checked={duplicateOption === 'skip'}
                   onChange={() => setDuplicateOption('skip')}
-                  className="text-[#243B67] focus:ring-[#243B67]"
+                  className="text-[#1E3A8A] focus:ring-[#1E3A8A]"
                 />
                 <span className="text-slate-700">
                   <strong>Skip existing employees</strong> (Retain current contact and consent)
@@ -251,7 +251,7 @@ export const ImportEmployeesPage: React.FC = () => {
                   name="dup"
                   checked={duplicateOption === 'update'}
                   onChange={() => setDuplicateOption('update')}
-                  className="text-[#243B67] focus:ring-[#243B67]"
+                  className="text-[#1E3A8A] focus:ring-[#1E3A8A]"
                 />
                 <span className="text-slate-700">
                   <strong>Update profile details</strong> (Never silently overwrite opt-out consent)
@@ -263,7 +263,7 @@ export const ImportEmployeesPage: React.FC = () => {
           <div className="flex justify-end">
             <button
               onClick={() => setCurrentStep(2)}
-              className="px-5 py-2.5 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs flex items-center gap-2 transition-colors"
+              className="px-5 py-2.5 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs flex items-center gap-2 transition-colors"
             >
               <span>Continue to Column Mapping</span>
               <ArrowRight className="w-4 h-4" />
@@ -300,7 +300,7 @@ export const ImportEmployeesPage: React.FC = () => {
                 <div>
                   <select
                     defaultValue={col.auto}
-                    className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-md font-mono text-[11px] focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                    className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-md font-mono text-[11px] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   >
                     <option value={col.auto}>Matched: {col.auto}</option>
                     <option value="none">-- Unmapped --</option>
@@ -322,7 +322,7 @@ export const ImportEmployeesPage: React.FC = () => {
             </button>
             <button
               onClick={() => setCurrentStep(3)}
-              className="px-5 py-2.5 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-xs"
+              className="px-5 py-2.5 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-xs"
             >
               <span>Validate Records</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -453,7 +453,7 @@ export const ImportEmployeesPage: React.FC = () => {
                 success('Import Confirmed', 'Processing batch into hospital directory.');
                 setCurrentStep(5);
               }}
-              className="px-5 py-2.5 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-xs"
+              className="px-5 py-2.5 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-xs"
             >
               <span>Confirm & Commit Import</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -507,7 +507,7 @@ export const ImportEmployeesPage: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/employees')}
-              className="px-5 py-2.5 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs"
+              className="px-5 py-2.5 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs"
             >
               View Employee List
             </button>

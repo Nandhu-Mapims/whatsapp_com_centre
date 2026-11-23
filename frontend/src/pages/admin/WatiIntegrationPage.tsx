@@ -93,7 +93,7 @@ export const WatiIntegrationPage: React.FC = () => {
         <button
           onClick={handleSyncTemplates}
           disabled={isSyncing}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
           <span>Sync Templates</span>
@@ -173,13 +173,13 @@ export const WatiIntegrationPage: React.FC = () => {
         <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
           <div className="flex items-center justify-between font-semibold">
             <span className="text-slate-700">WATI Tier 2 Daily Broadcast Quota:</span>
-            <span className="text-[#243B67] font-bold">
+            <span className="text-[#1E3A8A] font-bold">
               {config.dailyQuotaUsed.toLocaleString()} / {config.dailyQuotaLimit.toLocaleString()} messages
             </span>
           </div>
           <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
             <div
-              className="bg-[#243B67] h-full rounded-full transition-all duration-500"
+              className="bg-[#1E3A8A] h-full rounded-full transition-all duration-500"
               style={{
                 width: `${(config.dailyQuotaUsed / config.dailyQuotaLimit) * 100}%`,
               }}
@@ -285,7 +285,7 @@ export const WatiIntegrationPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold shadow-xs"
+                  className="px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold shadow-xs"
                 >
                   Save & Reconnect
                 </button>

@@ -37,7 +37,7 @@ export const RoleRoute: React.FC<RoleRouteProps> = ({
             {allowedRoles.map((r) => (
               <span
                 key={r}
-                className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#243B67]/10 text-[#243B67] border border-[#243B67]/20"
+                className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#1E3A8A]/10 text-[#1E3A8A] border border-[#1E3A8A]/20"
               >
                 {r}
               </span>
@@ -60,7 +60,7 @@ export const RoleRoute: React.FC<RoleRouteProps> = ({
               <button
                 type="button"
                 onClick={() => switchRole(allowedRoles[0])}
-                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#243B67] hover:bg-[#1a2c4e] text-white text-xs font-bold transition-colors inline-flex items-center justify-center gap-1.5 shadow-2xs"
+                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#1E3A8A] hover:bg-[#1a2c4e] text-white text-xs font-bold transition-colors inline-flex items-center justify-center gap-1.5 shadow-2xs"
               >
                 <Shield className="w-3.5 h-3.5" />
                 <span>Switch to {allowedRoles[0]}</span>

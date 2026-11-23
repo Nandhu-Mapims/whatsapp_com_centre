@@ -362,7 +362,7 @@ export const DeliveryReportsPage: React.FC = () => {
       >
         <button
           onClick={() => navigate('/campaigns/create')}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
         >
           <Send className="w-3.5 h-3.5" />
           <span>New Broadcast</span>
@@ -388,7 +388,7 @@ export const DeliveryReportsPage: React.FC = () => {
         {/* ROW 1: DISPATCH DATE FILTER OPTION */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#243B67]/10 text-[#243B67] flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-lg bg-[#1E3A8A]/10 text-[#1E3A8A] flex items-center justify-center font-bold">
               <Calendar className="w-4 h-4" />
             </div>
             <div>
@@ -409,7 +409,7 @@ export const DeliveryReportsPage: React.FC = () => {
               className={cn(
                 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-2xs',
                 dateRangeFilter === 'today'
-                  ? 'bg-[#243B67] text-white shadow-xs'
+                  ? 'bg-[#1E3A8A] text-white shadow-xs'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
               )}
             >
@@ -421,7 +421,7 @@ export const DeliveryReportsPage: React.FC = () => {
               className={cn(
                 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-2xs',
                 dateRangeFilter === 'yesterday'
-                  ? 'bg-[#243B67] text-white shadow-xs'
+                  ? 'bg-[#1E3A8A] text-white shadow-xs'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
               )}
             >
@@ -433,7 +433,7 @@ export const DeliveryReportsPage: React.FC = () => {
               className={cn(
                 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-2xs',
                 dateRangeFilter === 'last7days'
-                  ? 'bg-[#243B67] text-white shadow-xs'
+                  ? 'bg-[#1E3A8A] text-white shadow-xs'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
               )}
             >
@@ -445,7 +445,7 @@ export const DeliveryReportsPage: React.FC = () => {
               className={cn(
                 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5',
                 dateRangeFilter === 'custom'
-                  ? 'bg-[#243B67] text-white shadow-xs'
+                  ? 'bg-[#1E3A8A] text-white shadow-xs'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
               )}
             >
@@ -469,7 +469,7 @@ export const DeliveryReportsPage: React.FC = () => {
         {dateRangeFilter === 'custom' && (
           <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-wrap items-center gap-3 animate-in fade-in duration-200">
             <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 w-full sm:w-auto">
-              <Calendar className="w-3.5 h-3.5 text-[#243B67]" />
+              <Calendar className="w-3.5 h-3.5 text-[#1E3A8A]" />
               <span>Custom Range (From - To):</span>
             </span>
 
@@ -479,7 +479,7 @@ export const DeliveryReportsPage: React.FC = () => {
                 type="date"
                 value={customFromDate}
                 onChange={(e) => setCustomFromDate(e.target.value)}
-                className="px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 shadow-2xs focus:ring-2 focus:ring-[#243B67] focus:outline-none flex-1 sm:flex-none"
+                className="px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 shadow-2xs focus:ring-2 focus:ring-[#1E3A8A] focus:outline-none flex-1 sm:flex-none"
               />
             </div>
 
@@ -489,7 +489,7 @@ export const DeliveryReportsPage: React.FC = () => {
                 type="date"
                 value={customToDate}
                 onChange={(e) => setCustomToDate(e.target.value)}
-                className="px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 shadow-2xs focus:ring-2 focus:ring-[#243B67] focus:outline-none flex-1 sm:flex-none"
+                className="px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 shadow-2xs focus:ring-2 focus:ring-[#1E3A8A] focus:outline-none flex-1 sm:flex-none"
               />
             </div>
 
@@ -503,7 +503,7 @@ export const DeliveryReportsPage: React.FC = () => {
         <div className="space-y-2 pt-1">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#243B67] flex items-center justify-center font-bold border border-blue-200/80">
+              <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#1E3A8A] flex items-center justify-center font-bold border border-blue-200/80">
                 <Layers className="w-4 h-4" />
               </div>
               <div>
@@ -519,7 +519,7 @@ export const DeliveryReportsPage: React.FC = () => {
             {selectedCampaignId !== 'ALL' && (
               <button
                 onClick={() => handleSelectCampaign('ALL')}
-                className="text-xs font-semibold text-[#243B67] hover:underline flex items-center gap-1 self-start sm:self-auto shrink-0"
+                className="text-xs font-semibold text-[#1E3A8A] hover:underline flex items-center gap-1 self-start sm:self-auto shrink-0"
               >
                 <X className="w-3.5 h-3.5" />
                 <span>Show All Campaigns</span>
@@ -533,7 +533,7 @@ export const DeliveryReportsPage: React.FC = () => {
                 id="campaign-select"
                 value={selectedCampaignId}
                 onChange={(e) => handleSelectCampaign(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#243B67] shadow-2xs transition-all"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] shadow-2xs transition-all"
               >
                 <option value="ALL">📋 All Broadcast Campaigns (Combined Summary)</option>
                 {campaigns.map((c) => (
@@ -558,7 +558,7 @@ export const DeliveryReportsPage: React.FC = () => {
       {/* Rendered when a specific campaign is selected                */}
       {/* ============================================================ */}
       {activeCampaign ? (
-        <div className="bg-white rounded-2xl border border-[#243B67]/20 p-5 sm:p-6 shadow-sm space-y-5 animate-in fade-in duration-200">
+        <div className="bg-white rounded-2xl border border-[#1E3A8A]/20 p-5 sm:p-6 shadow-sm space-y-5 animate-in fade-in duration-200">
           {/* Top Row: Title, ID, Status, Priority */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-4">
             <div className="space-y-1.5">
@@ -601,7 +601,7 @@ export const DeliveryReportsPage: React.FC = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                 Template Used
               </span>
-              <span className="font-mono font-bold text-[#243B67] truncate block">
+              <span className="font-mono font-bold text-[#1E3A8A] truncate block">
                 {activeCampaign.templateName}
               </span>
             </div>
@@ -663,12 +663,12 @@ export const DeliveryReportsPage: React.FC = () => {
             <div className="p-4 bg-gradient-to-br from-indigo-50/50 to-slate-50 rounded-xl border border-indigo-100 flex flex-col justify-between">
               <div className="flex items-center justify-between text-indigo-900 mb-1">
                 <span className="text-[11px] font-bold uppercase tracking-wider">Read Receipts</span>
-                <Eye className="w-4 h-4 text-[#243B67]" />
+                <Eye className="w-4 h-4 text-[#1E3A8A]" />
               </div>
-              <div className="text-xl sm:text-2xl font-black text-[#243B67] mt-1">
+              <div className="text-xl sm:text-2xl font-black text-[#1E3A8A] mt-1">
                 {currentRead}
               </div>
-              <div className="text-[11px] text-[#243B67] font-semibold mt-0.5">
+              <div className="text-[11px] text-[#1E3A8A] font-semibold mt-0.5">
                 {readRate}% Blue Ticks Confirmed
               </div>
             </div>
@@ -704,7 +704,7 @@ export const DeliveryReportsPage: React.FC = () => {
             <div className="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
               <div
                 style={{ width: `${currentTotal > 0 ? (currentRead / currentTotal) * 100 : 0}%` }}
-                className="bg-[#243B67] transition-all duration-500"
+                className="bg-[#1E3A8A] transition-all duration-500"
                 title={`Read Receipts: ${currentRead} (${currentTotal > 0 ? ((currentRead / currentTotal) * 100).toFixed(1) : 0}%)`}
               />
               <div
@@ -739,7 +739,7 @@ export const DeliveryReportsPage: React.FC = () => {
             <div className="flex items-center justify-between text-[11px] text-slate-500 flex-wrap gap-2 pt-1">
               <div className="flex items-center gap-4">
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#243B67]"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#1E3A8A]"></span>
                   <span>Read: <strong>{currentRead}</strong></span>
                 </span>
                 <span className="inline-flex items-center gap-1.5">
@@ -799,7 +799,7 @@ export const DeliveryReportsPage: React.FC = () => {
           <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
             <div className="p-4 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-[#243B67]" />
+                <BarChart3 className="w-4 h-4 text-[#1E3A8A]" />
                 <h3 className="font-bold text-slate-900 text-xs">
                   Broadcast Campaigns Delivery Breakdown
                 </h3>
@@ -849,14 +849,14 @@ export const DeliveryReportsPage: React.FC = () => {
                         </td>
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-[#243B67]">{cRead}</span>
+                            <span className="font-bold text-[#1E3A8A]">{cRead}</span>
                             <span className="text-[10px] text-slate-400">({cReadRate}%)</span>
                           </div>
                         </td>
                         <td className="py-3 px-4 text-right">
                           <button
                             onClick={() => handleSelectCampaign(c.id || c.campaignId)}
-                            className="px-3 py-1 bg-blue-50 hover:bg-[#243B67] text-[#243B67] hover:text-white rounded-lg font-semibold transition-colors inline-flex items-center gap-1 border border-blue-200"
+                            className="px-3 py-1 bg-blue-50 hover:bg-[#1E3A8A] text-[#1E3A8A] hover:text-white rounded-lg font-semibold transition-colors inline-flex items-center gap-1 border border-blue-200"
                           >
                             <span>View Delivery Details</span>
                             <ArrowRight className="w-3 h-3" />
@@ -886,14 +886,14 @@ export const DeliveryReportsPage: React.FC = () => {
                 placeholder="Search staff name, ID, phone..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             >
               <option value="ALL">All Delivery Outcomes</option>
               <option value="read">Read (Blue Ticks Confirmed)</option>
@@ -905,7 +905,7 @@ export const DeliveryReportsPage: React.FC = () => {
 
           <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
             {activeCampaign && (
-              <span className="text-[11px] font-semibold text-[#243B67] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+              <span className="text-[11px] font-semibold text-[#1E3A8A] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                 Campaign: {activeCampaign.campaignId}
               </span>
             )}
@@ -966,7 +966,7 @@ export const DeliveryReportsPage: React.FC = () => {
                     <td className="py-3 px-4 text-right">
                       <button
                         onClick={() => setSelectedMessage(msg)}
-                        className="px-2.5 py-1 bg-slate-100 hover:bg-[#243B67] hover:text-white text-[#243B67] rounded font-semibold transition-colors inline-flex items-center gap-1"
+                        className="px-2.5 py-1 bg-slate-100 hover:bg-[#1E3A8A] hover:text-white text-[#1E3A8A] rounded font-semibold transition-colors inline-flex items-center gap-1"
                       >
                         <Eye className="w-3.5 h-3.5" /> Details
                       </button>
@@ -1091,13 +1091,13 @@ export const DeliveryReportsPage: React.FC = () => {
                       value={editingPhone}
                       onChange={(e) => setEditingPhone(e.target.value)}
                       placeholder="+91 95513 82296"
-                      className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#243B67] shadow-2xs"
+                      className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] shadow-2xs"
                     />
                     <button
                       type="button"
                       disabled={isUpdatingPhone || !editingPhone.trim()}
                       onClick={handleSaveAndRetryPhone}
-                      className="px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs disabled:opacity-50 transition-all shrink-0"
+                      className="px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs disabled:opacity-50 transition-all shrink-0"
                     >
                       <RefreshCw className={`w-3.5 h-3.5 ${isUpdatingPhone ? 'animate-spin' : ''}`} />
                       <span>{isUpdatingPhone ? 'Saving...' : 'Save & Re-dispatch'}</span>
@@ -1116,7 +1116,7 @@ export const DeliveryReportsPage: React.FC = () => {
                       success('Retry Triggered', `Re-queuing message for ${selectedMessage.employeeName}.`);
                       setSelectedMessage(null);
                     }}
-                    className="w-full py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold flex items-center justify-center gap-1.5"
+                    className="w-full py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold flex items-center justify-center gap-1.5"
                   >
                     <RefreshCw className="w-3.5 h-3.5" /> Re-dispatch Message
                   </button>

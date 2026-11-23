@@ -136,7 +136,7 @@ export const UsersRolesPage: React.FC = () => {
       >
         <button
           onClick={handleOpenAdd}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
         >
           <UserPlus className="w-4 h-4" />
           <span>Add Admin User</span>
@@ -150,7 +150,7 @@ export const UsersRolesPage: React.FC = () => {
             onClick={() => setActiveTab('USERS')}
             className={`px-4 py-1.5 rounded-md transition-colors ${
               activeTab === 'USERS'
-                ? 'bg-white shadow-2xs font-bold text-[#243B67]'
+                ? 'bg-white shadow-2xs font-bold text-[#1E3A8A]'
                 : 'text-slate-600'
             }`}
           >
@@ -160,7 +160,7 @@ export const UsersRolesPage: React.FC = () => {
             onClick={() => setActiveTab('MATRIX')}
             className={`px-4 py-1.5 rounded-md transition-colors ${
               activeTab === 'MATRIX'
-                ? 'bg-white shadow-2xs font-bold text-[#243B67]'
+                ? 'bg-white shadow-2xs font-bold text-[#1E3A8A]'
                 : 'text-slate-600'
             }`}
           >
@@ -176,7 +176,7 @@ export const UsersRolesPage: React.FC = () => {
               placeholder="Search user, email, role..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             />
           </div>
         )}
@@ -201,14 +201,14 @@ export const UsersRolesPage: React.FC = () => {
                 {filteredUsers.map((u) => (
                   <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="py-3 px-4 font-bold text-slate-900 flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-[#243B67] text-white flex items-center justify-center font-bold text-[11px]">
+                      <div className="w-7 h-7 rounded-full bg-[#1E3A8A] text-white flex items-center justify-center font-bold text-[11px]">
                         {u.name.charAt(0)}
                       </div>
                       <span>{u.name}</span>
                     </td>
                     <td className="py-3 px-4 font-mono text-slate-600">{u.email}</td>
                     <td className="py-3 px-4">
-                      <span className="font-semibold text-[#243B67] bg-[#243B67]/5 px-2 py-0.5 rounded border border-[#243B67]/10">
+                      <span className="font-semibold text-[#1E3A8A] bg-[#1E3A8A]/5 px-2 py-0.5 rounded border border-[#1E3A8A]/10">
                         {u.role}
                       </span>
                     </td>
@@ -220,7 +220,7 @@ export const UsersRolesPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleOpenEdit(u)}
-                          className="p-1.5 text-slate-500 hover:text-[#243B67] hover:bg-slate-100 rounded"
+                          className="p-1.5 text-slate-500 hover:text-[#1E3A8A] hover:bg-slate-100 rounded"
                           title="Edit User"
                         >
                           <Edit2 className="w-4 h-4" />
@@ -351,7 +351,7 @@ export const UsersRolesPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold shadow-xs"
+                  className="px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold shadow-xs"
                 >
                   {editingUser ? 'Save Changes' : 'Invite User'}
                 </button>

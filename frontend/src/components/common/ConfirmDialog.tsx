@@ -35,7 +35,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                   ? 'bg-rose-50 text-rose-600'
                   : variant === 'warning'
                   ? 'bg-amber-50 text-amber-600'
-                  : 'bg-[#243B67]/10 text-[#243B67]'
+                  : 'bg-[#1E3A8A]/10 text-[#1E3A8A]'
               }`}
             >
               <AlertCircle className="w-6 h-6" />
@@ -68,8 +68,8 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               variant === 'danger'
                 ? 'bg-rose-600 hover:bg-rose-700'
                 : variant === 'warning'
-                ? 'bg-[#7B2846] hover:bg-[#621f37]'
-                : 'bg-[#243B67] hover:bg-[#1b2d50]'
+                ? 'bg-[#059669] hover:bg-[#047857]'
+                : 'bg-[#1E3A8A] hover:bg-[#172554]'
             }`}
           >
             {confirmLabel}

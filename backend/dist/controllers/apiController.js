@@ -446,14 +446,17 @@ exports.getAuditLogs = getAuditLogs;
 // 6. WhatsApp WATI Templates Controller (Live Store - No mock templates)
 let templatesStore = [];
 const getTemplates = async (req, res) => {
-    if (templatesStore.length === 0) {
-        try {
-            const live = await watiService_js_1.WatiService.fetchTemplates();
-            if (live && live.length > 0) {
-                templatesStore = live;
-            }
+    try {
+        const live = await watiService_js_1.WatiService.fetchTemplates();
+        if (live && live.length > 0) {
+            // Merge live Meta-approved templates with any local unsynced drafts
+            const liveNames = new Set(live.map((t) => t.name));
+            const localDrafts = templatesStore.filter((t) => !liveNames.has(t.name) && t.status === 'DRAFT');
+            templatesStore = [...live, ...localDrafts];
         }
-        catch (e) { }
+    }
+    catch (err) {
+        console.warn('[API Controller] Live WATI template fetch failed, serving cached store:', err.message);
     }
     res.json({ success: true, count: templatesStore.length, data: templatesStore });
 };

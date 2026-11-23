@@ -95,7 +95,7 @@ export const FailedMessagesPage: React.FC = () => {
         <button
           onClick={() => setIsBulkRetryConfirmOpen(true)}
           disabled={retryEligibleCount === 0}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-40"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-40"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Retry Eligible ({retryEligibleCount})</span>
@@ -155,14 +155,14 @@ export const FailedMessagesPage: React.FC = () => {
                 placeholder="Search staff, ID, error code..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
               />
             </div>
 
             <select
               value={errorFilter}
               onChange={(e) => setErrorFilter(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             >
               <option value="ALL">All Error Types</option>
               <option value="PROVIDER_TIMEOUT_504">Gateway Timeout (504)</option>
@@ -232,7 +232,7 @@ export const FailedMessagesPage: React.FC = () => {
                       {msg.canRetry && (
                         <button
                           onClick={() => handleSingleRetry(msg)}
-                          className="px-2.5 py-1 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded font-semibold transition-colors flex items-center gap-1"
+                          className="px-2.5 py-1 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded font-semibold transition-colors flex items-center gap-1"
                         >
                           <RefreshCw className="w-3 h-3" /> Retry
                         </button>
@@ -307,7 +307,7 @@ export const FailedMessagesPage: React.FC = () => {
                 <div className="pt-2">
                   <button
                     onClick={() => handleSingleRetry(inspectMessage)}
-                    className="w-full py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold flex items-center justify-center gap-1.5 shadow-xs"
+                    className="w-full py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold flex items-center justify-center gap-1.5 shadow-xs"
                   >
                     <RefreshCw className="w-3.5 h-3.5" /> Re-attempt Dispatch
                   </button>

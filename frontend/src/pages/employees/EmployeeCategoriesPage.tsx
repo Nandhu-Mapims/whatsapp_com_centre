@@ -192,7 +192,7 @@ export const EmployeeCategoriesPage: React.FC = () => {
         </button>
         <button
           onClick={handleOpenAdd}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>Add Designation</span>
@@ -209,7 +209,7 @@ export const EmployeeCategoriesPage: React.FC = () => {
             <div className="text-2xl font-black text-slate-900 mt-1">{designations.length}</div>
             <div className="text-xs text-slate-500 mt-0.5">{totalStaffAssigned} total hospital staff assigned</div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#243B67] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#1E3A8A] flex items-center justify-center">
             <Briefcase className="w-5 h-5" />
           </div>
         </div>
@@ -256,7 +256,7 @@ export const EmployeeCategoriesPage: React.FC = () => {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
               />
             </div>
 
@@ -266,7 +266,7 @@ export const EmployeeCategoriesPage: React.FC = () => {
                 setCadreFilter(e.target.value as any);
                 setCurrentPage(1);
               }}
-              className="w-full sm:w-56 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full sm:w-56 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             >
               <option value="ALL">All Cadres (Teaching & Non-Teaching)</option>
               <option value="Teaching">Teaching Faculty Titles</option>
@@ -305,7 +305,7 @@ export const EmployeeCategoriesPage: React.FC = () => {
                   <tr key={desig.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="py-3 px-4 font-bold text-slate-900">
                       <div className="flex items-center gap-2">
-                        <Briefcase className="w-3.5 h-3.5 text-[#243B67]" />
+                        <Briefcase className="w-3.5 h-3.5 text-[#1E3A8A]" />
                         <span>{desig.name}</span>
                       </div>
                     </td>
@@ -315,7 +315,7 @@ export const EmployeeCategoriesPage: React.FC = () => {
                           desig.cadre === 'Teaching'
                             ? 'bg-purple-100 text-purple-700 border border-purple-200'
                             : desig.cadre === 'Both'
-                            ? 'bg-blue-100 text-[#243B67] border border-blue-200'
+                            ? 'bg-blue-100 text-[#1E3A8A] border border-blue-200'
                             : 'bg-slate-100 text-slate-700 border border-slate-200'
                         }`}
                       >
@@ -352,7 +352,7 @@ export const EmployeeCategoriesPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => handleOpenEdit(desig)}
-                          className="p-1.5 text-slate-500 hover:text-[#243B67] hover:bg-slate-100 rounded-md transition-colors"
+                          className="p-1.5 text-slate-500 hover:text-[#1E3A8A] hover:bg-slate-100 rounded-md transition-colors"
                           title="Edit Designation"
                         >
                           <Edit2 className="w-4 h-4" />
@@ -437,7 +437,7 @@ export const EmployeeCategoriesPage: React.FC = () => {
                   placeholder="e.g. Senior Resident, Staff Nurse, Optometrist"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   autoFocus
                 />
               </div>
@@ -452,7 +452,7 @@ export const EmployeeCategoriesPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-bold shadow-xs transition-colors"
+                  className="px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-bold shadow-xs transition-colors"
                 >
                   {editingDesig ? 'Update Designation' : 'Save Designation'}
                 </button>

@@ -102,7 +102,7 @@ export const MediaLibraryPage: React.FC = () => {
       >
         <button
           onClick={() => setIsUploadOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
         >
           <Upload className="w-4 h-4" />
           <span>Upload Media</span>
@@ -119,7 +119,7 @@ export const MediaLibraryPage: React.FC = () => {
               placeholder="Search filename..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             />
           </div>
 
@@ -130,7 +130,7 @@ export const MediaLibraryPage: React.FC = () => {
                 onClick={() => setTypeFilter(t)}
                 className={`px-3 py-1.5 rounded-md capitalize transition-colors ${
                   typeFilter === t
-                    ? 'bg-white shadow-2xs font-bold text-[#243B67]'
+                    ? 'bg-white shadow-2xs font-bold text-[#1E3A8A]'
                     : 'text-slate-600'
                 }`}
               >
@@ -145,7 +145,7 @@ export const MediaLibraryPage: React.FC = () => {
           <button
             onClick={() => setViewMode('grid')}
             className={`p-1.5 rounded-md ${
-              viewMode === 'grid' ? 'bg-white shadow-2xs text-[#243B67]' : 'text-slate-500'
+              viewMode === 'grid' ? 'bg-white shadow-2xs text-[#1E3A8A]' : 'text-slate-500'
             }`}
             title="Grid View"
           >
@@ -154,7 +154,7 @@ export const MediaLibraryPage: React.FC = () => {
           <button
             onClick={() => setViewMode('list')}
             className={`p-1.5 rounded-md ${
-              viewMode === 'list' ? 'bg-white shadow-2xs text-[#243B67]' : 'text-slate-500'
+              viewMode === 'list' ? 'bg-white shadow-2xs text-[#1E3A8A]' : 'text-slate-500'
             }`}
             title="List View"
           >
@@ -185,7 +185,7 @@ export const MediaLibraryPage: React.FC = () => {
                     <span className="text-[10px] font-bold mt-1 text-slate-500">PDF Document</span>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center text-[#243B67]">
+                  <div className="flex flex-col items-center text-[#1E3A8A]">
                     <Video className="w-12 h-12" />
                     <span className="text-[10px] font-bold mt-1 text-slate-500">MP4 Video</span>
                   </div>
@@ -202,7 +202,7 @@ export const MediaLibraryPage: React.FC = () => {
                 </h4>
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
                   <span>{asset.uploadDate}</span>
-                  <span className="font-semibold text-[#243B67] bg-[#243B67]/5 px-2 py-0.5 rounded">
+                  <span className="font-semibold text-[#1E3A8A] bg-[#1E3A8A]/5 px-2 py-0.5 rounded">
                     {asset.usageCount} uses
                   </span>
                 </div>
@@ -212,7 +212,7 @@ export const MediaLibraryPage: React.FC = () => {
               <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
                 <button
                   onClick={() => handleCopyLink(asset.url)}
-                  className="text-slate-600 hover:text-[#243B67] font-semibold flex items-center gap-1"
+                  className="text-slate-600 hover:text-[#1E3A8A] font-semibold flex items-center gap-1"
                 >
                   <Copy className="w-3.5 h-3.5" /> Copy Ref
                 </button>
@@ -260,7 +260,7 @@ export const MediaLibraryPage: React.FC = () => {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleCopyLink(asset.url)}
-                        className="p-1.5 text-slate-500 hover:text-[#243B67] hover:bg-slate-100 rounded"
+                        className="p-1.5 text-slate-500 hover:text-[#1E3A8A] hover:bg-slate-100 rounded"
                         title="Copy URL"
                       >
                         <Copy className="w-4 h-4" />
@@ -303,7 +303,7 @@ export const MediaLibraryPage: React.FC = () => {
                   placeholder="e.g. infection_control_notice.png"
                   value={uploadFilename}
                   onChange={(e) => setUploadFilename(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
               </div>
 
@@ -312,7 +312,7 @@ export const MediaLibraryPage: React.FC = () => {
                 <select
                   value={uploadType}
                   onChange={(e) => setUploadType(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 >
                   <option value="image">Image (JPEG/PNG up to 5MB)</option>
                   <option value="pdf">Document (PDF up to 100MB)</option>
@@ -330,7 +330,7 @@ export const MediaLibraryPage: React.FC = () => {
                   placeholder="https://cdn.mapims.org/media/..."
                   value={uploadUrl}
                   onChange={(e) => setUploadUrl(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 font-mono text-[11px] focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 font-mono text-[11px] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
                 <span className="text-[10px] text-slate-400 mt-1 block">
                   Must be an accessible URL for WATI / Meta WhatsApp media servers.
@@ -347,7 +347,7 @@ export const MediaLibraryPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold shadow-xs"
+                  className="px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold shadow-xs"
                 >
                   Upload & Register
                 </button>

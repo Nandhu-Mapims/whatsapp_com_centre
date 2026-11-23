@@ -62,14 +62,14 @@ export const AuditLogsPage: React.FC = () => {
                 placeholder="Search actor, action, resource ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
               />
             </div>
 
             <select
               value={moduleFilter}
               onChange={(e) => setModuleFilter(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             >
               <option value="ALL">All Modules</option>
               <option value="Campaign Management">Campaign Management</option>
@@ -105,7 +105,7 @@ export const AuditLogsPage: React.FC = () => {
                     <div className="font-bold text-slate-900">{log.actor}</div>
                     <div className="text-[11px] text-slate-400">{log.actorRole}</div>
                   </td>
-                  <td className="py-3 px-4 font-mono font-semibold text-[#243B67]">
+                  <td className="py-3 px-4 font-mono font-semibold text-[#1E3A8A]">
                     {log.action}
                   </td>
                   <td className="py-3 px-4 text-slate-600">{log.module}</td>
@@ -120,7 +120,7 @@ export const AuditLogsPage: React.FC = () => {
                   <td className="py-3 px-4 text-right">
                     <button
                       onClick={() => setSelectedLog(log)}
-                      className="px-2.5 py-1 bg-slate-100 hover:bg-[#243B67] hover:text-white text-[#243B67] rounded font-semibold transition-colors flex items-center gap-1 ml-auto"
+                      className="px-2.5 py-1 bg-slate-100 hover:bg-[#1E3A8A] hover:text-white text-[#1E3A8A] rounded font-semibold transition-colors flex items-center gap-1 ml-auto"
                     >
                       <Eye className="w-3.5 h-3.5" /> View
                     </button>
@@ -165,7 +165,7 @@ export const AuditLogsPage: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Role:</span>
-                  <span className="font-semibold text-[#243B67]">{selectedLog.actorRole}</span>
+                  <span className="font-semibold text-[#1E3A8A]">{selectedLog.actorRole}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Action:</span>

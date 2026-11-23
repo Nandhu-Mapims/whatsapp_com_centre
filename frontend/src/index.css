@@ -1,31 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #243B67;
-  --color-primary-50: #f0f4fa;
-  --color-primary-100: #dde6f3;
-  --color-primary-200: #c0d1eb;
-  --color-primary-600: #243B67;
-  --color-primary-700: #1b2d50;
-  --color-primary-800: #14213c;
+  --color-primary: #1E3A8A;
+  --color-primary-50: #EFF6FF;
+  --color-primary-100: #DBEAFE;
+  --color-primary-200: #BFDBFE;
+  --color-primary-600: #1E3A8A;
+  --color-primary-700: #172554;
+  --color-primary-800: #0F172A;
 
-  --color-secondary: #7B2846;
-  --color-secondary-50: #fcf1f4;
-  --color-secondary-100: #f8e1e8;
-  --color-secondary-600: #7B2846;
-  --color-secondary-700: #621f37;
+  --color-secondary: #059669;
+  --color-secondary-50: #ECFDF5;
+  --color-secondary-100: #D1FAE5;
+  --color-secondary-600: #059669;
+  --color-secondary-700: #047857;
 
-  --color-hospital-bg: #F5F7FB;
+  --color-hospital-bg: #F8FAFC;
   --color-hospital-card: #FFFFFF;
-  --color-hospital-text: #1F2937;
+  --color-hospital-text: #1E293B;
   --color-hospital-muted: #64748B;
   --color-hospital-border: #E2E8F0;
 }
 
 :root {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  color: #1F2937;
-  background-color: #F5F7FB;
+  color: #1E293B;
+  background-color: #F8FAFC;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -34,8 +34,8 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background-color: #F5F7FB;
-  color: #1F2937;
+  background-color: #F8FAFC;
+  color: #1E293B;
 }
 
 #root {
@@ -62,12 +62,12 @@ body {
 
 /* Glassmorphism and badge accents */
 .badge-navy {
-  background-color: #f0f4fa;
-  color: #243B67;
-  border: 1px solid #dde6f3;
+  background-color: #EFF6FF;
+  color: #1E3A8A;
+  border: 1px solid #DBEAFE;
 }
 .badge-maroon {
-  background-color: #fcf1f4;
-  color: #7B2846;
-  border: 1px solid #f8e1e8;
+  background-color: #ECFDF5;
+  color: #059669;
+  border: 1px solid #D1FAE5;
 }

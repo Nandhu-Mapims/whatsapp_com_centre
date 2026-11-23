@@ -409,17 +409,20 @@ export const testSendTemplate = async (req: AuthRequest, res: Response) => {
   try {
     const finalParams = Array.isArray(parameters) ? parameters : [];
 
-    // Development Mode Safeguard: Strictly locked to authorized test handset 9551382296
-    const cleanNum = String(whatsappNumber).replace(/[^0-9]/g, '');
-    const safeTargetNumber = cleanNum.endsWith('9551382296') ? cleanNum : '919551382296';
+    // Normalize destination phone number (auto-append India 91 prefix if 10-digit)
+    let cleanNum = String(whatsappNumber).replace(/[^0-9]/g, '');
+    if (cleanNum.length === 10) {
+      cleanNum = `91${cleanNum}`;
+    }
+    const targetNumber = cleanNum;
 
     console.log(
-      `[WATI Sandbox Mode] Strictly dispatching test to authorized phone ${safeTargetNumber} using template "${templateName}" with params:`,
+      `[WATI Test Dispatch] Dispatching test to phone ${targetNumber} using template "${templateName}" with params:`,
       finalParams
     );
 
     const result = await WatiService.sendTemplateMessage({
-      whatsappNumber: safeTargetNumber,
+      whatsappNumber: targetNumber,
       templateName,
       broadcastTitle: broadcastTitle || 'APH Connect Test Dispatch',
       parameters: finalParams,
@@ -428,7 +431,7 @@ export const testSendTemplate = async (req: AuthRequest, res: Response) => {
     if (result.success) {
       res.json({
         success: true,
-        message: `Test message successfully delivered to ${safeTargetNumber} via WATI (${templateName}).`,
+        message: `Test message successfully delivered to +${targetNumber} via WATI (${templateName}).`,
         providerMessageId: result.providerMessageId,
       });
     } else {
@@ -506,13 +509,16 @@ export const getAuditLogs = (req: Request, res: Response) => {
 let templatesStore: any[] = [];
 
 export const getTemplates = async (req: Request, res: Response) => {
-  if (templatesStore.length === 0) {
-    try {
-      const live = await WatiService.fetchTemplates();
-      if (live && live.length > 0) {
-        templatesStore = live;
-      }
-    } catch (e) {}
+  try {
+    const live = await WatiService.fetchTemplates();
+    if (live && live.length > 0) {
+      // Merge live Meta-approved templates with any local unsynced drafts
+      const liveNames = new Set(live.map((t: any) => t.name));
+      const localDrafts = templatesStore.filter((t) => !liveNames.has(t.name) && t.status === 'DRAFT');
+      templatesStore = [...live, ...localDrafts];
+    }
+  } catch (err: any) {
+    console.warn('[API Controller] Live WATI template fetch failed, serving cached store:', err.message);
   }
   res.json({ success: true, count: templatesStore.length, data: templatesStore });
 };

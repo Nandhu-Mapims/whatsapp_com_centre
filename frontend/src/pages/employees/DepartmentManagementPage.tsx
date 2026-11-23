@@ -129,7 +129,7 @@ export const DepartmentManagementPage: React.FC = () => {
       >
         <button
           onClick={handleOpenAdd}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>Add Department</span>
@@ -147,7 +147,7 @@ export const DepartmentManagementPage: React.FC = () => {
                 placeholder="Search code, department, HOD..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
               />
             </div>
 
@@ -187,7 +187,7 @@ export const DepartmentManagementPage: React.FC = () => {
                   </td>
                   <td className="py-3 px-4 font-semibold text-slate-800">
                     <span className="flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-[#243B67]" />
+                      <Users className="w-3.5 h-3.5 text-[#1E3A8A]" />
                       {d.employeeCount}
                     </span>
                   </td>
@@ -198,7 +198,7 @@ export const DepartmentManagementPage: React.FC = () => {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleOpenEdit(d)}
-                        className="p-1.5 text-slate-500 hover:text-[#243B67] hover:bg-slate-100 rounded-md"
+                        className="p-1.5 text-slate-500 hover:text-[#1E3A8A] hover:bg-slate-100 rounded-md"
                         title="Edit Department"
                       >
                         <Edit2 className="w-4 h-4" />
@@ -249,7 +249,7 @@ export const DepartmentManagementPage: React.FC = () => {
                   placeholder="e.g. EMERG or ICU-CRIT"
                   value={formCode}
                   onChange={(e) => setFormCode(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
               </div>
 
@@ -263,7 +263,7 @@ export const DepartmentManagementPage: React.FC = () => {
                   placeholder="e.g. Emergency & Trauma Care"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
               </div>
 
@@ -274,7 +274,7 @@ export const DepartmentManagementPage: React.FC = () => {
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 >
                   {mockCategories.map((c) => (
                     <option key={c.id} value={c.name}>
@@ -293,7 +293,7 @@ export const DepartmentManagementPage: React.FC = () => {
                   placeholder="e.g. Dr. C. Karthikeyan"
                   value={formHod}
                   onChange={(e) => setFormHod(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
               </div>
 
@@ -307,7 +307,7 @@ export const DepartmentManagementPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold shadow-xs"
+                  className="px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold shadow-xs"
                 >
                   {editingDept ? 'Save Changes' : 'Create Department'}
                 </button>

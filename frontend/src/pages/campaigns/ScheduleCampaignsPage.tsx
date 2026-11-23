@@ -70,7 +70,7 @@ export const ScheduleCampaignsPage: React.FC = () => {
 
       {/* Consent re-verification banner */}
       <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl flex items-start gap-3 text-blue-900 text-xs">
-        <Clock className="w-5 h-5 text-[#243B67] shrink-0 mt-0.5" />
+        <Clock className="w-5 h-5 text-[#1E3A8A] shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <strong>Automated Pre-Dispatch Integrity Check:</strong> All scheduled campaigns undergo an automated recipient consent re-scan immediately prior to transmitting to WATI. Any employee who records an opt-out between scheduling and dispatch will be automatically suppressed.
         </div>
@@ -86,7 +86,7 @@ export const ScheduleCampaignsPage: React.FC = () => {
               placeholder="Search scheduled campaigns..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             />
           </div>
           <span className="text-xs text-slate-500">
@@ -125,20 +125,20 @@ export const ScheduleCampaignsPage: React.FC = () => {
                       <div className="font-medium text-slate-900">{cmp.categoryScope}</div>
                       <div className="text-[11px] text-slate-400">{cmp.departmentScope}</div>
                       {cmp.designationScope && cmp.designationScope !== 'ALL' && (
-                        <div className="text-[10px] text-[#243B67] font-semibold truncate">
+                        <div className="text-[10px] text-[#1E3A8A] font-semibold truncate">
                           🎯 {cmp.designationScope}
                         </div>
                       )}
                     </td>
                     <td className="py-3 px-4 font-bold text-slate-800">
                       <span className="flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-[#243B67]" />
+                        <Users className="w-3.5 h-3.5 text-[#1E3A8A]" />
                         {cmp.selectedRecipientsCount} staff
                       </span>
                     </td>
                     <td className="py-3 px-4 text-slate-600">{cmp.approvedBy}</td>
                     <td className="py-3 px-4 font-mono font-medium text-slate-900">
-                      <span className="flex items-center gap-1 text-[#243B67] bg-[#243B67]/5 px-2.5 py-1 rounded-md">
+                      <span className="flex items-center gap-1 text-[#1E3A8A] bg-[#1E3A8A]/5 px-2.5 py-1 rounded-md">
                         <Calendar className="w-3.5 h-3.5" />
                         {cmp.scheduledAt}
                       </span>
@@ -217,7 +217,7 @@ export const ScheduleCampaignsPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-lg font-semibold shadow-xs"
+                  className="px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-lg font-semibold shadow-xs"
                 >
                   Confirm Reschedule
                 </button>

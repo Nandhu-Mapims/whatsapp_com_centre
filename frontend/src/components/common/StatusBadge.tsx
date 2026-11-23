@@ -25,7 +25,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className }) =
       return 'bg-blue-50 text-blue-700 border-blue-200';
     }
     if (lower === 'urgent' || lower === 'emergency') {
-      return 'bg-[#7B2846]/10 text-[#7B2846] border-[#7B2846]/20 font-semibold';
+      return 'bg-[#059669]/10 text-[#059669] border-[#059669]/20 font-semibold';
     }
     return 'bg-slate-50 text-slate-600 border-slate-200';
   };

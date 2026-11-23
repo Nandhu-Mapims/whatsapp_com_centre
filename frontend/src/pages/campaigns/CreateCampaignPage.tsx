@@ -27,6 +27,7 @@ import {
   X,
   Filter,
   RotateCcw,
+  ExternalLink,
 } from 'lucide-react';
 import { PageHeader } from '../../components/common/PageHeader';
 import { WhatsAppPhonePreview } from '../../components/common/WhatsAppPhonePreview';
@@ -52,7 +53,10 @@ export const CreateCampaignPage: React.FC = () => {
   // STEP 1: Template Selection & Message Editing
   const [availableTemplates, setAvailableTemplates] = useState<WhatsAppTemplate[]>(mockTemplates);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>(
-    mockTemplates.find((t) => t.status === 'APPROVED')?.id || mockTemplates[0]?.id || '6afff3776d38731f1c011455'
+    mockTemplates.find((t) => t.name === 'aph_notice_url')?.id ||
+    mockTemplates.find((t) => t.status === 'APPROVED')?.id ||
+    mockTemplates[0]?.id ||
+    '6b03bd79e103c1329b7f7604'
   );
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(false);
 
@@ -67,10 +71,11 @@ export const CreateCampaignPage: React.FC = () => {
       .then((json) => {
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
           setAvailableTemplates(json.data);
+          const noticeUrlTmpl = json.data.find((t: any) => t.name === 'aph_notice_url');
           const approved = json.data.find((t: any) => t.status === 'APPROVED');
           setSelectedTemplateId((prev) => {
             const exists = json.data.some((t: any) => t.id === prev);
-            return exists ? prev : approved ? approved.id : json.data[0].id;
+            return exists ? prev : noticeUrlTmpl ? noticeUrlTmpl.id : approved ? approved.id : json.data[0].id;
           });
         }
       })
@@ -83,60 +88,121 @@ export const CreateCampaignPage: React.FC = () => {
   const activeTemplate: WhatsAppTemplate = useMemo(() => {
     return (
       availableTemplates.find((t) => t.id === selectedTemplateId) ||
+      availableTemplates.find((t) => t.name === 'aph_notice_url') ||
       availableTemplates.find((t) => t.status === 'APPROVED') ||
       availableTemplates[0] || {
-        id: '6afff3776d38731f1c011455',
-        watiTemplateId: 'aph_test_sample',
-        name: 'aph_test_sample',
+        id: '6b03bd79e103c1329b7f7604',
+        watiTemplateId: 'aph_notice_url',
+        name: 'aph_notice_url',
         category: 'MARKETING',
         language: 'en',
         headerType: 'NONE',
-        body: 'Dear {{1}}, welcome to APH Connect hospital broadcast test.',
+        body: 'Dear {{1}},\n{{2}}\nYou can access the application using the link below:\n{{3}}\n\nRegards,\nAdhiparasakthi Hospitals',
         footer: 'APH Connect • MAPIMS Hospitals',
         buttons: [],
-        variables: [{ key: '1', sampleValue: 'Staff Member', description: 'Name' }],
+        variables: [
+          { key: '1', sampleValue: 'Shreya', description: 'Recipient Name' },
+          { key: '2', sampleValue: 'Incident reporting is live !', description: 'Notice Content' },
+          { key: '3', sampleValue: 'https://inc.mapims.edu.in/login', description: 'Portal URL' },
+        ],
         status: 'APPROVED',
-        createdAt: '2026-11-20',
+        createdAt: '2026-11-23',
       }
     );
   }, [availableTemplates, selectedTemplateId]);
 
-  // Editable template body content state
-  const [editedTemplateBody, setEditedTemplateBody] = useState<string>(activeTemplate?.body || '');
-
-  // Synchronize edited body whenever a new template is selected
-  useEffect(() => {
-    if (activeTemplate) {
-      setEditedTemplateBody(activeTemplate.body || '');
-    }
-  }, [activeTemplate.id, activeTemplate.body]);
-
-  // Dynamic variable parameters map
+  // Dynamic variable parameters map (Source of Truth for {{1}}, {{2}}, {{3}})
   const [variableValues, setVariableValues] = useState<Record<string, string>>({
     '1': '{{employee.name}}',
-    '2': 'Welcome to Adhiparasakthi hospitals!',
-    '3': '21 Nov 2026',
-    '4': '08:00 AM (Morning Shift)',
-    '5': 'Hospital Administration',
+    '2': 'Incident reporting is live !',
+    '3': 'https://inc.mapims.edu.in/login',
   });
 
-  // When active template changes, initialize variable values
+  // Helper to cleanly separate notice text (Parameter 2) and portal link (Parameter 3)
+  const handleNoticeChange = (raw: string) => {
+    // Check if the user pasted a URL or full template text into Field 2
+    const urlMatch = raw.match(/https?:\/\/[^\s,]+/);
+    if (urlMatch) {
+      const extractedUrl = urlMatch[0].replace(/[)\]>,;]+$/, '').replace(/Regards.*$/i, '').trim();
+      const cleanNotice = raw
+        .replace(/https?:\/\/[^\s,]+/g, '')
+        .replace(/You can access the application using the link below:?/gi, '')
+        .replace(/Regards,?\s*Adhiparasakthi Hospitals/gi, '')
+        .replace(/^Dear \{\{\d+\}\},?\s*/gi, '')
+        .trim();
+
+      setVariableValues((prev) => ({
+        ...prev,
+        '2': cleanNotice || 'Incident reporting is live !',
+        '3': extractedUrl || prev['3'] || 'https://inc.mapims.edu.in/login',
+      }));
+      success('Link Detected & Auto-Separated', 'Portal URL moved to Parameter 3 and Notice text cleaned.');
+      return;
+    }
+    setVariableValues((prev) => ({ ...prev, '2': raw }));
+  };
+
+  // Helper to handle and format URL entry in Parameter 3
+  const handleUrlChange = (raw: string) => {
+    let clean = raw.trim();
+    const urlMatch = clean.match(/https?:\/\/[^\s,]+/);
+    if (urlMatch) {
+      clean = urlMatch[0].replace(/[)\]>,;]+$/, '').replace(/Regards.*$/i, '').trim();
+    } else if (clean.startsWith('inc.mapims') || clean.startsWith('www.')) {
+      clean = `https://${clean}`;
+    }
+    setVariableValues((prev) => ({ ...prev, '3': clean }));
+  };
+
+  // When active template changes, initialize variable values and auto-separate fields
   useEffect(() => {
     if (activeTemplate && Array.isArray(activeTemplate.variables)) {
-      const initVars: Record<string, string> = { ...variableValues };
-      activeTemplate.variables.forEach((v) => {
-        if (!initVars[v.key]) {
-          initVars[v.key] =
-            v.key === '1'
-              ? '{{employee.name}}'
-              : v.key === '2'
-              ? 'Welcome to Adhiparasakthi hospitals!'
-              : v.sampleValue || `Value for ${v.key}`;
+      setVariableValues((prev) => {
+        const next: Record<string, string> = { ...prev };
+        activeTemplate.variables.forEach((v) => {
+          const k = String(v.key);
+          if (!next[k] || next[k].startsWith('Value for')) {
+            next[k] =
+              k === '1'
+                ? '{{employee.name}}'
+                : k === '2'
+                ? (v.sampleValue && !v.sampleValue.includes('Employee Feedback') ? v.sampleValue : 'Incident reporting is live !')
+                : k === '3'
+                ? (v.sampleValue || 'https://inc.mapims.edu.in/login')
+                : (v.sampleValue || '');
+          }
+        });
+
+        // Auto-clean any mashed text in {{2}} where link or footer was merged into the notice
+        if (next['2'] && (next['2'].includes('You can access') || next['2'].includes('http') || next['2'].includes('inc.mapims'))) {
+          const raw = next['2'];
+          const urlMatch = raw.match(/https?:\/\/[^\s,]+/);
+          const cleanNotice = raw
+            .replace(/https?:\/\/[^\s,]+/g, '')
+            .replace(/You can access the application using the link below:?/gi, '')
+            .replace(/Regards,?\s*Adhiparasakthi Hospitals/gi, '')
+            .replace(/^Dear \{\{\d+\}\},?\s*/gi, '')
+            .trim();
+          if (cleanNotice) next['2'] = cleanNotice;
+          if (urlMatch) {
+            next['3'] = urlMatch[0].replace(/[)\]>,;]+$/, '').replace(/Regards.*$/i, '').trim();
+          }
         }
+
+        // Dedicated defaults for aph_notice_url
+        if (activeTemplate.name === 'aph_notice_url') {
+          if (!next['2'] || next['2'] === 'Welcome to Adhiparasakthi hospitals!') {
+            next['2'] = 'Incident reporting is live !';
+          }
+          if (!next['3'] || next['3'] === 'https://example.com' || next['3'] === '21 Nov 2026' || next['3'].trim() === '') {
+            next['3'] = 'https://inc.mapims.edu.in/login';
+          }
+        }
+
+        return next;
       });
-      setVariableValues(initVars);
     }
-  }, [activeTemplate]);
+  }, [activeTemplate.id, activeTemplate.name]);
 
   // STEP 2: Live Test Message
   const [testNumber, setTestNumber] = useState('+91 95513 82296');
@@ -158,13 +224,13 @@ export const CreateCampaignPage: React.FC = () => {
     setIsSendingTest(true);
     setTestResult(null);
 
-    // Build parameters array for WATI
-    const paramsList = Object.keys(variableValues).map((key) => {
-      let val = variableValues[key];
+    // Build parameters array for WATI strictly from active template variables
+    const paramsList = (activeTemplate.variables || []).map((v) => {
+      let val = variableValues[v.key] ?? v.sampleValue ?? '';
       if (val === '{{employee.name}}' || val.includes('employee.name')) {
-        val = testRecipientName;
+        val = testRecipientName || 'Dr. A. Saravanan';
       }
-      return { name: key, value: val };
+      return { name: v.key, value: val };
     });
 
     try {
@@ -176,7 +242,7 @@ export const CreateCampaignPage: React.FC = () => {
           templateName: activeTemplate.watiTemplateId || activeTemplate.name,
           broadcastTitle: `Test: ${title}`,
           parameters: paramsList,
-          customMessage: editedTemplateBody || activeTemplate.body,
+          customMessage: activeTemplate.body,
         }),
       });
 
@@ -616,8 +682,12 @@ export const CreateCampaignPage: React.FC = () => {
           title,
           templateId: activeTemplate.id,
           templateName: activeTemplate.watiTemplateId || activeTemplate.name,
-          templateBody: editedTemplateBody || activeTemplate.body,
-          customMessage: editedTemplateBody || activeTemplate.body,
+          templateBody: activeTemplate.body,
+          customMessage: activeTemplate.body,
+          parameters: (activeTemplate.variables || []).map((v) => ({
+            name: v.key,
+            value: variableValues[v.key] ?? v.sampleValue ?? '',
+          })),
           categoryScope:
             cadreScope === 'BOTH'
               ? 'All Staff (Teaching & Non-Teaching)'
@@ -683,7 +753,7 @@ export const CreateCampaignPage: React.FC = () => {
             onClick={() => setStep(1)}
             className={`p-2.5 rounded-xl text-left transition-all flex items-center gap-2.5 ${
               step === 1
-                ? 'bg-[#243B67] text-white shadow-xs font-bold'
+                ? 'bg-[#1E3A8A] text-white shadow-xs font-bold'
                 : step > 1
                 ? 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100/70 font-semibold'
                 : 'bg-slate-50 text-slate-400'
@@ -692,7 +762,7 @@ export const CreateCampaignPage: React.FC = () => {
             <div
               className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-extrabold ${
                 step === 1
-                  ? 'bg-white text-[#243B67]'
+                  ? 'bg-white text-[#1E3A8A]'
                   : step > 1
                   ? 'bg-emerald-600 text-white'
                   : 'bg-slate-200 text-slate-500'
@@ -711,7 +781,7 @@ export const CreateCampaignPage: React.FC = () => {
             onClick={() => setStep(2)}
             className={`p-2.5 rounded-xl text-left transition-all flex items-center gap-2.5 ${
               step === 2
-                ? 'bg-[#243B67] text-white shadow-xs font-bold'
+                ? 'bg-[#1E3A8A] text-white shadow-xs font-bold'
                 : step > 2
                 ? 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100/70 font-semibold'
                 : 'bg-slate-50 text-slate-400'
@@ -720,7 +790,7 @@ export const CreateCampaignPage: React.FC = () => {
             <div
               className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-extrabold ${
                 step === 2
-                  ? 'bg-white text-[#243B67]'
+                  ? 'bg-white text-[#1E3A8A]'
                   : step > 2
                   ? 'bg-emerald-600 text-white'
                   : 'bg-slate-200 text-slate-500'
@@ -739,7 +809,7 @@ export const CreateCampaignPage: React.FC = () => {
             onClick={() => setStep(3)}
             className={`p-2.5 rounded-xl text-left transition-all flex items-center gap-2.5 ${
               step === 3
-                ? 'bg-[#243B67] text-white shadow-xs font-bold'
+                ? 'bg-[#1E3A8A] text-white shadow-xs font-bold'
                 : step > 3
                 ? 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100/70 font-semibold'
                 : 'bg-slate-50 text-slate-400'
@@ -748,7 +818,7 @@ export const CreateCampaignPage: React.FC = () => {
             <div
               className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-extrabold ${
                 step === 3
-                  ? 'bg-white text-[#243B67]'
+                  ? 'bg-white text-[#1E3A8A]'
                   : step > 3
                   ? 'bg-emerald-600 text-white'
                   : 'bg-slate-200 text-slate-500'
@@ -767,13 +837,13 @@ export const CreateCampaignPage: React.FC = () => {
             onClick={() => setStep(4)}
             className={`p-2.5 rounded-xl text-left transition-all flex items-center gap-2.5 ${
               step === 4
-                ? 'bg-[#243B67] text-white shadow-xs font-bold'
+                ? 'bg-[#1E3A8A] text-white shadow-xs font-bold'
                 : 'bg-slate-50 text-slate-400'
             }`}
           >
             <div
               className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-extrabold ${
-                step === 4 ? 'bg-white text-[#243B67]' : 'bg-slate-200 text-slate-500'
+                step === 4 ? 'bg-white text-[#1E3A8A]' : 'bg-slate-200 text-slate-500'
               }`}
             >
               4
@@ -804,7 +874,7 @@ export const CreateCampaignPage: React.FC = () => {
                     Pick a Meta-approved WATI template from your library and fill the dynamic parameters.
                   </p>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-[#243B67] rounded-md border border-blue-200">
+                <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-[#1E3A8A] rounded-md border border-blue-200">
                   Step 1 of 4
                 </span>
               </div>
@@ -821,7 +891,7 @@ export const CreateCampaignPage: React.FC = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. ICU Night Shift Roster Announcement"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   />
                 </div>
                 <div>
@@ -829,7 +899,7 @@ export const CreateCampaignPage: React.FC = () => {
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as any)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   >
                     <option value="Normal">Normal</option>
                     <option value="Urgent">Urgent</option>
@@ -856,7 +926,7 @@ export const CreateCampaignPage: React.FC = () => {
                 <select
                   value={selectedTemplateId}
                   onChange={(e) => setSelectedTemplateId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-[#243B67] shadow-2xs"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] shadow-2xs"
                 >
                   {availableTemplates.map((t) => (
                     <option key={t.id} value={t.id}>
@@ -866,58 +936,59 @@ export const CreateCampaignPage: React.FC = () => {
                 </select>
               </div>
 
-              {/* Template Content Preview (Editable) */}
-              <div className="p-4 bg-white rounded-xl border border-slate-200/90 shadow-2xs space-y-2.5">
+              {/* Approved Template Structure & Live Highlighting Preview */}
+              <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200/90 shadow-2xs space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider block">
-                      Template Content Preview
+                      Approved Meta Message Structure
                     </label>
                     <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                      Editable
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      Live Template Preview
                     </span>
                   </div>
-                  {editedTemplateBody !== activeTemplate.body && (
-                    <button
-                      type="button"
-                      onClick={() => setEditedTemplateBody(activeTemplate.body)}
-                      className="text-[10px] text-[#243B67] hover:text-[#1b2d50] hover:underline font-semibold flex items-center gap-1 transition-colors"
-                      title="Reset back to official approved template content"
-                    >
-                      <RotateCcw className="w-3 h-3" />
-                      Reset to Original
-                    </button>
-                  )}
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {activeTemplate.name}
+                  </span>
                 </div>
 
-                <div className="relative">
-                  <textarea
-                    rows={4}
-                    value={editedTemplateBody}
-                    onChange={(e) => {
-                      const newBody = e.target.value;
-                      setEditedTemplateBody(newBody);
-                      // If template uses dynamic body variable {{2}}, synchronize parameter {{2}}
-                      if (activeTemplate.variables?.some((v) => v.key === '2')) {
-                        let cleanBody = newBody
-                          .replace(/^Dear\s+[^,\n]+,\s*/i, '')
-                          .replace(/^Hello\s+[^,\n]+,\s*/i, '')
-                          .replace(/\n*Warm regards,\n*Adhiparasakthi Hospitals/i, '')
-                          .trim();
-                        if (cleanBody) {
-                          setVariableValues((prev) => ({ ...prev, '2': cleanBody }));
-                        }
+                <div className="p-3.5 bg-white border border-slate-200/90 rounded-xl text-xs text-slate-800 leading-relaxed font-sans shadow-2xs whitespace-pre-wrap">
+                  {(() => {
+                    const parts = (activeTemplate.body || '').split(/(\{\{\d+\}\})/g);
+                    return parts.map((part, idx) => {
+                      const match = part.match(/\{\{(\d+)\}\}/);
+                      if (match) {
+                        const varKey = match[1];
+                        const val = variableValues[varKey];
+                        const displayVal = varKey === '1' ? (testRecipientName || 'Recipient Name') : val;
+                        const isLink = varKey === '3' || (displayVal && displayVal.startsWith('http'));
+                        return (
+                          <span
+                            key={idx}
+                            className={cn(
+                              "inline-flex items-center gap-1 font-semibold px-2 py-0.5 rounded text-[11px] mx-0.5 border shadow-2xs transition-all",
+                              varKey === '1'
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                : varKey === '2'
+                                ? "bg-blue-50 text-blue-900 border-blue-300"
+                                : "bg-purple-50 text-purple-900 border-purple-300 font-mono underline"
+                            )}
+                            title={`Variable {{${varKey}}}`}
+                          >
+                            {isLink && <ExternalLink className="w-3 h-3 text-purple-600 shrink-0" />}
+                            <span>{displayVal || `[Enter link in Field {{${varKey}}} below]`}</span>
+                          </span>
+                        );
                       }
-                    }}
-                    placeholder="Customize or edit the WhatsApp approved template content here..."
-                    className="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-slate-50/70 focus:bg-white border border-slate-300 rounded-xl text-xs text-slate-800 font-sans leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#243B67] focus:border-transparent transition-all shadow-inner resize-y"
-                  />
+                      return <span key={idx}>{part}</span>;
+                    });
+                  })()}
                 </div>
 
                 <div className="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
-                  <span>Variables like {'{{1}}'} are automatically populated with recipient details</span>
-                  <span className="font-mono">{editedTemplateBody.length} characters</span>
+                  <span>Edit message in <strong>{`{{2}}`}</strong> and link in <strong>{`{{3}}`}</strong> on their separate lines below.</span>
+                  <span className="font-mono text-emerald-700 font-semibold">Meta Verified</span>
                 </div>
               </div>
 
@@ -928,7 +999,7 @@ export const CreateCampaignPage: React.FC = () => {
                     Edit Template Parameters (Required Message Content)
                   </h4>
                   <span className="text-[10px] text-slate-400">
-                    Map to staff attributes or custom text
+                    Each variable is configured on its own dedicated separate line
                   </span>
                 </div>
 
@@ -937,12 +1008,31 @@ export const CreateCampaignPage: React.FC = () => {
                     activeTemplate.variables.map((v) => (
                       <div
                         key={v.key}
-                        className="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs hover:border-[#243B67]/40 transition-colors"
+                        className={cn(
+                          "p-3.5 bg-white rounded-xl border shadow-2xs transition-all",
+                          v.key === '2'
+                            ? "border-blue-200 hover:border-blue-400 ring-1 ring-blue-50"
+                            : v.key === '3'
+                            ? "border-purple-200 hover:border-purple-400 ring-1 ring-purple-50"
+                            : "border-slate-200 hover:border-[#1E3A8A]/40"
+                        )}
                       >
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="font-mono font-bold text-xs text-[#243B67]">
-                            {`{{${v.key}}}`} — {v.description || `Parameter ${v.key}`}
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-mono font-bold text-xs text-[#1E3A8A] flex items-center gap-1.5">
+                            <span className="px-1.5 py-0.5 bg-[#1E3A8A]/10 text-[#1E3A8A] rounded text-[11px]">
+                              {`{{${v.key}}}`}
+                            </span>
+                            <span>
+                              {v.key === '1'
+                                ? 'Recipient Name'
+                                : v.key === '2'
+                                ? 'Notice / Message Content (Line 2)'
+                                : v.key === '3'
+                                ? 'Application / Portal Link (Line 3)'
+                                : v.description || `Parameter ${v.key}`}
+                            </span>
                           </span>
+
                           {v.key === '1' && (
                             <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold border border-emerald-200">
                               Auto-Replaced with Recipient Name
@@ -950,20 +1040,81 @@ export const CreateCampaignPage: React.FC = () => {
                           )}
                           {v.key === '2' && (
                             <span className="text-[10px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-semibold border border-blue-200">
-                              Custom Message Content
+                              Custom Message Content (Separate Line)
+                            </span>
+                          )}
+                          {v.key === '3' && (
+                            <span className="text-[10px] text-purple-700 bg-purple-50 px-2 py-0.5 rounded font-semibold border border-purple-200">
+                              Direct Portal URL (Separate Line)
                             </span>
                           )}
                         </div>
-                        <input
-                          type="text"
-                          value={variableValues[v.key] || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setVariableValues((prev) => ({ ...prev, [v.key]: val }));
-                          }}
-                          placeholder={`Enter value for {{${v.key}}}`}
-                          className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#243B67]"
-                        />
+
+                        {v.key === '2' ? (
+                          <div>
+                            <textarea
+                              rows={3}
+                              value={variableValues[v.key] || ''}
+                              onChange={(e) => handleNoticeChange(e.target.value)}
+                              placeholder="Enter notice or circular message here (e.g. Incident reporting is live !)"
+                              className="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-300 rounded-lg text-xs text-slate-900 font-medium leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-y"
+                            />
+                            {variableValues['2'] && (variableValues['2'].includes('http') || variableValues['2'].includes('You can access')) && (
+                              <div className="mt-2 p-2 bg-amber-50 border border-amber-300 rounded-lg flex items-center justify-between text-[11px] text-amber-900">
+                                <span className="flex items-center gap-1.5 font-medium">
+                                  <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                                  <span>Portal link detected inside notice text.</span>
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleNoticeChange(variableValues['2'])}
+                                  className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded font-bold shadow-2xs text-[10px] flex items-center gap-1"
+                                >
+                                  <Sparkles className="w-3 h-3" /> Auto-Separate Link
+                                </button>
+                              </div>
+                            )}
+                            <p className="text-[11px] text-slate-400 mt-1">
+                              This text is sent cleanly as Parameter 2 without any links or footers mixed in.
+                            </p>
+                          </div>
+                        ) : v.key === '3' ? (
+                          <div>
+                            <div className="relative">
+                              <ExternalLink className="w-4 h-4 text-purple-600 absolute left-3 top-2.5 pointer-events-none" />
+                              <input
+                                type="text"
+                                value={variableValues[v.key] || ''}
+                                onChange={(e) => handleUrlChange(e.target.value)}
+                                placeholder="https://inc.mapims.edu.in/login"
+                                className="w-full pl-9 pr-3 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-300 rounded-lg text-xs text-slate-900 font-mono font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                              />
+                            </div>
+                            <div className="mt-2 flex items-center justify-between gap-2">
+                              <p className="text-[11px] text-slate-400">
+                                Staff can tap this link in WhatsApp to open the application directly.
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => setVariableValues((prev) => ({ ...prev, '3': 'https://inc.mapims.edu.in/login' }))}
+                                className="shrink-0 text-[10px] font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-1 rounded-md transition-colors flex items-center gap-1"
+                              >
+                                <ExternalLink className="w-3 h-3" /> Insert Portal URL
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <input
+                            type="text"
+                            value={variableValues[v.key] || ''}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setVariableValues((prev) => ({ ...prev, [v.key]: val }));
+                            }}
+                            placeholder={`Enter value for {{${v.key}}}`}
+                            className="w-full px-3 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] transition-all"
+                          />
+                        )}
                       </div>
                     ))
                   ) : (
@@ -986,7 +1137,7 @@ export const CreateCampaignPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-5 py-2.5 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-xl font-bold flex items-center gap-2 shadow-xs transition-colors"
+                  className="px-5 py-2.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-xl font-bold flex items-center gap-2 shadow-xs transition-colors"
                 >
                   <span>Save & Continue to Test Message</span>
                   <ArrowRight className="w-4 h-4" />
@@ -1009,7 +1160,7 @@ export const CreateCampaignPage: React.FC = () => {
                     Send a real test message to your WhatsApp terminal to inspect rendering, formatting, and buttons before mass dispatch.
                   </p>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-[#243B67] rounded-md border border-blue-200">
+                <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-[#1E3A8A] rounded-md border border-blue-200">
                   Step 2 of 4
                 </span>
               </div>
@@ -1017,8 +1168,8 @@ export const CreateCampaignPage: React.FC = () => {
               {/* Test Message Box */}
               <div className="p-4 bg-gradient-to-br from-blue-50/70 to-indigo-50/40 border border-blue-200/80 rounded-2xl space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-[#243B67]">
-                    <Sparkles className="w-4 h-4 text-[#7B2846]" />
+                  <div className="flex items-center gap-2 text-[#1E3A8A]">
+                    <Sparkles className="w-4 h-4 text-[#059669]" />
                     <span className="font-bold text-xs uppercase tracking-wider">
                       Live WATI Test Dispatch
                     </span>
@@ -1040,11 +1191,11 @@ export const CreateCampaignPage: React.FC = () => {
                         value={testNumber}
                         onChange={(e) => setTestNumber(e.target.value)}
                         placeholder="+91 95513 82296"
-                        className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                        className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                       />
                     </div>
-                    <span className="text-[10px] text-emerald-700 font-semibold mt-0.5 block">
-                      Development mode: Exclusively testing on authorized phone (+91 95513 82296)
+                    <span className="text-[10px] text-slate-500 font-medium mt-0.5 block">
+                      Dispatches live WhatsApp test directly to this number (e.g. +91 72005 04251)
                     </span>
                   </div>
 
@@ -1057,7 +1208,7 @@ export const CreateCampaignPage: React.FC = () => {
                       value={testRecipientName}
                       onChange={(e) => setTestRecipientName(e.target.value)}
                       placeholder="e.g. Dr. A. Saravanan"
-                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                     />
                     <span className="text-[10px] text-slate-500 mt-0.5 block">
                       Replaces {'{{employee.name}}'} in test
@@ -1070,7 +1221,7 @@ export const CreateCampaignPage: React.FC = () => {
                     type="button"
                     disabled={isSendingTest}
                     onClick={handleSendTestMessage}
-                    className="w-full sm:w-auto px-5 py-2.5 bg-[#243B67] hover:bg-[#1a2c4e] text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-xs transition-all disabled:opacity-70"
+                    className="w-full sm:w-auto px-5 py-2.5 bg-[#1E3A8A] hover:bg-[#1a2c4e] text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-xs transition-all disabled:opacity-70"
                   >
                     {isSendingTest ? (
                       <>
@@ -1124,7 +1275,7 @@ export const CreateCampaignPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="px-5 py-2.5 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-xl font-bold flex items-center gap-2 shadow-xs transition-colors"
+                  className="px-5 py-2.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-xl font-bold flex items-center gap-2 shadow-xs transition-colors"
                 >
                   <span>Continue to Select Receivers</span>
                   <ArrowRight className="w-4 h-4" />
@@ -1147,7 +1298,7 @@ export const CreateCampaignPage: React.FC = () => {
                     Filter staff by Cadre, Department, and Designation.
                   </p>
                 </div>
-                <span className="text-[10px] font-bold px-2.5 py-1 bg-blue-50 text-[#243B67] rounded-md border border-blue-200 self-start sm:self-auto">
+                <span className="text-[10px] font-bold px-2.5 py-1 bg-blue-50 text-[#1E3A8A] rounded-md border border-blue-200 self-start sm:self-auto">
                   Step 3 of 4
                 </span>
               </div>
@@ -1156,7 +1307,7 @@ export const CreateCampaignPage: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-slate-700 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                    <Radio className="w-3.5 h-3.5 text-[#243B67]" />
+                    <Radio className="w-3.5 h-3.5 text-[#1E3A8A]" />
                     <span>Select Cadre:</span>
                   </span>
                   <span className="text-[11px] text-slate-500 font-medium">
@@ -1169,7 +1320,7 @@ export const CreateCampaignPage: React.FC = () => {
                     className={cn(
                       'flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer transition-all',
                       cadreScope === 'BOTH'
-                        ? 'bg-blue-50/80 border-[#243B67] ring-1 ring-[#243B67] text-[#243B67] font-bold shadow-2xs'
+                        ? 'bg-blue-50/80 border-[#1E3A8A] ring-1 ring-[#1E3A8A] text-[#1E3A8A] font-bold shadow-2xs'
                         : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700'
                     )}
                   >
@@ -1178,7 +1329,7 @@ export const CreateCampaignPage: React.FC = () => {
                       name="cadreScope"
                       checked={cadreScope === 'BOTH'}
                       onChange={() => handleCadreChange('BOTH')}
-                      className="text-[#243B67] focus:ring-[#243B67]"
+                      className="text-[#1E3A8A] focus:ring-[#1E3A8A]"
                     />
                     <div className="text-xs">
                       <div className="font-semibold">All Staff (Both)</div>
@@ -1190,7 +1341,7 @@ export const CreateCampaignPage: React.FC = () => {
                     className={cn(
                       'flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer transition-all',
                       cadreScope === 'TEACHING_ONLY'
-                        ? 'bg-blue-50/80 border-[#243B67] ring-1 ring-[#243B67] text-[#243B67] font-bold shadow-2xs'
+                        ? 'bg-blue-50/80 border-[#1E3A8A] ring-1 ring-[#1E3A8A] text-[#1E3A8A] font-bold shadow-2xs'
                         : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700'
                     )}
                   >
@@ -1199,7 +1350,7 @@ export const CreateCampaignPage: React.FC = () => {
                       name="cadreScope"
                       checked={cadreScope === 'TEACHING_ONLY'}
                       onChange={() => handleCadreChange('TEACHING_ONLY')}
-                      className="text-[#243B67] focus:ring-[#243B67]"
+                      className="text-[#1E3A8A] focus:ring-[#1E3A8A]"
                     />
                     <div className="text-xs">
                       <div className="font-semibold">👨‍⚕️ Teaching Faculty</div>
@@ -1211,7 +1362,7 @@ export const CreateCampaignPage: React.FC = () => {
                     className={cn(
                       'flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer transition-all',
                       cadreScope === 'NON_TEACHING_ONLY'
-                        ? 'bg-blue-50/80 border-[#243B67] ring-1 ring-[#243B67] text-[#243B67] font-bold shadow-2xs'
+                        ? 'bg-blue-50/80 border-[#1E3A8A] ring-1 ring-[#1E3A8A] text-[#1E3A8A] font-bold shadow-2xs'
                         : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700'
                     )}
                   >
@@ -1220,7 +1371,7 @@ export const CreateCampaignPage: React.FC = () => {
                       name="cadreScope"
                       checked={cadreScope === 'NON_TEACHING_ONLY'}
                       onChange={() => handleCadreChange('NON_TEACHING_ONLY')}
-                      className="text-[#243B67] focus:ring-[#243B67]"
+                      className="text-[#1E3A8A] focus:ring-[#1E3A8A]"
                     />
                     <div className="text-xs">
                       <div className="font-semibold">🏥 Non-Teaching Staff</div>
@@ -1232,7 +1383,7 @@ export const CreateCampaignPage: React.FC = () => {
                     className={cn(
                       'flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer transition-all',
                       cadreScope === 'DIRECT_NUMBERS'
-                        ? 'bg-blue-50/80 border-[#243B67] ring-1 ring-[#243B67] text-[#243B67] font-bold shadow-2xs'
+                        ? 'bg-blue-50/80 border-[#1E3A8A] ring-1 ring-[#1E3A8A] text-[#1E3A8A] font-bold shadow-2xs'
                         : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700'
                     )}
                   >
@@ -1241,7 +1392,7 @@ export const CreateCampaignPage: React.FC = () => {
                       name="cadreScope"
                       checked={cadreScope === 'DIRECT_NUMBERS'}
                       onChange={() => handleCadreChange('DIRECT_NUMBERS')}
-                      className="text-[#243B67] focus:ring-[#243B67]"
+                      className="text-[#1E3A8A] focus:ring-[#1E3A8A]"
                     />
                     <div className="text-xs">
                       <div className="font-semibold">📱 Direct Numbers</div>
@@ -1257,13 +1408,13 @@ export const CreateCampaignPage: React.FC = () => {
                 <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200 space-y-3 animate-in fade-in zoom-in-95 duration-150">
                   <div className="flex items-center justify-between">
                     <label className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-[#243B67]" />
+                      <Phone className="w-4 h-4 text-[#1E3A8A]" />
                       <span>Direct WhatsApp Numbers (Textbox):</span>
                     </label>
                     <button
                       type="button"
                       onClick={() => setCustomNumbersInput('+919551382296, +919842323330')}
-                      className="text-[11px] text-[#243B67] hover:underline font-semibold"
+                      className="text-[11px] text-[#1E3A8A] hover:underline font-semibold"
                     >
                       + Insert Lead Test Numbers
                     </button>
@@ -1274,11 +1425,11 @@ export const CreateCampaignPage: React.FC = () => {
                     value={customNumbersInput}
                     onChange={(e) => setCustomNumbersInput(e.target.value)}
                     placeholder="Enter WhatsApp mobile numbers separated by comma, space or newline (e.g. +919551382296, +919842323330)..."
-                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   />
                   <div className="flex items-center justify-between text-[11px] text-slate-500">
                     <span>Duplicates are automatically filtered out.</span>
-                    <span className="font-bold text-[#243B67]">
+                    <span className="font-bold text-[#1E3A8A]">
                       {uniqueMatchingEmployees.length} unique phone numbers verified
                     </span>
                   </div>
@@ -1293,7 +1444,7 @@ export const CreateCampaignPage: React.FC = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="font-bold text-slate-700 text-xs flex items-center gap-1.5">
-                          <Building2 className="w-3.5 h-3.5 text-[#243B67]" />
+                          <Building2 className="w-3.5 h-3.5 text-[#1E3A8A]" />
                           <span>Department:</span>
                           {selectedDepartments.length > 0 && (
                             <span className="text-[10px] font-bold px-1.5 py-0.2 bg-blue-100 text-blue-800 rounded-full">
@@ -1318,7 +1469,7 @@ export const CreateCampaignPage: React.FC = () => {
                           {selectedDepartments.map((dept) => (
                             <span
                               key={dept}
-                              className="inline-flex items-center gap-1 text-[11px] font-semibold bg-[#243B67] text-white pl-2 pr-1 py-0.5 rounded-lg shadow-2xs"
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold bg-[#1E3A8A] text-white pl-2 pr-1 py-0.5 rounded-lg shadow-2xs"
                             >
                               <span>{dept}</span>
                               <button
@@ -1360,13 +1511,13 @@ export const CreateCampaignPage: React.FC = () => {
                               : 'Search or select Department...'
                           }
                           list="unified-depts"
-                          className="w-full pl-9 pr-14 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                          className="w-full pl-9 pr-14 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                         />
                         <button
                           type="button"
                           disabled={!deptInput.trim()}
                           onClick={() => handleAddDepartment(deptInput)}
-                          className="absolute right-1.5 px-2 py-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:hover:bg-slate-100 text-[#243B67] font-semibold text-[10px] rounded-lg transition-colors"
+                          className="absolute right-1.5 px-2 py-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:hover:bg-slate-100 text-[#1E3A8A] font-semibold text-[10px] rounded-lg transition-colors"
                         >
                           + Add
                         </button>
@@ -1391,7 +1542,7 @@ export const CreateCampaignPage: React.FC = () => {
                               className={cn(
                                 'text-[10px] px-2 py-0.5 rounded-md font-medium transition-colors flex items-center gap-1',
                                 isSelected
-                                  ? 'bg-[#243B67] text-white font-bold ring-1 ring-[#243B67]'
+                                  ? 'bg-[#1E3A8A] text-white font-bold ring-1 ring-[#1E3A8A]'
                                   : 'bg-white hover:bg-slate-200 text-slate-700 border border-slate-200'
                               )}
                             >
@@ -1407,7 +1558,7 @@ export const CreateCampaignPage: React.FC = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="font-bold text-slate-700 text-xs flex items-center gap-1.5">
-                          <GraduationCap className="w-3.5 h-3.5 text-[#243B67]" />
+                          <GraduationCap className="w-3.5 h-3.5 text-[#1E3A8A]" />
                           <span>Designation:</span>
                           {selectedDesignations.length > 0 && (
                             <span className="text-[10px] font-bold px-1.5 py-0.2 bg-purple-100 text-purple-800 rounded-full">
@@ -1432,7 +1583,7 @@ export const CreateCampaignPage: React.FC = () => {
                           {selectedDesignations.map((desig) => (
                             <span
                               key={desig}
-                              className="inline-flex items-center gap-1 text-[11px] font-semibold bg-[#243B67] text-white pl-2 pr-1 py-0.5 rounded-lg shadow-2xs"
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold bg-[#1E3A8A] text-white pl-2 pr-1 py-0.5 rounded-lg shadow-2xs"
                             >
                               <span>{desig}</span>
                               <button
@@ -1474,13 +1625,13 @@ export const CreateCampaignPage: React.FC = () => {
                               : 'Search or select Designation...'
                           }
                           list="unified-desigs"
-                          className="w-full pl-9 pr-14 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                          className="w-full pl-9 pr-14 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                         />
                         <button
                           type="button"
                           disabled={!desigInput.trim()}
                           onClick={() => handleAddDesignation(desigInput)}
-                          className="absolute right-1.5 px-2 py-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:hover:bg-slate-100 text-[#243B67] font-semibold text-[10px] rounded-lg transition-colors"
+                          className="absolute right-1.5 px-2 py-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:hover:bg-slate-100 text-[#1E3A8A] font-semibold text-[10px] rounded-lg transition-colors"
                         >
                           + Add
                         </button>
@@ -1505,7 +1656,7 @@ export const CreateCampaignPage: React.FC = () => {
                               className={cn(
                                 'text-[10px] px-2 py-0.5 rounded-md font-medium transition-colors flex items-center gap-1',
                                 isSelected
-                                  ? 'bg-[#243B67] text-white font-bold ring-1 ring-[#243B67]'
+                                  ? 'bg-[#1E3A8A] text-white font-bold ring-1 ring-[#1E3A8A]'
                                   : 'bg-white hover:bg-slate-200 text-slate-700 border border-slate-200'
                               )}
                             >
@@ -1529,7 +1680,7 @@ export const CreateCampaignPage: React.FC = () => {
                     value={staffSearch}
                     onChange={(e) => setStaffSearch(e.target.value)}
                     placeholder="Search matching staff by name, ID or phone..."
-                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   />
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -1583,7 +1734,7 @@ export const CreateCampaignPage: React.FC = () => {
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => handleToggleStaffSelect(emp.id)}
-                              className="rounded border-slate-300 text-[#243B67] focus:ring-[#243B67] w-4 h-4 cursor-pointer"
+                              className="rounded border-slate-300 text-[#1E3A8A] focus:ring-[#1E3A8A] w-4 h-4 cursor-pointer"
                             />
                           </td>
                           <td className="py-3 px-4">
@@ -1638,7 +1789,7 @@ export const CreateCampaignPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setStep(4)}
-                  className="px-5 py-2.5 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-xl font-bold flex items-center gap-2 shadow-xs transition-colors"
+                  className="px-5 py-2.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-xl font-bold flex items-center gap-2 shadow-xs transition-colors"
                 >
                   <span>Review & Dispatch Broadcast</span>
                   <ArrowRight className="w-4 h-4" />
@@ -1726,11 +1877,11 @@ export const CreateCampaignPage: React.FC = () => {
                     onClick={() => setDispatchTiming('NOW')}
                     className={`p-3 rounded-xl border text-left transition-all flex items-center gap-3 ${
                       dispatchTiming === 'NOW'
-                        ? 'bg-white border-[#243B67] shadow-xs ring-1 ring-[#243B67]'
+                        ? 'bg-white border-[#1E3A8A] shadow-xs ring-1 ring-[#1E3A8A]'
                         : 'bg-slate-100 border-slate-200 text-slate-600'
                     }`}
                   >
-                    <Radio className={`w-4 h-4 ${dispatchTiming === 'NOW' ? 'text-[#243B67]' : 'text-slate-400'}`} />
+                    <Radio className={`w-4 h-4 ${dispatchTiming === 'NOW' ? 'text-[#1E3A8A]' : 'text-slate-400'}`} />
                     <div>
                       <div className="font-bold text-slate-900">Send Immediately</div>
                       <div className="text-[10px] text-slate-500">Dispatch via WATI without delay</div>
@@ -1742,11 +1893,11 @@ export const CreateCampaignPage: React.FC = () => {
                     onClick={() => setDispatchTiming('SCHEDULE')}
                     className={`p-3 rounded-xl border text-left transition-all flex items-center gap-3 ${
                       dispatchTiming === 'SCHEDULE'
-                        ? 'bg-white border-[#243B67] shadow-xs ring-1 ring-[#243B67]'
+                        ? 'bg-white border-[#1E3A8A] shadow-xs ring-1 ring-[#1E3A8A]'
                         : 'bg-slate-100 border-slate-200 text-slate-600'
                     }`}
                   >
-                    <Clock className={`w-4 h-4 ${dispatchTiming === 'SCHEDULE' ? 'text-[#243B67]' : 'text-slate-400'}`} />
+                    <Clock className={`w-4 h-4 ${dispatchTiming === 'SCHEDULE' ? 'text-[#1E3A8A]' : 'text-slate-400'}`} />
                     <div>
                       <div className="font-bold text-slate-900">Schedule for Later</div>
                       <div className="text-[10px] text-slate-500">Auto-dispatch at specified time</div>
@@ -1783,7 +1934,7 @@ export const CreateCampaignPage: React.FC = () => {
                   type="button"
                   disabled={isSubmittingCampaign || eligibleCount === 0}
                   onClick={handleFinalBroadcast}
-                  className="px-6 py-3 bg-[#7B2846] hover:bg-[#621f37] text-white rounded-xl font-bold flex items-center gap-2 shadow-md transition-all disabled:opacity-50"
+                  className="px-6 py-3 bg-[#059669] hover:bg-[#047857] text-white rounded-xl font-bold flex items-center gap-2 shadow-md transition-all disabled:opacity-50"
                 >
                   {isSubmittingCampaign ? (
                     <>
@@ -1810,10 +1961,7 @@ export const CreateCampaignPage: React.FC = () => {
         {step !== 3 ? (
           <div className="lg:col-span-5 lg:sticky lg:top-24 flex justify-center">
             <WhatsAppPhonePreview
-              template={{
-                ...activeTemplate,
-                body: editedTemplateBody || activeTemplate.body,
-              }}
+              template={activeTemplate}
               variables={variableValues}
               sampleRecipientName="Dr. A. Saravanan"
             />
@@ -1825,7 +1973,7 @@ export const CreateCampaignPage: React.FC = () => {
               {/* Header */}
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-[#243B67]/10 text-[#243B67] flex items-center justify-center font-bold">
+                  <div className="w-7 h-7 rounded-lg bg-[#1E3A8A]/10 text-[#1E3A8A] flex items-center justify-center font-bold">
                     <Filter className="w-4 h-4" />
                   </div>
                   <div>
@@ -1852,7 +2000,7 @@ export const CreateCampaignPage: React.FC = () => {
               {/* 1. Cadre / Category */}
               <div className="space-y-1.5">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                  <Users className="w-3 h-3 text-[#243B67]" />
+                  <Users className="w-3 h-3 text-[#1E3A8A]" />
                   <span>Cadre / Category</span>
                 </span>
                 <div className="p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl flex items-center justify-between">
@@ -1862,7 +2010,7 @@ export const CreateCampaignPage: React.FC = () => {
                     {cadreScope === 'NON_TEACHING_ONLY' && '🏥 Non-Teaching Staff Only'}
                     {cadreScope === 'DIRECT_NUMBERS' && '📱 Direct Mobile Numbers'}
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-100 text-[#243B67] rounded-md">
+                  <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-100 text-[#1E3A8A] rounded-md">
                     {cadreScope === 'BOTH' && '1,046 Staff'}
                     {cadreScope === 'TEACHING_ONLY' && '157 Faculty'}
                     {cadreScope === 'NON_TEACHING_ONLY' && '890 Staff'}
@@ -1876,7 +2024,7 @@ export const CreateCampaignPage: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                      <Building2 className="w-3 h-3 text-[#243B67]" />
+                      <Building2 className="w-3 h-3 text-[#1E3A8A]" />
                       <span>Selected Departments</span>
                     </span>
                     <span className="text-[10px] font-semibold text-slate-500">
@@ -1978,7 +2126,7 @@ export const CreateCampaignPage: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                      <GraduationCap className="w-3 h-3 text-[#243B67]" />
+                      <GraduationCap className="w-3 h-3 text-[#1E3A8A]" />
                       <span>Selected Designations</span>
                     </span>
                     <span className="text-[10px] font-semibold text-slate-500">
@@ -2089,7 +2237,7 @@ export const CreateCampaignPage: React.FC = () => {
                 <div className="grid grid-cols-2 gap-2 pt-1 border-t border-emerald-200/60 text-[11px]">
                   <div>
                     <span className="text-slate-500 block">Teaching:</span>
-                    <span className="font-bold text-[#243B67]">{teachingCount} Faculty</span>
+                    <span className="font-bold text-[#1E3A8A]">{teachingCount} Faculty</span>
                   </div>
                   <div>
                     <span className="text-slate-500 block">Non-Teaching:</span>
@@ -2102,7 +2250,7 @@ export const CreateCampaignPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setStep(4)}
-                className="w-full py-2.5 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-xs transition-colors"
+                className="w-full py-2.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-xs transition-colors"
               >
                 <span>Continue to Dispatch (Step 4)</span>
                 <ArrowRight className="w-4 h-4" />

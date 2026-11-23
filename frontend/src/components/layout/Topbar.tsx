@@ -112,7 +112,7 @@ export const Topbar: React.FC<TopbarProps> = ({
         <button
           type="button"
           onClick={onToggleCollapse}
-          className="hidden md:flex p-1.5 text-slate-500 hover:text-[#243B67] hover:bg-slate-100 rounded-lg transition-colors"
+          className="hidden md:flex p-1.5 text-slate-500 hover:text-[#1E3A8A] hover:bg-slate-100 rounded-lg transition-colors"
           title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
           {isCollapsed ? (
@@ -124,7 +124,7 @@ export const Topbar: React.FC<TopbarProps> = ({
 
         {/* Breadcrumb nav */}
         <nav className="flex items-center gap-1.5 text-xs text-slate-500 font-medium overflow-hidden">
-          <Link to="/dashboard" className="hover:text-[#243B67] transition-colors truncate">
+          <Link to="/dashboard" className="hover:text-[#1E3A8A] transition-colors truncate">
             MAPIMS
           </Link>
           {pathnames.map((segment, index) => {
@@ -138,7 +138,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                     {getBreadcrumbTitle(segment)}
                   </span>
                 ) : (
-                  <Link to={routeTo} className="hover:text-[#243B67] transition-colors truncate capitalize">
+                  <Link to={routeTo} className="hover:text-[#1E3A8A] transition-colors truncate capitalize">
                     {getBreadcrumbTitle(segment)}
                   </Link>
                 )}
@@ -156,7 +156,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           <input
             type="text"
             placeholder="Search employee, ID, campaign..."
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]/20 focus:border-[#243B67]"
+            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/20 focus:border-[#1E3A8A]"
           />
         </div>
 
@@ -168,9 +168,9 @@ export const Topbar: React.FC<TopbarProps> = ({
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-800 transition-colors shadow-2xs"
             title="Switch User Role to test RBAC"
           >
-            <Shield className="w-3.5 h-3.5 text-[#7B2846]" />
+            <Shield className="w-3.5 h-3.5 text-[#059669]" />
             <span className="hidden sm:inline">Role:</span>
-            <span className="text-[#243B67] font-bold">{currentUser.role}</span>
+            <span className="text-[#1E3A8A] font-bold">{currentUser.role}</span>
           </button>
 
           {showRoleMenu && (
@@ -191,13 +191,13 @@ export const Topbar: React.FC<TopbarProps> = ({
                   }}
                   className={`w-full px-3 py-2 text-left text-xs flex items-center justify-between hover:bg-slate-50 transition-colors ${
                     currentUser.role === r
-                      ? 'font-bold text-[#243B67] bg-[#243B67]/5'
+                      ? 'font-bold text-[#1E3A8A] bg-[#1E3A8A]/5'
                       : 'text-slate-700'
                   }`}
                 >
                   <span>{r}</span>
                   {currentUser.role === r && (
-                    <CheckCircle className="w-3.5 h-3.5 text-[#243B67]" />
+                    <CheckCircle className="w-3.5 h-3.5 text-[#1E3A8A]" />
                   )}
                 </button>
               ))}
@@ -214,7 +214,7 @@ export const Topbar: React.FC<TopbarProps> = ({
             aria-label="Notifications"
           >
             <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#7B2846]" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#059669]" />
           </button>
 
           {showNotifications && (
@@ -249,7 +249,7 @@ export const Topbar: React.FC<TopbarProps> = ({
 
         {/* User Avatar & Name */}
         <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-          <div className="w-8 h-8 rounded-full bg-[#243B67] text-white flex items-center justify-center font-bold text-xs ring-2 ring-slate-100">
+          <div className="w-8 h-8 rounded-full bg-[#1E3A8A] text-white flex items-center justify-center font-bold text-xs ring-2 ring-slate-100">
             {currentUser.name.charAt(0)}
           </div>
           <div className="hidden xl:block text-left">

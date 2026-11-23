@@ -46,6 +46,25 @@ export const mockEmployees: Employee[] = realEmployees as Employee[];
 
 export const mockTemplates: WhatsAppTemplate[] = [
   {
+    id: '6b03bd79e103c1329b7f7604',
+    watiTemplateId: 'aph_notice_url',
+    name: 'aph_notice_url',
+    category: 'MARKETING',
+    language: 'en',
+    headerType: 'NONE',
+    body: 'Dear {{1}},\n{{2}}\nYou can access the application using the link below:\n{{3}}\n\nRegards,\nAdhiparasakthi Hospitals',
+    footer: 'APH Connect • MAPIMS Hospitals',
+    buttons: [],
+    variables: [
+      { key: '1', sampleValue: 'Shreya', description: 'Recipient Name' },
+      { key: '2', sampleValue: 'Incident reporting is live !', description: 'Notice Content' },
+      { key: '3', sampleValue: 'https://inc.mapims.edu.in/login', description: 'Portal URL' },
+    ],
+    status: 'APPROVED',
+    lastSynced: '2026-11-23',
+    createdAt: '2026-11-23',
+  },
+  {
     id: '6afff3776d38731f1c011455',
     watiTemplateId: 'aph_test_sample',
     name: 'aph_test_sample',

@@ -70,7 +70,7 @@ export const DraftCampaignsPage: React.FC = () => {
       >
         <button
           onClick={() => navigate('/campaigns/create')}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>New Campaign</span>
@@ -87,7 +87,7 @@ export const DraftCampaignsPage: React.FC = () => {
               placeholder="Search drafts by title, ID, template..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
             />
           </div>
           <span className="text-xs text-slate-500">
@@ -127,14 +127,14 @@ export const DraftCampaignsPage: React.FC = () => {
                       <span className="text-slate-800 font-medium">{d.categoryScope}</span>
                       <div className="text-[11px] text-slate-400 truncate">{d.departmentScope}</div>
                       {d.designationScope && d.designationScope !== 'ALL' && (
-                        <div className="text-[10px] text-[#243B67] font-semibold truncate">
+                        <div className="text-[10px] text-[#1E3A8A] font-semibold truncate">
                           🎯 {d.designationScope}
                         </div>
                       )}
                     </td>
                     <td className="py-3 px-4 font-bold text-slate-800">
                       <span className="flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-[#243B67]" />
+                        <Users className="w-3.5 h-3.5 text-[#1E3A8A]" />
                         {d.selectedRecipientsCount}
                       </span>
                     </td>
@@ -144,7 +144,7 @@ export const DraftCampaignsPage: React.FC = () => {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => navigate('/campaigns/create')}
-                          className="px-2.5 py-1 bg-[#243B67] hover:bg-[#1b2d50] text-white rounded font-semibold transition-colors flex items-center gap-1"
+                          className="px-2.5 py-1 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded font-semibold transition-colors flex items-center gap-1"
                           title="Resume Editing"
                         >
                           <FileEdit className="w-3.5 h-3.5" /> Edit

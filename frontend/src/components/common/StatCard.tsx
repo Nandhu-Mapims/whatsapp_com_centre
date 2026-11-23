@@ -28,7 +28,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   const getIconStyle = () => {
     switch (accentColor) {
       case 'secondary':
-        return 'bg-[#7B2846]/10 text-[#7B2846] ring-1 ring-[#7B2846]/20';
+        return 'bg-[#059669]/10 text-[#059669] ring-1 ring-[#059669]/20';
       case 'emerald':
         return 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200';
       case 'amber':
@@ -38,7 +38,7 @@ export const StatCard: React.FC<StatCardProps> = ({
       case 'blue':
         return 'bg-blue-50 text-blue-600 ring-1 ring-blue-200';
       default:
-        return 'bg-[#243B67]/10 text-[#243B67] ring-1 ring-[#243B67]/20';
+        return 'bg-[#1E3A8A]/10 text-[#1E3A8A] ring-1 ring-[#1E3A8A]/20';
     }
   };
 

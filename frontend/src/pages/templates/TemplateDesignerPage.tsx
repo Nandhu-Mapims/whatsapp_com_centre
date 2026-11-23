@@ -188,7 +188,7 @@ export const TemplateDesignerPage: React.FC = () => {
         </button>
         <button
           onClick={handleSubmitForApproval}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#243B67] hover:bg-[#1b2d50] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
         >
           <Send className="w-4 h-4" />
           <span>Submit for Approval</span>
@@ -201,7 +201,7 @@ export const TemplateDesignerPage: React.FC = () => {
           <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
             Template Authoring & WATI Submission
           </span>
-          <span className="text-[10px] bg-[#243B67]/10 text-[#243B67] font-semibold px-2 py-0.5 rounded">
+          <span className="text-[10px] bg-[#1E3A8A]/10 text-[#1E3A8A] font-semibold px-2 py-0.5 rounded">
             Meta Compliance Ready
           </span>
         </div>
@@ -213,7 +213,7 @@ export const TemplateDesignerPage: React.FC = () => {
           <select
             value={sampleRecipientId}
             onChange={(e) => setSampleRecipientId(e.target.value)}
-            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
           >
             {mockEmployees.map((e) => (
               <option key={e.id} value={e.id}>
@@ -239,7 +239,7 @@ export const TemplateDesignerPage: React.FC = () => {
                     required
                     value={templateName}
                     onChange={(e) => setTemplateName(e.target.value.toLowerCase().replace(/\s+/g, '_'))}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   />
                   <span className="text-[10px] text-slate-400 mt-0.5 block">
                     Use lowercase letters, numbers, and underscores only.
@@ -251,7 +251,7 @@ export const TemplateDesignerPage: React.FC = () => {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as any)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#243B67]"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   >
                     <option value="UTILITY">Utility (Shift & Duty Circulars)</option>
                     <option value="MARKETING">Marketing (Outreach & Events)</option>
@@ -319,7 +319,7 @@ export const TemplateDesignerPage: React.FC = () => {
                         key={num}
                         type="button"
                         onClick={() => handleInsertVariable(num)}
-                        className="px-2 py-0.5 bg-slate-100 hover:bg-[#243B67] hover:text-white rounded text-[11px] font-mono font-bold text-slate-700 transition-colors"
+                        className="px-2 py-0.5 bg-slate-100 hover:bg-[#1E3A8A] hover:text-white rounded text-[11px] font-mono font-bold text-slate-700 transition-colors"
                       >
                         {`{{${num}}}`}
                       </button>
@@ -331,7 +331,7 @@ export const TemplateDesignerPage: React.FC = () => {
                   rows={6}
                   value={bodyText}
                   onChange={(e) => setBodyText(e.target.value)}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-slate-800 font-sans focus:outline-none focus:ring-2 focus:ring-[#243B67] leading-relaxed"
+                  className="w-full p-3 border border-slate-200 rounded-xl text-slate-800 font-sans focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] leading-relaxed"
                 />
               </div>
 
@@ -359,7 +359,7 @@ export const TemplateDesignerPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleAddButton}
-                      className="text-[#243B67] font-semibold flex items-center gap-1 hover:underline text-xs"
+                      className="text-[#1E3A8A] font-semibold flex items-center gap-1 hover:underline text-xs"
                     >
                       <Plus className="w-3.5 h-3.5" /> Add Button
                     </button>
@@ -430,7 +430,7 @@ export const TemplateDesignerPage: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {Object.keys(variables).map((key) => (
                     <div key={key} className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200">
-                      <span className="font-mono font-bold text-[#243B67] shrink-0">{`{{${key}}}`}:</span>
+                      <span className="font-mono font-bold text-[#1E3A8A] shrink-0">{`{{${key}}}`}:</span>
                       <input
                         type="text"
                         value={variables[key]}
