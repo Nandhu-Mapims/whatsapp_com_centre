@@ -41,6 +41,7 @@ export interface ICampaign extends Document {
   completedAt?: Date;
   submittedCount: number;
   deliveredCount: number;
+  sentCount?: number;
   readCount: number;
   failedCount: number;
   priority: 'Normal' | 'Urgent' | 'Emergency';
@@ -92,6 +93,7 @@ const CampaignSchema = new Schema<ICampaign>(
     completedAt: { type: Date },
     submittedCount: { type: Number, default: 0 },
     deliveredCount: { type: Number, default: 0 },
+    sentCount: { type: Number, default: 0 },
     readCount: { type: Number, default: 0 },
     failedCount: { type: Number, default: 0 },
     priority: { type: String, enum: ['Normal', 'Urgent', 'Emergency'], default: 'Normal' },

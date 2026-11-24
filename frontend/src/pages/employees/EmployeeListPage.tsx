@@ -25,6 +25,7 @@ import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { mockEmployees, mockDepartments, mockDesignations } from '../../data/mockData';
 import { Employee, StaffDesignation } from '../../types';
 import { useToast } from '../../context/ToastContext';
+import { normalizePhoneNumber } from '../../utils/phoneUtils';
 
 export const EmployeeListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -339,11 +340,17 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
       return;
     }
 
-    // Mask the phone number: e.g. +91 98401 ••••••
-    const masked =
-      formPhone.length > 8
-        ? `${formPhone.slice(0, 8)} ••••••`
-        : formPhone;
+    const norm = normalizePhoneNumber(formPhone);
+    if (!norm.isValid) {
+      error(
+        'Invalid WhatsApp Number',
+        'Please enter a valid 10-digit mobile number with or without +91 (e.g. 9840123456 or +91 98401 23456).'
+      );
+      return;
+    }
+
+    const savedPhone = norm.e164;
+    const masked = `${norm.formatted.slice(0, 8)} ••••••`;
 
     if (editingEmployee) {
       setEmployees((prev) =>
@@ -355,10 +362,10 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
                 staffType: formCadre,
                 department: formDepartment,
                 designation: formDesignation,
-                whatsappNumber: formPhone,
+                whatsappNumber: savedPhone,
                 maskedNumber: masked,
                 consentStatus: formConsent,
-                lastUpdated: '2026-10-30',
+                lastUpdated: new Date().toISOString().split('T')[0],
               }
             : emp
         )
@@ -373,13 +380,13 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
         category: formCadre === 'Teaching' ? 'Medical / Clinical' : 'Hospital Staff',
         department: formDepartment,
         designation: formDesignation,
-        whatsappNumber: formPhone,
+        whatsappNumber: savedPhone,
         maskedNumber: masked,
         consentStatus: formConsent,
         consentSource: 'Admin HR Direct Registration',
-        consentDate: '2026-10-30',
+        consentDate: new Date().toISOString().split('T')[0],
         active: true,
-        lastUpdated: '2026-10-30',
+        lastUpdated: new Date().toISOString().split('T')[0],
       };
       setEmployees((prev) => [newEmp, ...prev]);
       success('Employee Registered', `${formName} added to master roster.`);
@@ -852,18 +859,18 @@ MAP-4011,Mrs. M. Revathi,Administrative & Secretarial,Hospital Administration,Me
 
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">
-                  WhatsApp Contact Number (E.164 Format) *
+                  WhatsApp Contact Number *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="+919840123456"
+                  placeholder="e.g. 9840123456 or +91 98401 23456"
                   value={formPhone}
                   onChange={(e) => setFormPhone(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                 />
-                <span className="text-[10px] text-slate-400 mt-1 block">
-                  Must include country code (e.g. +91). Numbers are verified with WATI before sending.
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Supports 10-digit mobile number with or without +91 (e.g. 9840123456 or +91 98401 23456).
                 </span>
               </div>
 

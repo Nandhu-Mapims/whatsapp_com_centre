@@ -10,6 +10,13 @@ import {
   XCircle,
   X,
   Key,
+  Users,
+  Stethoscope,
+  Crown,
+  AlertCircle,
+  Check,
+  Building2,
+  Lock,
 } from 'lucide-react';
 import { PageHeader } from '../../components/common/PageHeader';
 import { StatusBadge } from '../../components/common/StatusBadge';
@@ -30,7 +37,7 @@ export const UsersRolesPage: React.FC = () => {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [formName, setFormName] = useState('');
   const [formEmail, setFormEmail] = useState('');
-  const [formRole, setFormRole] = useState<UserRole>('Campaign Creator');
+  const [formRole, setFormRole] = useState<UserRole>('HR');
 
   // Deactivate confirm state
   const [confirmUser, setConfirmUser] = useState<User | null>(null);
@@ -43,17 +50,16 @@ export const UsersRolesPage: React.FC = () => {
 
   const roles: UserRole[] = [
     'Super Admin',
-    'Admin',
-    'Campaign Creator',
-    'Approver',
-    'Viewer',
+    'HR',
+    'MS',
+    'MD',
   ];
 
   const handleOpenAdd = () => {
     setEditingUser(null);
     setFormName('');
     setFormEmail('');
-    setFormRole('Campaign Creator');
+    setFormRole('HR');
     setIsModalOpen(true);
   };
 
@@ -113,20 +119,152 @@ export const UsersRolesPage: React.FC = () => {
     setConfirmUser(null);
   };
 
-  // Permission Matrix Data from Requirements Section D
+  // Hospital RBAC Capability Matrix (Super Admin, HR, MS, MD)
   const matrixRows = [
-    { capability: 'Dashboard Overview', superAdmin: 'All', admin: 'All', creator: 'Scoped', approver: 'Scoped', viewer: 'Scoped' },
-    { capability: 'Employees CRUD', superAdmin: 'Full', admin: 'Full', creator: 'View Only', approver: 'View Only', viewer: 'None' },
-    { capability: 'Categories & Depts', superAdmin: 'Full', admin: 'Full', creator: 'View Only', approver: 'View Only', viewer: 'None' },
-    { capability: 'Templates & Media', superAdmin: 'Manage', admin: 'Manage', creator: 'Draft & Use', approver: 'View Only', viewer: 'None' },
-    { capability: 'Create Campaign', superAdmin: 'Yes', admin: 'Yes', creator: 'Yes (Own)', approver: 'No', viewer: 'No' },
-    { capability: 'Approve Campaign', superAdmin: 'Yes (Other users)', admin: 'Yes (Other users)', creator: 'No (Self-approval blocked)', approver: 'Assigned', viewer: 'No' },
-    { capability: 'Schedule & Dispatch', superAdmin: 'Yes (Post-Approval)', admin: 'Yes (Post-Approval)', creator: 'Request Only', approver: 'No', viewer: 'No' },
-    { capability: 'Retry Failed Sends', superAdmin: 'Yes', admin: 'Yes', creator: 'No', approver: 'No', viewer: 'No' },
-    { capability: 'WATI Integration Secrets', superAdmin: 'Full', admin: 'No Access', creator: 'No Access', approver: 'No Access', viewer: 'No Access' },
-    { capability: 'Audit Logs', superAdmin: 'Full Audit Trail', admin: 'Read Only', creator: 'No Access', approver: 'No Access', viewer: 'No Access' },
-    { capability: 'Consent Records', superAdmin: 'Manage', admin: 'Manage', creator: 'Eligibility Check', approver: 'Eligibility Check', viewer: 'No Access' },
+    {
+      category: 'Analytics & Reporting',
+      capability: 'Executive Dashboard & KPI Analytics',
+      superAdmin: 'Full System Scope',
+      hr: 'Staff & Roster Metrics',
+      ms: 'Clinical Delivery Funnel',
+      md: 'Apex Executive KPIs',
+    },
+    {
+      category: 'Roster Management',
+      capability: 'Staff Directory (CRUD & Bulk Excel)',
+      superAdmin: 'Full System Access',
+      hr: 'Full CRUD & Import Lead',
+      ms: 'View Only (Clinical)',
+      md: 'View & Oversight',
+    },
+    {
+      category: 'Roster Management',
+      capability: 'Departments & Designation Mapping',
+      superAdmin: 'Full Access',
+      hr: 'Manage & Register',
+      ms: 'View Only',
+      md: 'View Only',
+    },
+    {
+      category: 'Template Management',
+      capability: 'WhatsApp Templates (WATI & Meta)',
+      superAdmin: 'Author, Delete & Sync',
+      hr: 'Use & Sync Templates',
+      ms: 'Clinical Review & Sync',
+      md: 'Approve, Delete & Sync',
+    },
+    {
+      category: 'Broadcast Operations',
+      capability: 'Create & Draft Broadcast Campaigns',
+      superAdmin: 'All Campaigns',
+      hr: 'All Staff Broadcasts',
+      ms: 'Clinical Broadcasts',
+      md: 'Executive & Emergency',
+    },
+    {
+      category: 'Broadcast Operations',
+      capability: 'Clinical Approval & Sign-Off',
+      superAdmin: 'Global Override',
+      hr: 'Blocked (No Self-Approval)',
+      ms: 'Clinical Sign-Off (4-Eyes)',
+      md: 'Apex Executive Sign-Off',
+    },
+    {
+      category: 'Broadcast Operations',
+      capability: 'Schedule & WATI Dispatch',
+      superAdmin: 'Immediate & Scheduled',
+      hr: 'Post-Approval Dispatch',
+      ms: 'Approved Clinical Sends',
+      md: 'Immediate Executive Sends',
+    },
+    {
+      category: 'Delivery Diagnostics',
+      capability: 'Live Delivery Reports (Nov 21+)',
+      superAdmin: 'Full Real-Time Telemetry',
+      hr: 'Staff Delivery Funnel',
+      ms: 'Clinical Delivery & Reads',
+      md: 'Hospital-Wide Telemetry',
+    },
+    {
+      category: 'Delivery Diagnostics',
+      capability: 'Failed Message Diagnostics & Retry',
+      superAdmin: 'Auto (30m/1h) + Manual Send',
+      hr: 'Diagnostics & Phone Edit',
+      ms: 'Clinical Impact Diagnostics',
+      md: 'Governance & Manual Send',
+    },
+    {
+      category: 'Compliance & Safety',
+      capability: 'Consent & Opt-Out Registry',
+      superAdmin: 'Full System Access',
+      hr: 'Full Registry Management',
+      ms: 'View Only',
+      md: 'View & Compliance',
+    },
+    {
+      category: 'Security & Integration',
+      capability: 'WATI Gateway API Configuration',
+      superAdmin: 'Full Config & Keys',
+      hr: 'Restricted (No Access)',
+      ms: 'Restricted (No Access)',
+      md: 'Restricted (No Access)',
+    },
+    {
+      category: 'Security & Integration',
+      capability: 'System Audit Logs & Traceability',
+      superAdmin: 'Full Audit Trail',
+      hr: 'Restricted (No Access)',
+      ms: 'Restricted (No Access)',
+      md: 'Full Audit Trail (Export)',
+    },
+    {
+      category: 'Security & Integration',
+      capability: 'User & Role Administration',
+      superAdmin: 'Full User Management',
+      hr: 'Restricted (No Access)',
+      ms: 'Restricted (No Access)',
+      md: 'Executive Oversight',
+    },
   ];
+
+  const renderPermissionBadge = (val: string) => {
+    if (val.includes('Full') || val.includes('Yes') || val.includes('Override') || val.includes('Manage') || val.includes('Author')) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+          <span>{val}</span>
+        </span>
+      );
+    }
+    if (val.includes('Clinical Sign-Off') || val.includes('Executive') || val.includes('Sign-Off') || val.includes('Apex') || val.includes('Approve')) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-50 text-[#1E3A8A] border border-blue-200">
+          <Shield className="w-3 h-3 text-[#1E3A8A] shrink-0" />
+          <span>{val}</span>
+        </span>
+      );
+    }
+    if (val.includes('Draft') || val.includes('View') || val.includes('Post-Approval') || val.includes('Use') || val.includes('Metrics') || val.includes('Diagnostics')) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+          <span>{val}</span>
+        </span>
+      );
+    }
+    if (val.includes('Blocked') || val.includes('Restricted') || val.includes('No Access')) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+          <XCircle className="w-3 h-3 text-rose-500 shrink-0" />
+          <span>{val}</span>
+        </span>
+      );
+    }
+    return (
+      <span className="px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-600 bg-slate-50 border border-slate-200">
+        {val}
+      </span>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -248,40 +386,153 @@ export const UsersRolesPage: React.FC = () => {
 
       {/* TAB 2: RBAC Matrix */}
       {activeTab === 'MATRIX' && (
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
-          <div className="p-4 bg-slate-50 border-b border-slate-200">
-            <h3 className="font-bold text-xs text-slate-900">
-              Hospital RBAC Capability Enforcement Matrix
-            </h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              Governed by the backend token verification middleware. Creators cannot self-approve.
-            </p>
+        <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Executive Role Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
+                  <ShieldAlert className="w-4 h-4" />
+                </div>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md">
+                  Global Access
+                </span>
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-slate-900">Super Admin</h4>
+                <p className="text-[11px] font-mono text-slate-500">superadmin@mapims.org</p>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Global IT and security administration. WATI gateway credentials, token rotation, audit trails, and emergency override.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-lg bg-violet-50 text-violet-700 flex items-center justify-center font-bold">
+                  <Users className="w-4 h-4" />
+                </div>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-violet-50 text-violet-700 border border-violet-200 rounded-md">
+                  Staff Lead
+                </span>
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-slate-900">HR (Human Resources)</h4>
+                <p className="text-[11px] font-mono text-slate-500">hr@mapims.org</p>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Staff directory operations, bulk Excel employee import, designation mapping, consent registry, and broadcast drafting.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
+                  <Stethoscope className="w-4 h-4" />
+                </div>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md">
+                  Clinical Approval
+                </span>
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-slate-900">MS (Medical Supt)</h4>
+                <p className="text-[11px] font-mono text-slate-500">ms@mapims.org</p>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Mandatory 4-eyes clinical sign-off, clinical triage notices review, duty rosters oversight, and delivery diagnostics.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#1E3A8A] flex items-center justify-center font-bold">
+                  <Crown className="w-4 h-4" />
+                </div>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-blue-50 text-[#1E3A8A] border border-blue-200 rounded-md">
+                  Apex Authority
+                </span>
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-slate-900">MD (Managing Director)</h4>
+                <p className="text-[11px] font-mono text-slate-500">md@mapims.org</p>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Executive authority sign-off, high-priority emergency announcements, hospital-wide audit trails, and executive KPIs.
+              </p>
+            </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-100/70 text-slate-700 uppercase tracking-wider font-semibold border-b border-slate-200">
-                <tr>
-                  <th className="py-3 px-4">System Capability</th>
-                  <th className="py-3 px-3">Super Admin</th>
-                  <th className="py-3 px-3">Admin</th>
-                  <th className="py-3 px-3">Campaign Creator</th>
-                  <th className="py-3 px-3">Approver</th>
-                  <th className="py-3 px-3">Viewer</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
-                {matrixRows.map((row) => (
-                  <tr key={row.capability} className="hover:bg-slate-50">
-                    <td className="py-3 px-4 font-bold text-slate-900">{row.capability}</td>
-                    <td className="py-3 px-3 font-semibold text-emerald-700">{row.superAdmin}</td>
-                    <td className="py-3 px-3 text-slate-800">{row.admin}</td>
-                    <td className="py-3 px-3 text-slate-700">{row.creator}</td>
-                    <td className="py-3 px-3 text-slate-700">{row.approver}</td>
-                    <td className="py-3 px-3 text-slate-400">{row.viewer}</td>
+
+          {/* Four-Eyes Governance Callout Banner */}
+          <div className="p-4 bg-gradient-to-r from-blue-50 via-indigo-50 to-emerald-50 border border-blue-200/80 rounded-xl flex items-start gap-3 shadow-2xs">
+            <div className="p-2 bg-[#1E3A8A] text-white rounded-lg shrink-0 mt-0.5">
+              <Shield className="w-4 h-4" />
+            </div>
+            <div className="space-y-1 text-xs">
+              <span className="font-bold text-slate-900 block">
+                NABH & Hospital Regulatory Policy: Strict Separation of Duties (Four-Eyes Principle)
+              </span>
+              <p className="text-slate-600 leading-relaxed text-[11px]">
+                To eliminate unauthorized or accidental WhatsApp transmissions to clinical staff, the system prevents broadcast creators from self-approving. Once HR drafts a circular, it must receive explicit sign-off from the <strong>Medical Superintendent (MS)</strong> for clinical verification or the <strong>Managing Director (MD)</strong> before WATI Meta dispatch is permitted.
+              </p>
+            </div>
+          </div>
+
+          {/* Detailed Matrix Table */}
+          <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden">
+            <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 className="font-bold text-xs text-slate-900">
+                  Hospital Role-Based Access Control (RBAC) Governance Matrix
+                </h3>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  Enforced at the network edge by Express JWT route guards and frontend navigation filters.
+                </p>
+              </div>
+              <span className="px-2.5 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-[11px] font-bold self-start sm:self-auto">
+                4 Active Hospital Roles
+              </span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-100/70 text-slate-700 uppercase tracking-wider font-semibold border-b border-slate-200">
+                  <tr>
+                    <th className="py-3 px-4">Hospital System Capability</th>
+                    <th className="py-3 px-3">
+                      <div className="font-bold text-indigo-900">Super Admin</div>
+                      <div className="text-[10px] text-slate-400 font-mono lowercase font-normal">superadmin@mapims.org</div>
+                    </th>
+                    <th className="py-3 px-3">
+                      <div className="font-bold text-violet-900">HR (Human Resources)</div>
+                      <div className="text-[10px] text-slate-400 font-mono lowercase font-normal">hr@mapims.org</div>
+                    </th>
+                    <th className="py-3 px-3">
+                      <div className="font-bold text-emerald-900">MS (Medical Supt)</div>
+                      <div className="text-[10px] text-slate-400 font-mono lowercase font-normal">ms@mapims.org</div>
+                    </th>
+                    <th className="py-3 px-3">
+                      <div className="font-bold text-[#1E3A8A]">MD (Managing Dir)</div>
+                      <div className="text-[10px] text-slate-400 font-mono lowercase font-normal">md@mapims.org</div>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-slate-700">
+                  {matrixRows.map((row) => (
+                    <tr key={row.capability} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="py-3 px-4 font-bold text-slate-900">
+                        <div>{row.capability}</div>
+                        <div className="text-[10px] font-normal text-slate-400 uppercase tracking-wider mt-0.5">
+                          {row.category}
+                        </div>
+                      </td>
+                      <td className="py-3 px-3">{renderPermissionBadge(row.superAdmin)}</td>
+                      <td className="py-3 px-3">{renderPermissionBadge(row.hr)}</td>
+                      <td className="py-3 px-3">{renderPermissionBadge(row.ms)}</td>
+                      <td className="py-3 px-3">{renderPermissionBadge(row.md)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

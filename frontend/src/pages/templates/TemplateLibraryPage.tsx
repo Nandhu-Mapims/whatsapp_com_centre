@@ -14,6 +14,7 @@ import {
   X,
   FileCheck,
   Smartphone,
+  Trash2,
 } from 'lucide-react';
 import { PageHeader } from '../../components/common/PageHeader';
 import { StatusBadge } from '../../components/common/StatusBadge';
@@ -25,14 +26,19 @@ import { useAuth } from '../../context/AuthContext';
 
 export const TemplateLibraryPage: React.FC = () => {
   const navigate = useNavigate();
-  const { success } = useToast();
+  const { success, error } = useToast();
   const { currentUser } = useAuth();
   const isSuperAdmin = currentUser.role === 'Super Admin';
+  const canManageTemplates = ['Super Admin', 'MD', 'HR'].includes(currentUser.role);
 
   const [templates, setTemplates] = useState<WhatsAppTemplate[]>(mockTemplates);
   const [activeTab, setActiveTab] = useState<'ALL' | 'APPROVED' | 'PENDING' | 'REJECTED' | 'DRAFT'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
+
+  // Template deletion state
+  const [templateToDelete, setTemplateToDelete] = useState<WhatsAppTemplate | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Fetch initial templates from backend API on mount
   useEffect(() => {
@@ -45,6 +51,42 @@ export const TemplateLibraryPage: React.FC = () => {
       })
       .catch(() => {});
   }, []);
+
+  // Delete template from backend and WATI/Meta
+  const handleDeleteTemplate = async () => {
+    if (!templateToDelete) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch(
+        `/api/templates/${encodeURIComponent(templateToDelete.id)}?name=${encodeURIComponent(
+          templateToDelete.name
+        )}&language=${encodeURIComponent(templateToDelete.language || 'en')}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const json = await res.json();
+      if (json.success) {
+        setTemplates((prev) =>
+          prev.filter((t) => t.id !== templateToDelete.id && t.name !== templateToDelete.name)
+        );
+        success(
+          'Template Deleted',
+          json.message || `Template "${templateToDelete.name}" was permanently removed from WATI & Meta.`
+        );
+      } else {
+        error('Deletion Failed', json.message || 'Could not delete template from WATI.');
+      }
+    } catch (err: any) {
+      error('Network Error', err.message || 'Failed to connect to backend server.');
+    } finally {
+      setIsDeleting(false);
+      setTemplateToDelete(null);
+    }
+  };
 
   // Preview Modal
   const [previewingTemplate, setPreviewingTemplate] = useState<WhatsAppTemplate | null>(null);
@@ -89,10 +131,28 @@ export const TemplateLibraryPage: React.FC = () => {
       name: `${tmpl.name}_copy`,
       status: 'DRAFT',
       watiTemplateId: undefined,
-      createdAt: '2026-10-30',
+      createdAt: new Date().toISOString().split('T')[0],
     };
     setTemplates((prev) => [draftCopy, ...prev]);
     success('Template Cloned', `Created local editable draft "${draftCopy.name}".`);
+  };
+
+  const handleEditDraft = (tmpl: WhatsAppTemplate) => {
+    try {
+      sessionStorage.setItem('editing_template', JSON.stringify(tmpl));
+    } catch (e) {
+      console.warn('Could not store editing_template in sessionStorage:', e);
+    }
+    navigate(`/templates/designer?id=${encodeURIComponent(tmpl.id || tmpl.name)}`, {
+      state: { template: tmpl },
+    });
+  };
+
+  const handleCreateNewTemplate = () => {
+    try {
+      sessionStorage.removeItem('editing_template');
+    } catch {}
+    navigate('/templates/designer');
   };
 
   return (
@@ -111,7 +171,7 @@ export const TemplateLibraryPage: React.FC = () => {
         </button>
         {isSuperAdmin && (
           <button
-            onClick={() => navigate('/templates/designer')}
+            onClick={handleCreateNewTemplate}
             className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
           >
             <Plus className="w-4 h-4" />
@@ -234,12 +294,22 @@ export const TemplateLibraryPage: React.FC = () => {
                   ) : (
                     isSuperAdmin && (
                       <button
-                        onClick={() => navigate('/templates/designer')}
+                        onClick={() => handleEditDraft(tmpl)}
                         className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-md font-semibold flex items-center gap-1 transition-colors"
                       >
                         <Edit3 className="w-3.5 h-3.5" /> Edit Draft
                       </button>
                     )
+                  )}
+
+                  {canManageTemplates && (
+                    <button
+                      onClick={() => setTemplateToDelete(tmpl)}
+                      className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-md transition-colors"
+                      title="Delete Template from WATI & Meta"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   )}
                 </div>
               </div>
@@ -259,7 +329,7 @@ export const TemplateLibraryPage: React.FC = () => {
           </p>
           {isSuperAdmin && (
             <button
-              onClick={() => navigate('/templates/designer')}
+              onClick={handleCreateNewTemplate}
               className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-bold rounded-xl shadow-xs transition-colors"
             >
               <Plus className="w-4 h-4" />
@@ -300,12 +370,26 @@ export const TemplateLibraryPage: React.FC = () => {
               <span className="text-slate-500">
                 WATI Identifier: <span className="font-mono">{previewingTemplate.watiTemplateId || 'Local Draft'}</span>
               </span>
-              <button
-                onClick={() => setPreviewingTemplate(null)}
-                className="px-4 py-1.5 bg-[#1E3A8A] text-white rounded-lg font-semibold"
-              >
-                Close Preview
-              </button>
+              <div className="flex items-center gap-2">
+                {isSuperAdmin && previewingTemplate.status !== 'APPROVED' && (
+                  <button
+                    onClick={() => {
+                      const t = previewingTemplate;
+                      setPreviewingTemplate(null);
+                      handleEditDraft(t);
+                    }}
+                    className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg font-semibold flex items-center gap-1 transition-colors"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" /> Edit Draft
+                  </button>
+                )}
+                <button
+                  onClick={() => setPreviewingTemplate(null)}
+                  className="px-4 py-1.5 bg-[#1E3A8A] text-white rounded-lg font-semibold"
+                >
+                  Close Preview
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -349,6 +433,57 @@ export const TemplateLibraryPage: React.FC = () => {
                   Duplicate & Fix in Designer
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal (Reflected in WATI) */}
+      {templateToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95 duration-200">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 bg-rose-100 text-rose-600 rounded-xl shrink-0">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-base font-bold text-slate-900">
+                  Delete WhatsApp Template?
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Are you sure you want to delete <span className="font-mono font-bold text-slate-800">{templateToDelete.name}</span>?
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-1.5">
+              <div className="flex items-center gap-1.5 font-bold text-amber-800">
+                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>WATI & Meta Gateway Synchronization</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-amber-800/90">
+                This action sends a live deletion request to the <strong>WATI API</strong> to delete this template across Meta WhatsApp Business accounts ({templateToDelete.language.toUpperCase()}). Any campaigns referencing this template will need to be reconfigured.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setTemplateToDelete(null)}
+                disabled={isDeleting}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteTemplate}
+                disabled={isDeleting}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <Trash2 className={`w-3.5 h-3.5 ${isDeleting ? 'animate-spin' : ''}`} />
+                <span>{isDeleting ? 'Deleting from WATI...' : 'Yes, Delete from WATI'}</span>
+              </button>
             </div>
           </div>
         </div>

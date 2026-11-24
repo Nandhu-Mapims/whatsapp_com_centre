@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { ENV } from './config/env.js';
 import { connectDB } from './config/db.js';
 import apiRoutes from './routes/apiRoutes.js';
+import { RetryService } from './services/retryService.js';
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 // Start listening
 async function startServer() {
   await connectDB();
+  RetryService.init();
   app.listen(ENV.PORT, () => {
     console.log(`[APH Connect Backend] Server running on http://localhost:${ENV.PORT}`);
     console.log(`[APH Connect Backend] Health endpoint available at http://localhost:${ENV.PORT}/api/health`);

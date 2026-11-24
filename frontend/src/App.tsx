@@ -63,7 +63,7 @@ export function App() {
                   path="employees"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator', 'Approver']}
+                      allowedRoles={['Super Admin', 'HR', 'MS', 'MD']}
                       moduleName="Employee Directory"
                     >
                       <EmployeeListPage />
@@ -78,7 +78,7 @@ export function App() {
                   path="employees/designations"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin']}
+                      allowedRoles={['Super Admin', 'HR', 'MD']}
                       moduleName="Hospital Staff Designations"
                     >
                       <EmployeeCategoriesPage />
@@ -89,7 +89,7 @@ export function App() {
                   path="employees/categories"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin']}
+                      allowedRoles={['Super Admin', 'HR', 'MD']}
                       moduleName="Hospital Staff Designations"
                     >
                       <EmployeeCategoriesPage />
@@ -100,7 +100,7 @@ export function App() {
                   path="employees/departments"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin']}
+                      allowedRoles={['Super Admin', 'HR', 'MD']}
                       moduleName="Department Management"
                     >
                       <DepartmentManagementPage />
@@ -113,7 +113,7 @@ export function App() {
                   path="templates"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator', 'Approver']}
+                      allowedRoles={['Super Admin', 'HR', 'MS', 'MD']}
                       moduleName="Template Library"
                     >
                       <TemplateLibraryPage />
@@ -124,7 +124,7 @@ export function App() {
                   path="templates/designer"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin']}
+                      allowedRoles={['Super Admin', 'MS', 'MD']}
                       moduleName="Template Designer"
                     >
                       <TemplateDesignerPage />
@@ -135,7 +135,7 @@ export function App() {
                   path="templates/media"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator']}
+                      allowedRoles={['Super Admin', 'HR', 'MS', 'MD']}
                       moduleName="Media Library"
                     >
                       <MediaLibraryPage />
@@ -148,7 +148,7 @@ export function App() {
                   path="campaigns/create"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'Admin', 'Campaign Creator']}
+                      allowedRoles={['Super Admin', 'HR', 'MS', 'MD']}
                       moduleName="Campaign Creator Wizard"
                     >
                       <CreateCampaignPage />
@@ -187,7 +187,14 @@ export function App() {
                 {/* Module 6: Administration - Strictly Super Admin Alone */}
                 <Route
                   path="admin"
-                  element={<Navigate to="/admin/users" replace />}
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin']}
+                      moduleName="Administration"
+                    >
+                      <Navigate to="/admin/users" replace />
+                    </RoleRoute>
+                  }
                 />
                 <Route
                   path="admin/users"

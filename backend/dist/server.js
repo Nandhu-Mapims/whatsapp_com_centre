@@ -10,6 +10,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const env_js_1 = require("./config/env.js");
 const db_js_1 = require("./config/db.js");
 const apiRoutes_js_1 = __importDefault(require("./routes/apiRoutes.js"));
+const retryService_js_1 = require("./services/retryService.js");
 const app = (0, express_1.default)();
 // Security and utility middleware
 app.use((0, helmet_1.default)());
@@ -44,6 +45,7 @@ app.use((err, req, res, next) => {
 // Start listening
 async function startServer() {
     await (0, db_js_1.connectDB)();
+    retryService_js_1.RetryService.init();
     app.listen(env_js_1.ENV.PORT, () => {
         console.log(`[APH Connect Backend] Server running on http://localhost:${env_js_1.ENV.PORT}`);
         console.log(`[APH Connect Backend] Health endpoint available at http://localhost:${env_js_1.ENV.PORT}/api/health`);

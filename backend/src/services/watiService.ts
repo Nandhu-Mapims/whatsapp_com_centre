@@ -1,4 +1,5 @@
 import { ENV } from '../config/env.js';
+import { toWatiDigits } from '../utils/phoneUtils.js';
 
 export interface WatiMessagePayload {
   whatsappNumber: string;
@@ -156,9 +157,15 @@ export class WatiService {
           data: resData.result || resData,
         };
       } else {
+        const errorDetail =
+          resData.error?.error_user_msg ||
+          resData.error?.message ||
+          resData.message ||
+          resData.info ||
+          'Failed to submit template to WATI';
         return {
           success: false,
-          error: resData.message || resData.error?.message || 'Failed to submit template to WATI',
+          error: errorDetail,
         };
       }
     } catch (err: any) {
@@ -171,6 +178,92 @@ export class WatiService {
   }
 
   /**
+   * Delete a template from WATI and Meta
+   * Endpoint: DELETE /{tenantId}/api/v1/whatsApp/templates/{wabaId}/{templateName}
+   */
+  public static async deleteTemplateInWati(params: {
+    templateName: string;
+    wabaId?: string;
+    language?: string;
+  }): Promise<{ success: boolean; message: string }> {
+    try {
+      const cleanName = params.templateName.trim();
+      const lang = params.language || 'en';
+      const wabaId = params.wabaId || '1535495804649376';
+
+      console.log(`[WATI Service] Deleting template "${cleanName}" (${lang}) from WATI...`);
+
+      // 1. Try language-specific delete endpoint: DELETE /api/v1/whatsApp/templates/{wabaId}/{name}/{lang}
+      const urlWithLang = `${this.endpoint}/api/v1/whatsApp/templates/${wabaId}/${cleanName}/${lang}`;
+      let response = await fetch(urlWithLang, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      let resData = (await response.json().catch(() => ({}))) as any;
+      console.log(`[WATI Service] Delete template response (with lang):`, resData);
+
+      // 2. If not successful or not found, try without language: DELETE /api/v1/whatsApp/templates/{wabaId}/{name}
+      if (!resData.ok && !resData.result?.toLowerCase?.().includes('success')) {
+        const urlByName = `${this.endpoint}/api/v1/whatsApp/templates/${wabaId}/${cleanName}`;
+        console.log(`[WATI Service] Retrying deletion across all languages via ${urlByName}`);
+        const retryRes = await fetch(urlByName, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const retryData = (await retryRes.json().catch(() => ({}))) as any;
+        console.log(`[WATI Service] Delete template response (by name):`, retryData);
+
+        if (retryData.ok || (typeof retryData.result === 'string' && retryData.result.toLowerCase().includes('success'))) {
+          return { success: true, message: `Template "${cleanName}" successfully deleted from WATI.` };
+        }
+
+        // If template was already deleted or not found in WATI, report success so local removal proceeds cleanly
+        if (
+          (typeof retryData.result === 'string' && retryData.result.includes('not found')) ||
+          (typeof resData.result === 'string' && resData.result.includes('not found'))
+        ) {
+          return { success: true, message: `Template "${cleanName}" removed locally (already absent or deleted in WATI).` };
+        }
+
+        return {
+          success: retryData.ok || false,
+          message: retryData.result || retryData.message || resData.result || 'Failed to delete template from WATI',
+        };
+      }
+
+      return {
+        success: true,
+        message: `Template "${cleanName}" successfully deleted from WATI.`,
+      };
+    } catch (err: any) {
+      console.error(`[WATI Service] Error deleting template from WATI: ${err.message}`);
+      return {
+        success: false,
+        message: err.message,
+      };
+    }
+  }
+
+  /**
+   * Strictly sanitize parameter values to satisfy WhatsApp Meta Cloud API constraints:
+   * Meta rejects parameters containing \r, \n, \t or 4+ consecutive spaces.
+   */
+  public static sanitizeParam(val: any): string {
+    if (val === null || val === undefined) return '';
+    return String(val)
+      .replace(/[\r\n\t]+/g, ' ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+
+  /**
    * Dispatch a template message to an employee WhatsApp number
    */
   public static async sendTemplateMessage(payload: WatiMessagePayload): Promise<{
@@ -180,10 +273,18 @@ export class WatiService {
     error?: string;
   }> {
     try {
-      const cleanNumber = payload.whatsappNumber.replace(/[^0-9]/g, '');
+      const cleanNumber = toWatiDigits(payload.whatsappNumber);
       const url = `${this.endpoint}/api/v1/sendTemplateMessage?whatsappNumber=${cleanNumber}`;
+
+      // Clean all parameter values for Meta compatibility
+      const cleanParams = (payload.parameters || []).map((p) => ({
+        ...p,
+        value: this.sanitizeParam(p.value),
+      }));
+
       console.log(
-        `[WATI Service] Dispatching template "${payload.templateName}" to ${cleanNumber}`
+        `[WATI Service] Dispatching template "${payload.templateName}" to ${cleanNumber} with sanitized params:`,
+        cleanParams
       );
 
       const response = await fetch(url, {
@@ -195,24 +296,33 @@ export class WatiService {
         body: JSON.stringify({
           template_name: payload.templateName,
           broadcast_name: payload.broadcastTitle || 'APH Connect Broadcast',
-          parameters: payload.parameters,
+          parameters: cleanParams,
         }),
       });
 
       const resData = (await response.json()) as any;
       console.log('[WATI Service] Send response:', resData);
 
-      if (response.ok && (resData.result === 'success' || resData.validWhatsAppNumber)) {
+      const isSuccess =
+        response.ok &&
+        (resData.result === 'success' || resData.result === true) &&
+        resData.validWhatsAppNumber !== false;
+
+      if (isSuccess) {
         return {
           success: true,
-          providerMessageId: resData.id || resData.phone_id || `wati_${Date.now()}`,
+          providerMessageId: resData.id || resData.phone_id || resData.local_message_id || `wati_${Date.now()}`,
           status: 'submitted',
         };
       } else {
+        let errorMessage = resData.info || resData.message;
+        if (!errorMessage && resData.validWhatsAppNumber === false) {
+          errorMessage = `Recipient phone number (+${payload.whatsappNumber}) is not registered on WhatsApp.`;
+        }
         return {
           success: false,
           status: 'failed',
-          error: resData.info || resData.message || JSON.stringify(resData),
+          error: errorMessage || JSON.stringify(resData),
         };
       }
     } catch (err: any) {
@@ -222,6 +332,71 @@ export class WatiService {
         status: 'failed',
         error: err.message,
       };
+    }
+  }
+
+  /**
+   * Dispatch bulk broadcast template messages to multiple employees simultaneously via WATI
+   */
+  public static async sendBatchTemplateMessages(payload: {
+    templateName: string;
+    broadcastTitle: string;
+    receivers: Array<{
+      whatsappNumber: string;
+      customParams: Array<{ name: string; value: string }>;
+    }>;
+  }): Promise<{ success: boolean; dispatchedCount: number; error?: string }> {
+    try {
+      const url = `${this.endpoint}/api/v1/sendTemplateMessages`;
+      console.log(
+        `[WATI Service] Launching bulk broadcast "${payload.broadcastTitle}" using template "${payload.templateName}" to ${payload.receivers.length} receivers.`
+      );
+
+      const formattedReceivers = payload.receivers.map((r) => ({
+        whatsappNumber: toWatiDigits(r.whatsappNumber),
+        customParams: (r.customParams || []).map((cp) => ({
+          name: cp.name,
+          value: this.sanitizeParam(cp.value),
+        })),
+      }));
+
+      // Chunk in batches of 500 for maximum reliability
+      const BATCH_SIZE = 500;
+      let totalDispatched = 0;
+
+      for (let i = 0; i < formattedReceivers.length; i += BATCH_SIZE) {
+        const batch = formattedReceivers.slice(i, i + BATCH_SIZE);
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            template_name: payload.templateName,
+            broadcast_name: payload.broadcastTitle || 'APH Connect Hospital Broadcast',
+            Receivers: batch,
+          }),
+        });
+
+        const resData = (await response.json()) as any;
+        console.log(`[WATI Service] Batch ${Math.floor(i / BATCH_SIZE) + 1} response:`, resData);
+
+        if (response.ok && resData.result) {
+          totalDispatched += batch.length;
+        } else {
+          console.warn(`[WATI Service] Batch error:`, resData);
+        }
+      }
+
+      return {
+        success: totalDispatched > 0,
+        dispatchedCount: totalDispatched,
+        error: totalDispatched === 0 ? 'WATI bulk dispatch rejected' : undefined,
+      };
+    } catch (err: any) {
+      console.error(`[WATI Service] Bulk dispatch exception:`, err.message);
+      return { success: false, dispatchedCount: 0, error: err.message };
     }
   }
 
@@ -260,5 +435,45 @@ export class WatiService {
     }
 
     return { eventType: 'unknown', data: body };
+  }
+
+  /**
+   * Fetch live message delivery records directly from WATI API for a specific phone number
+   */
+  public static async fetchLiveMessagesForNumber(whatsappNumber: string): Promise<any[]> {
+    try {
+      const cleanNum = toWatiDigits(whatsappNumber);
+      const url = `${this.endpoint}/api/v1/getMessages/${cleanNum}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        },
+      });
+
+      if (!response.ok) return [];
+      const json = (await response.json()) as any;
+      if (json && json.result === 'success' && json.messages && Array.isArray(json.messages.items)) {
+        return json.messages.items;
+      }
+      return [];
+    } catch (err: any) {
+      console.warn(`[WATI Service] Could not fetch live messages for ${whatsappNumber}:`, err.message);
+      return [];
+    }
+  }
+
+  /**
+   * Fetch live delivery reports across multiple tracked phone numbers
+   */
+  public static async fetchLiveDeliveryReports(phoneNumbers: string[]): Promise<any[]> {
+    const allRecords: any[] = [];
+    for (const num of phoneNumbers) {
+      const items = await this.fetchLiveMessagesForNumber(num);
+      allRecords.push(...items.map((i) => ({ ...i, targetNumber: num })));
+    }
+    return allRecords;
   }
 }

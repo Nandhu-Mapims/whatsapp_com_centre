@@ -235,21 +235,61 @@ export const LoginPage: React.FC = () => {
               <span className="text-[10px] text-slate-400">Select authorized role</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
                 onClick={() => handleQuickLogin('superadmin@mapims.org')}
-                className="py-3 px-4 rounded-xl bg-slate-50 hover:bg-[#1E3A8A] hover:text-white border border-slate-200/80 text-center transition-all group shadow-2xs font-bold text-slate-800 text-xs"
+                className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#1E3A8A] hover:text-white border border-slate-200/80 text-left transition-all group shadow-2xs text-xs cursor-pointer"
               >
-                Super Admin
+                <div className="font-bold text-slate-800 group-hover:text-white flex items-center justify-between">
+                  <span>Super Admin</span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-[#1E3A8A] group-hover:bg-white/20 group-hover:text-white font-mono">Full</span>
+                </div>
+                <div className="text-[10px] text-slate-500 group-hover:text-blue-100 mt-0.5 truncate">
+                  superadmin@mapims.org
+                </div>
               </button>
 
               <button
                 type="button"
-                onClick={() => handleQuickLogin('admin@mapims.org')}
-                className="py-3 px-4 rounded-xl bg-slate-50 hover:bg-[#1E3A8A] hover:text-white border border-slate-200/80 text-center transition-all group shadow-2xs font-bold text-slate-800 text-xs"
+                onClick={() => handleQuickLogin('hr@mapims.org')}
+                className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#1E3A8A] hover:text-white border border-slate-200/80 text-left transition-all group shadow-2xs text-xs cursor-pointer"
               >
-                Admin
+                <div className="font-bold text-slate-800 group-hover:text-white flex items-center justify-between">
+                  <span>HR (Human Resources)</span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 group-hover:bg-white/20 group-hover:text-white font-mono">Staff</span>
+                </div>
+                <div className="text-[10px] text-slate-500 group-hover:text-blue-100 mt-0.5 truncate">
+                  hr@mapims.org
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('ms@mapims.org')}
+                className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#1E3A8A] hover:text-white border border-slate-200/80 text-left transition-all group shadow-2xs text-xs cursor-pointer"
+              >
+                <div className="font-bold text-slate-800 group-hover:text-white flex items-center justify-between">
+                  <span>MS (Medical Supt)</span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 group-hover:bg-white/20 group-hover:text-white font-mono">Clinical</span>
+                </div>
+                <div className="text-[10px] text-slate-500 group-hover:text-blue-100 mt-0.5 truncate">
+                  ms@mapims.org
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('md@mapims.org')}
+                className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#1E3A8A] hover:text-white border border-slate-200/80 text-left transition-all group shadow-2xs text-xs cursor-pointer"
+              >
+                <div className="font-bold text-slate-800 group-hover:text-white flex items-center justify-between">
+                  <span>MD (Managing Dir)</span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 group-hover:bg-white/20 group-hover:text-white font-mono">Apex</span>
+                </div>
+                <div className="text-[10px] text-slate-500 group-hover:text-blue-100 mt-0.5 truncate">
+                  md@mapims.org
+                </div>
               </button>
             </div>
           </div>

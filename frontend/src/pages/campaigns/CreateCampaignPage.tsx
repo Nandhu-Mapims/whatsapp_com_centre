@@ -33,6 +33,7 @@ import { PageHeader } from '../../components/common/PageHeader';
 import { WhatsAppPhonePreview } from '../../components/common/WhatsAppPhonePreview';
 import { mockCategories, mockDepartments, mockEmployees, mockTemplates } from '../../data/mockData';
 import { WhatsAppTemplate, Employee, Campaign } from '../../types';
+import { normalizePhoneNumber, toE164Phone } from '../../utils/phoneUtils';
 import { useToast } from '../../context/ToastContext';
 import { useAuth } from '../../context/AuthContext';
 import { cn } from '../../utils/cn';
@@ -216,13 +217,26 @@ export const CreateCampaignPage: React.FC = () => {
   } | null>(null);
 
   const handleSendTestMessage = async () => {
-    if (!testNumber.trim() || testNumber.replace(/[^0-9]/g, '').length < 10) {
-      error('Invalid WhatsApp Number', 'Please enter a valid 10-digit WhatsApp phone number with country code (+91).');
+    const norm = normalizePhoneNumber(testNumber);
+    if (!norm.isValid) {
+      error(
+        'Invalid WhatsApp Number',
+        'Please enter a valid 10-digit WhatsApp phone number with or without +91 (e.g. 7200504251 or +91 72005 04251).'
+      );
       return;
     }
 
     setIsSendingTest(true);
     setTestResult(null);
+
+    // Helper to sanitize parameter values for WhatsApp Meta Cloud API constraints
+    const sanitizeParam = (raw: string): string => {
+      if (!raw) return '';
+      return String(raw)
+        .replace(/[\r\n\t]+/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+    };
 
     // Build parameters array for WATI strictly from active template variables
     const paramsList = (activeTemplate.variables || []).map((v) => {
@@ -230,7 +244,7 @@ export const CreateCampaignPage: React.FC = () => {
       if (val === '{{employee.name}}' || val.includes('employee.name')) {
         val = testRecipientName || 'Dr. A. Saravanan';
       }
-      return { name: v.key, value: val };
+      return { name: v.key, value: sanitizeParam(val) };
     });
 
     try {
@@ -238,7 +252,7 @@ export const CreateCampaignPage: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          whatsappNumber: testNumber,
+          whatsappNumber: norm.e164,
           templateName: activeTemplate.watiTemplateId || activeTemplate.name,
           broadcastTitle: `Test: ${title}`,
           parameters: paramsList,
@@ -277,12 +291,9 @@ export const CreateCampaignPage: React.FC = () => {
     }
   };
 
-  // Phone normalizer for strict anti-duplication
+  // Phone normalizer for strict anti-duplication (supports with or without +91)
   const normalizePhone = (num: string): string => {
-    const digits = String(num || '').replace(/[^0-9]/g, '');
-    if (digits.length === 10) return `+91${digits}`;
-    if (digits.length === 12 && digits.startsWith('91')) return `+${digits}`;
-    return num ? String(num).trim() : '';
+    return toE164Phone(num);
   };
 
   // STEP 3: Unified Audience Targeting with Multi-Select and Strict Anti-Duplication
@@ -684,10 +695,11 @@ export const CreateCampaignPage: React.FC = () => {
           templateName: activeTemplate.watiTemplateId || activeTemplate.name,
           templateBody: activeTemplate.body,
           customMessage: activeTemplate.body,
-          parameters: (activeTemplate.variables || []).map((v) => ({
-            name: v.key,
-            value: variableValues[v.key] ?? v.sampleValue ?? '',
-          })),
+          parameters: (activeTemplate.variables || []).map((v) => {
+            const raw = variableValues[v.key] ?? v.sampleValue ?? '';
+            const cleaned = String(raw).replace(/[\r\n\t]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+            return { name: v.key, value: cleaned };
+          }),
           categoryScope:
             cadreScope === 'BOTH'
               ? 'All Staff (Teaching & Non-Teaching)'
@@ -1059,6 +1071,26 @@ export const CreateCampaignPage: React.FC = () => {
                               placeholder="Enter notice or circular message here (e.g. Incident reporting is live !)"
                               className="w-full px-3.5 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-300 rounded-lg text-xs text-slate-900 font-medium leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-y"
                             />
+                            {variableValues['2'] && /[\r\n\t]|\s{4,}/.test(variableValues['2']) && (
+                              <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-blue-900">
+                                <span className="flex items-center gap-1.5 font-medium">
+                                  <Sparkles className="w-4 h-4 text-blue-600 shrink-0" />
+                                  <span>Line breaks detected. They will automatically be converted to clean single-line text for WhatsApp Meta delivery.</span>
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setVariableValues((prev) => ({
+                                      ...prev,
+                                      '2': (prev['2'] || '').replace(/[\r\n\t]+/g, ' ').replace(/\s{2,}/g, ' ').trim(),
+                                    }));
+                                  }}
+                                  className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold shadow-2xs text-[10px] shrink-0 self-start sm:self-auto"
+                                >
+                                  Clean Line Breaks Now
+                                </button>
+                              </div>
+                            )}
                             {variableValues['2'] && (variableValues['2'].includes('http') || variableValues['2'].includes('You can access')) && (
                               <div className="mt-2 p-2 bg-amber-50 border border-amber-300 rounded-lg flex items-center justify-between text-[11px] text-amber-900">
                                 <span className="flex items-center gap-1.5 font-medium">
@@ -1190,12 +1222,12 @@ export const CreateCampaignPage: React.FC = () => {
                         type="text"
                         value={testNumber}
                         onChange={(e) => setTestNumber(e.target.value)}
-                        placeholder="+91 95513 82296"
+                        placeholder="e.g. 7200504251 or +91 72005 04251"
                         className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                       />
                     </div>
                     <span className="text-[10px] text-slate-500 font-medium mt-0.5 block">
-                      Dispatches live WhatsApp test directly to this number (e.g. +91 72005 04251)
+                      Supports mobile numbers with or without +91 (e.g. 7200504251 or +91 72005 04251)
                     </span>
                   </div>
 
@@ -1424,7 +1456,7 @@ export const CreateCampaignPage: React.FC = () => {
                     rows={3}
                     value={customNumbersInput}
                     onChange={(e) => setCustomNumbersInput(e.target.value)}
-                    placeholder="Enter WhatsApp mobile numbers separated by comma, space or newline (e.g. +919551382296, +919842323330)..."
+                    placeholder="Enter WhatsApp mobile numbers with or without +91 (e.g. 9551382296, +919842323330, 9943641747)..."
                     className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   />
                   <div className="flex items-center justify-between text-[11px] text-slate-500">

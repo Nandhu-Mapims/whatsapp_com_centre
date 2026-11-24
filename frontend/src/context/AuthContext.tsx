@@ -59,11 +59,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Allow any valid email to sign in as staff
     if (cleanEmail.includes('@')) {
+      let role: UserRole = 'HR';
+      if (cleanEmail.startsWith('superadmin')) role = 'Super Admin';
+      else if (cleanEmail.startsWith('ms')) role = 'MS';
+      else if (cleanEmail.startsWith('md')) role = 'MD';
+      else if (cleanEmail.startsWith('hr')) role = 'HR';
+
       const customUser: User = {
         id: `u-${Date.now()}`,
         name: cleanEmail.split('@')[0].replace(/[._]/g, ' '),
         email: cleanEmail,
-        role: 'Admin',
+        role,
         active: true,
         lastLogin: new Date().toISOString().replace('T', ' ').slice(0, 19),
       };
@@ -101,19 +107,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     switch (permission) {
       case 'manage_users':
       case 'manage_wati':
+      case 'view_audit':
+      case 'access_admin':
+      case 'manage_consent':
         return false;
       case 'approve_campaign':
-        return role === 'Admin' || role === 'Approver';
+        return role === 'MS' || role === 'MD';
       case 'create_campaign':
       case 'edit_campaign':
-        return role === 'Admin' || role === 'Campaign Creator';
+        return role === 'HR' || role === 'MS' || role === 'MD';
       case 'manage_employees':
       case 'import_employees':
       case 'manage_categories':
       case 'manage_departments':
-      case 'manage_consent':
+        return role === 'HR' || role === 'MD';
       case 'retry_failures':
-        return role === 'Admin';
       case 'view_reports':
       case 'view_history':
         return true;

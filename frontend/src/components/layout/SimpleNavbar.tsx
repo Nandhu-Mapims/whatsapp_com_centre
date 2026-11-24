@@ -127,28 +127,28 @@ export const SimpleNavbar: React.FC = () => {
       key: 'employees',
       label: 'Employees',
       basePath: '/employees',
-      allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver'],
+      allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
       items: [
         {
           title: 'Staff Directory',
           description: 'Search, add, bulk import Excel & export CSV',
           path: '/employees',
           icon: Users,
-          allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver'],
+          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
         },
         {
           title: 'Staff Designations',
           description: '149 hospital roles across Teaching & Non-Teaching',
           path: '/employees/designations',
           icon: Layers,
-          allowedRoles: ['Super Admin', 'Admin'],
+          allowedRoles: ['Super Admin', 'HR', 'MD'],
         },
         {
           title: 'Departments & Divisions',
           description: '54 clinical specialties, wards & hospital divisions',
           path: '/employees/departments',
           icon: Building2,
-          allowedRoles: ['Super Admin', 'Admin'],
+          allowedRoles: ['Super Admin', 'HR', 'MD'],
         },
       ],
     },
@@ -156,21 +156,21 @@ export const SimpleNavbar: React.FC = () => {
       key: 'templates',
       label: 'Templates',
       basePath: '/templates',
-      allowedRoles: ['Super Admin', 'Admin'],
+      allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
       items: [
         {
           title: 'Template Library',
           description: 'Browse Meta-approved WhatsApp templates',
           path: '/templates',
           icon: FileText,
-          allowedRoles: ['Super Admin', 'Admin'],
+          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
         },
         {
           title: 'Template Designer',
           description: 'Compose message drafts with live phone preview',
           path: '/templates/designer',
           icon: Palette,
-          allowedRoles: ['Super Admin'],
+          allowedRoles: ['Super Admin', 'MS', 'MD'],
         },
       ],
     },
@@ -178,21 +178,21 @@ export const SimpleNavbar: React.FC = () => {
       key: 'campaigns',
       label: 'Campaigns',
       basePath: '/campaigns',
-      allowedRoles: ['Super Admin', 'Admin'],
+      allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
       items: [
         {
           title: 'Create Broadcast',
           description: 'Target staff & broadcast WhatsApp alert',
           path: '/campaigns/create',
           icon: Send,
-          allowedRoles: ['Super Admin', 'Admin'],
+          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
         },
         {
           title: 'Broadcast History',
           description: 'Log of sent and scheduled broadcasts',
           path: '/campaigns/history',
           icon: History,
-          allowedRoles: ['Super Admin', 'Admin'],
+          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
         },
       ],
     },
@@ -200,14 +200,14 @@ export const SimpleNavbar: React.FC = () => {
       key: 'reports',
       label: 'Reports',
       basePath: '/reports',
-      allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver', 'Viewer'],
+      allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
       items: [
         {
           title: 'Delivery Reports',
           description: 'Real-time message telemetry, campaign status & recipient logs',
           path: '/reports/delivery',
           icon: BarChart3,
-          allowedRoles: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver', 'Viewer'],
+          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
         },
       ],
     },
@@ -219,7 +219,7 @@ export const SimpleNavbar: React.FC = () => {
       items: [
         {
           title: 'Users & Roles',
-          description: 'Admin accounts & RBAC permission matrix',
+          description: 'Staff accounts & RBAC permission matrix',
           path: '/admin/users',
           icon: ShieldAlert,
           allowedRoles: ['Super Admin'],
@@ -262,7 +262,9 @@ export const SimpleNavbar: React.FC = () => {
 
   const roles: UserRole[] = [
     'Super Admin',
-    'Admin',
+    'HR',
+    'MS',
+    'MD',
   ];
 
   const isCurrentSection = (basePath: string) => {
@@ -578,28 +580,32 @@ export const SimpleNavbar: React.FC = () => {
                     </span>
                   </div>
                   <div className="space-y-0.5 text-xs text-slate-700">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowProfileMenu(false);
-                        navigate('/admin/users');
-                      }}
-                      className="w-full flex items-center gap-2 p-2 hover:bg-slate-50 rounded-lg transition-colors text-left"
-                    >
-                      <User className="w-3.5 h-3.5 text-slate-400" />
-                      <span>User Permissions</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowProfileMenu(false);
-                        navigate('/admin/audit');
-                      }}
-                      className="w-full flex items-center gap-2 p-2 hover:bg-slate-50 rounded-lg transition-colors text-left"
-                    >
-                      <FileSearch className="w-3.5 h-3.5 text-slate-400" />
-                      <span>My Audit Activity</span>
-                    </button>
+                    {currentUser.role === 'Super Admin' && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowProfileMenu(false);
+                            navigate('/admin/users');
+                          }}
+                          className="w-full flex items-center gap-2 p-2 hover:bg-slate-50 rounded-lg transition-colors text-left"
+                        >
+                          <User className="w-3.5 h-3.5 text-slate-400" />
+                          <span>User Permissions</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowProfileMenu(false);
+                            navigate('/admin/audit');
+                          }}
+                          className="w-full flex items-center gap-2 p-2 hover:bg-slate-50 rounded-lg transition-colors text-left"
+                        >
+                          <FileSearch className="w-3.5 h-3.5 text-slate-400" />
+                          <span>System Audit Activity</span>
+                        </button>
+                      </>
+                    )}
 
                     <div className="pt-1 mt-1 border-t border-slate-100">
                       <button

@@ -1,7 +1,7 @@
 // Types for APH Connect - Employee Communication Platform (MAPIMS / Adhiparasakthi Hospitals)
 // "One Platform. Every Employee. Connected."
 
-export type UserRole = 'Super Admin' | 'Admin' | 'Campaign Creator' | 'Approver' | 'Viewer';
+export type UserRole = 'Super Admin' | 'HR' | 'MS' | 'MD';
 
 export interface User {
   id: string;
@@ -146,6 +146,7 @@ export interface Campaign {
   headerMediaUrl?: string;
   recipientBreakdown: RecipientBreakdown;
   selectedRecipientsCount: number;
+  recipientNumbers?: string[];
   createdBy: string;
   createdById: string;
   createdAt: string;
@@ -157,6 +158,7 @@ export interface Campaign {
   completedAt?: string;
   submittedCount: number;
   deliveredCount: number;
+  sentCount?: number;
   readCount: number;
   failedCount: number;
   priority: 'Normal' | 'Urgent' | 'Emergency';
@@ -169,6 +171,7 @@ export interface DeliveryMessage {
   employeeId: string;
   employeeName: string;
   maskedNumber: string;
+  rawNumber?: string;
   templateName: string;
   submittedAt: string;
   providerStatus: 'queued' | 'submitted' | 'sent' | 'delivered' | 'read' | 'failed';
@@ -177,6 +180,10 @@ export interface DeliveryMessage {
   errorDescription?: string;
   canRetry: boolean;
   retryAttempts: number;
+  autoRetryStage?: 1 | 2 | 'exhausted';
+  nextAutoRetryTime?: string;
+  autoRetryStatus?: string;
+  finalText?: string;
 }
 
 export interface AuditLog {

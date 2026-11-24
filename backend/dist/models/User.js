@@ -41,8 +41,8 @@ const UserSchema = new mongoose_1.Schema({
     passwordHash: { type: String, required: true },
     role: {
         type: String,
-        enum: ['Super Admin', 'Admin', 'Campaign Creator', 'Approver', 'Viewer'],
-        default: 'Campaign Creator',
+        enum: ['Super Admin', 'HR', 'MS', 'MD'],
+        default: 'HR',
     },
     departmentScope: { type: String },
     active: { type: Boolean, default: true },

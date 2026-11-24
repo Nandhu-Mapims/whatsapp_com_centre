@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import {
   Palette,
   Save,
@@ -11,6 +11,7 @@ import {
   ArrowRight,
   User,
   Sparkles,
+  FileEdit,
 } from 'lucide-react';
 import { PageHeader } from '../../components/common/PageHeader';
 import { WhatsAppPhonePreview } from '../../components/common/WhatsAppPhonePreview';
@@ -20,9 +21,14 @@ import { useToast } from '../../context/ToastContext';
 
 export const TemplateDesignerPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('id');
   const { success, warning, error } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
+  const [isEditingExisting, setIsEditingExisting] = useState(false);
 
   // Selected sample recipient for preview
   const [sampleRecipientId, setSampleRecipientId] = useState(mockEmployees[0].id);
@@ -54,6 +60,118 @@ export const TemplateDesignerPage: React.FC = () => {
   const selectedSampleEmployee =
     mockEmployees.find((e) => e.id === sampleRecipientId) || mockEmployees[0];
 
+  // Populate form with existing template
+  const loadTemplateIntoForm = (t: WhatsAppTemplate) => {
+    setEditingTemplateId(t.id || t.name);
+    setIsEditingExisting(true);
+    setTemplateName(t.name);
+    setCategory((t.category as any) || 'UTILITY');
+    setLanguage(t.language || 'en');
+    setHeaderType(t.headerType || 'NONE');
+    setHeaderContent(t.headerContent || '');
+    setBodyText(t.body || '');
+    setFooterText(t.footer || '');
+    setButtons(t.buttons ? t.buttons.map((b) => ({ ...b })) : []);
+
+    const newVars: Record<string, string> = {};
+    if (t.variables && Array.isArray(t.variables)) {
+      t.variables.forEach((v) => {
+        newVars[String(v.key)] = v.sampleValue || '';
+      });
+    }
+
+    const bodyMatches = (t.body || '').match(/\{\{([0-9a-zA-Z_]+)\}\}/g) || [];
+    bodyMatches.forEach((m) => {
+      const k = m.replace(/[{}]/g, '');
+      if (!newVars[k]) {
+        if (k === '1') newVars[k] = '{{employee.name}}';
+        else newVars[k] = `Sample ${k}`;
+      }
+    });
+
+    setVariables(newVars);
+  };
+
+  // Detect incoming template from navigation state, query params, or cache
+  useEffect(() => {
+    // 1. Direct navigation state from "Edit Draft" button
+    if (location.state?.template) {
+      loadTemplateIntoForm(location.state.template);
+      return;
+    }
+
+    // 2. Query param ?id=... (browser refresh or deep link)
+    if (editId) {
+      try {
+        const cached = sessionStorage.getItem('editing_template');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed.id === editId || parsed.name === editId || parsed.watiTemplateId === editId) {
+            loadTemplateIntoForm(parsed);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Error reading editing_template from sessionStorage:', err);
+      }
+
+      // Fetch from API if not in session cache
+      fetch('/api/templates')
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.success && Array.isArray(json.data)) {
+            const found = json.data.find(
+              (t: WhatsAppTemplate) =>
+                t.id === editId || t.name === editId || t.watiTemplateId === editId
+            );
+            if (found) {
+              loadTemplateIntoForm(found);
+            }
+          }
+        })
+        .catch((err) => console.warn('Failed to fetch templates for edit ID:', err));
+      return;
+    }
+
+    // 3. Brand new template authoring: clean up any stale editing session
+    try {
+      sessionStorage.removeItem('editing_template');
+    } catch {}
+    setIsEditingExisting(false);
+    setEditingTemplateId(null);
+  }, [location.state, editId]);
+
+  // Reset editor to author a fresh template
+  const handleStartFresh = () => {
+    try {
+      sessionStorage.removeItem('editing_template');
+    } catch {}
+    setEditingTemplateId(null);
+    setIsEditingExisting(false);
+    setTemplateName('aph_clinical_advisory_v1');
+    setCategory('UTILITY');
+    setLanguage('en');
+    setHeaderType('TEXT');
+    setHeaderContent('🏥 MAPIMS HOSPITAL ADVISORY');
+    setBodyText(
+      'Dear {{1}},\n\nPlease be informed that {{2}} will take place on {{3}} at {{4}}.\n\nAll concerned department staff are requested to ensure timely attendance.\n\nReporting Officer: {{5}}.'
+    );
+    setFooterText('Medical Director Office — MAPIMS');
+    setButtons([
+      { type: 'QUICK_REPLY', text: 'Acknowledge Notice' },
+      { type: 'PHONE_NUMBER', text: 'Call Hospital Control', value: '+914427568100' },
+    ]);
+    setVariables({
+      '1': '{{employee.name}}',
+      '2': 'Annual Bio-Medical Safety Inspection',
+      '3': '05 Nov 2026',
+      '4': 'Ground Floor Seminar Hall',
+      '5': 'Hospital Administration',
+    });
+    navigate('/templates/designer', { replace: true });
+    success('Fresh Canvas', 'Reset to new blank template authoring.');
+  };
+
   // Helper to add variable placeholder into body
   const handleInsertVariable = (varIndex: number) => {
     setBodyText((prev) => `${prev} {{${varIndex}}}`);
@@ -80,8 +198,44 @@ export const TemplateDesignerPage: React.FC = () => {
     setButtons((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSaveDraft = () => {
-    success('Draft Saved', `Draft template "${templateName}" saved locally.`);
+  const handleSaveDraft = async () => {
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingTemplateId,
+          name: templateName,
+          category,
+          language,
+          headerType,
+          headerContent,
+          body: bodyText,
+          footer: footerText,
+          buttons,
+          variables,
+          isDraft: true,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (data.data?.id) {
+          setEditingTemplateId(data.data.id);
+          setIsEditingExisting(true);
+          try {
+            sessionStorage.setItem('editing_template', JSON.stringify(data.data));
+          } catch {}
+        }
+        success('Draft Saved', `Draft template "${templateName}" saved locally.`);
+      } else {
+        error('Save Failed', data.message || 'Could not save draft.');
+      }
+    } catch (err: any) {
+      error('Save Error', err.message || 'Failed to save draft.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleLoadTestTemplate = () => {
@@ -110,6 +264,25 @@ export const TemplateDesignerPage: React.FC = () => {
     success('Test Template Loaded', 'Pre-filled with guaranteed-to-pass test parameters.');
   };
 
+  const handleLoadIncidentUtilityTemplate = () => {
+    setTemplateName('aph_incident_duty_alert');
+    setCategory('UTILITY');
+    setLanguage('en');
+    setHeaderType('NONE');
+    setHeaderContent('');
+    setBodyText(
+      'Om Sakthi,\nHospital Operational Circular:\nMandatory Incident Reporting Portal access for staff member {{1}}.\n\nOfficial Portal Access:\n🔗 {{2}}\n\nStaff Login Credentials:\n👤 Username: Your Employee ID\n🔑 Password: {{3}}\n\nDepartment Administration, MAPIMS Hospitals.'
+    );
+    setFooterText('Adhiparasakthi Hospitals');
+    setButtons([]);
+    setVariables({
+      '1': selectedSampleEmployee?.name || 'Dr. A. Saravanan',
+      '2': 'https://inc.mapims.edu.in/login',
+      '3': 'mapims@123',
+    });
+    success('Incident Utility Template Loaded', 'Pre-configured with Meta-compliant Utility wording.');
+  };
+
   const handleSubmitForApproval = async () => {
     setIsSubmitting(true);
     try {
@@ -117,6 +290,7 @@ export const TemplateDesignerPage: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          id: editingTemplateId,
           name: templateName,
           category,
           language,
@@ -126,10 +300,14 @@ export const TemplateDesignerPage: React.FC = () => {
           footer: footerText,
           buttons,
           variables,
+          isDraft: false,
         }),
       });
       const data = await res.json();
       if (data.success) {
+        try {
+          sessionStorage.removeItem('editing_template');
+        } catch {}
         success(
           'Submitted to WATI',
           data.message || `Template "${templateName}" registered in WATI and submitted for Meta approval.`
@@ -147,7 +325,7 @@ export const TemplateDesignerPage: React.FC = () => {
 
   // Compile full template object for WhatsAppPhonePreview
   const previewTemplateObj: WhatsAppTemplate = {
-    id: 'preview-tmpl',
+    id: editingTemplateId || 'preview-tmpl',
     name: templateName,
     category,
     language,
@@ -162,7 +340,7 @@ export const TemplateDesignerPage: React.FC = () => {
       description: `Variable {{${k}}}`,
     })),
     status: 'DRAFT',
-    createdAt: '2026-10-30',
+    createdAt: new Date().toISOString().split('T')[0],
   };
 
   return (
@@ -171,6 +349,14 @@ export const TemplateDesignerPage: React.FC = () => {
         title="WhatsApp Template Designer"
         description="Author Meta-compliant WhatsApp templates or configure dynamic parameters for approved hospital circulars."
       >
+        <button
+          onClick={handleLoadIncidentUtilityTemplate}
+          className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-xs font-bold text-emerald-900 rounded-lg shadow-2xs transition-colors"
+          title="Click to load pre-configured Incident Portal Utility template for Meta approval"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Load Incident Utility Template</span>
+        </button>
         <button
           onClick={handleLoadTestTemplate}
           className="flex items-center gap-1.5 px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-xs font-bold text-amber-900 rounded-lg shadow-2xs transition-colors"
@@ -181,19 +367,56 @@ export const TemplateDesignerPage: React.FC = () => {
         </button>
         <button
           onClick={handleSaveDraft}
-          className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg shadow-2xs transition-colors"
+          disabled={isSubmitting}
+          className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 rounded-lg shadow-2xs transition-colors disabled:opacity-50"
         >
           <Save className="w-3.5 h-3.5 text-slate-500" />
-          <span>Save Draft</span>
+          <span>{isSubmitting ? 'Saving...' : 'Save Draft'}</span>
         </button>
         <button
           onClick={handleSubmitForApproval}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          disabled={isSubmitting}
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-50"
         >
           <Send className="w-4 h-4" />
-          <span>Submit for Approval</span>
+          <span>{isSubmitting ? 'Submitting...' : 'Submit for Approval'}</span>
         </button>
       </PageHeader>
+
+      {/* Editing Existing Draft Banner */}
+      {isEditingExisting && (
+        <div className="bg-amber-50 border border-amber-200/90 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-xs">
+          <div className="flex items-center gap-3 text-amber-950">
+            <div className="w-9 h-9 rounded-xl bg-amber-200/70 flex items-center justify-center shrink-0 text-amber-800">
+              <FileEdit className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold">Editing Existing Draft / Template:</span>
+                <span className="font-mono font-bold bg-white px-2 py-0.5 rounded border border-amber-300 text-slate-900">
+                  {templateName}
+                </span>
+                {editingTemplateId && (
+                  <span className="text-[11px] text-slate-500 font-mono hidden md:inline">
+                    (ID: {editingTemplateId})
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-amber-800/80 mt-0.5">
+                Modifications will update this specific template. Click "Save Draft" to update locally or "Submit for Approval" to register in WATI.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleStartFresh}
+            className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-amber-300 text-amber-900 font-bold rounded-xl flex items-center gap-1.5 transition-colors shrink-0 shadow-2xs"
+          >
+            <Plus className="w-4 h-4 text-amber-700" />
+            <span>+ Start Fresh / Create New</span>
+          </button>
+        </div>
+      )}
 
       {/* Sample Employee Switcher for Preview */}
       <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">

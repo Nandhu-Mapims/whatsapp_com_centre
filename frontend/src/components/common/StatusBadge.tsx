@@ -12,7 +12,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className }) =
     if (lower === 'active' || lower === 'approved' || lower === 'completed' || lower === 'delivered' || lower === 'opted-in' || lower === 'ready' || lower === 'connected' || lower === 'success') {
       return 'bg-emerald-50 text-emerald-700 border-emerald-200';
     }
-    if (lower === 'pending' || lower === 'pending approval' || lower === 'scheduled' || lower === 'processing' || lower === 'generating' || lower === 'pending verification') {
+    if (lower === 'pending' || lower === 'pending approval' || lower === 'scheduled' || lower === 'processing' || lower === 'generating' || lower === 'pending verification' || lower === 'sent' || lower === 'in transit' || lower === 'transmitted') {
       return 'bg-amber-50 text-amber-700 border-amber-200';
     }
     if (lower === 'rejected' || lower === 'failed' || lower === 'opted-out' || lower === 'deactivated' || lower === 'cancelled' || lower === 'disconnected') {

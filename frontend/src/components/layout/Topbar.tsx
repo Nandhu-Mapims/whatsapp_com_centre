@@ -90,10 +90,9 @@ export const Topbar: React.FC<TopbarProps> = ({
 
   const roles: UserRole[] = [
     'Super Admin',
-    'Admin',
-    'Campaign Creator',
-    'Approver',
-    'Viewer',
+    'HR',
+    'MS',
+    'MD',
   ];
 
   return (
