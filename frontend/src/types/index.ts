@@ -98,6 +98,10 @@ export interface WhatsAppTemplate {
   rejectionReason?: string;
   lastSynced?: string;
   createdAt: string;
+  isDeleted?: boolean;
+  inTrash?: boolean;
+  deletedAt?: string;
+  deletedBy?: string;
 }
 
 export interface MediaAsset {
@@ -120,6 +124,7 @@ export type CampaignStatus =
   | 'Scheduled' 
   | 'Processing' 
   | 'Completed' 
+  | 'Sent'
   | 'Partial Failure' 
   | 'Cancelled';
 
@@ -222,3 +227,83 @@ export interface WatiConfig {
   dailyQuotaUsed: number;
   dailyQuotaLimit: number;
 }
+
+export type ShortlinkStatus = 'Active' | 'Disabled' | 'Expired';
+
+export interface ShortlinkClick {
+  id: string;
+  timestampIst: string;
+  timestampUtc: string;
+  isLikelyHuman: boolean;
+  clickType: 'human' | 'crawler' | 'preview';
+  deviceType: 'Mobile' | 'Tablet' | 'Desktop' | 'Bot' | 'Unknown';
+  browser: string;
+  os: string;
+  location: string;
+  referrer: string;
+}
+
+export interface Shortlink {
+  id: string;
+  title: string;
+  destinationUrl: string;
+  alias: string;
+  shortUrl: string;
+  campaignChannel: string;
+  isActive: boolean;
+  computedStatus: ShortlinkStatus;
+  expiresAt?: string | null;
+  expiresAtIst?: string;
+  createdAt: string;
+  createdAtIst?: string;
+  updatedAt: string;
+  updatedAtIst?: string;
+  createdBy: string;
+  totalOpens: number;
+  humanOpens: number;
+  botOpens: number;
+  lastOpenedAt?: string | null;
+  lastOpenedAtIst?: string;
+}
+
+export interface ShortlinkAnalytics {
+  range: string;
+  totalOpens: number;
+  humanOpens: number;
+  botOpens: number;
+  previewOpens: number;
+  crawlerOpens: number;
+  humanPercentage: number;
+  lastOpenedAtIst: string;
+  opensOverTime: Array<{
+    date: string;
+    human: number;
+    automated: number;
+    total: number;
+  }>;
+  deviceBreakdown: Array<{
+    device: string;
+    count: number;
+    percentage: number;
+  }>;
+  browserBreakdown: Array<{
+    browser: string;
+    count: number;
+  }>;
+  osBreakdown: Array<{
+    os: string;
+    count: number;
+  }>;
+  geoBreakdown: Array<{
+    country: string;
+    region: string;
+    city: string;
+    count: number;
+  }>;
+  referrerBreakdown: Array<{
+    referrer: string;
+    count: number;
+  }>;
+  recentActivity: ShortlinkClick[];
+}
+

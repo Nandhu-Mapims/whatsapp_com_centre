@@ -34,6 +34,7 @@ import {
   ExternalLink,
   Maximize2,
   Minimize2,
+  Link2,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useAuth } from '../../context/AuthContext';
@@ -217,6 +218,13 @@ export const SimpleNavbar: React.FC = () => {
       basePath: '/admin',
       allowedRoles: ['Super Admin'],
       items: [
+        {
+          title: 'Shortlink Creation',
+          description: 'Create branded short URLs & track WhatsApp/QR analytics',
+          path: '/admin/shortlinks',
+          icon: Link2,
+          allowedRoles: ['Super Admin'],
+        },
         {
           title: 'Users & Roles',
           description: 'Staff accounts & RBAC permission matrix',

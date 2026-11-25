@@ -6,6 +6,7 @@ import { ENV } from './config/env.js';
 import { connectDB } from './config/db.js';
 import apiRoutes from './routes/apiRoutes.js';
 import { RetryService } from './services/retryService.js';
+import { handleShortlinkRedirect } from './controllers/shortlinkController.js';
 
 const app = express();
 
@@ -32,6 +33,10 @@ app.get('/api/health', (req, res) => {
     env: ENV.NODE_ENV,
   });
 });
+
+// Public shortlink redirection route (no authentication required)
+app.get('/shortlinks/:alias', handleShortlinkRedirect);
+app.get('/s/:alias', handleShortlinkRedirect);
 
 // Mount modular API routes
 app.use('/api', apiRoutes);

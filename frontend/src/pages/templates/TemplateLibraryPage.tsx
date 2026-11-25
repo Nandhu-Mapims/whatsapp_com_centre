@@ -15,6 +15,9 @@ import {
   FileCheck,
   Smartphone,
   Trash2,
+  RotateCcw,
+  ShieldCheck,
+  Archive,
 } from 'lucide-react';
 import { PageHeader } from '../../components/common/PageHeader';
 import { StatusBadge } from '../../components/common/StatusBadge';
@@ -32,13 +35,19 @@ export const TemplateLibraryPage: React.FC = () => {
   const canManageTemplates = ['Super Admin', 'MD', 'HR'].includes(currentUser.role);
 
   const [templates, setTemplates] = useState<WhatsAppTemplate[]>(mockTemplates);
-  const [activeTab, setActiveTab] = useState<'ALL' | 'APPROVED' | 'PENDING' | 'REJECTED' | 'DRAFT'>('ALL');
+  type TabType = 'ALL' | 'APPROVED' | 'PENDING' | 'REJECTED' | 'DRAFT' | 'TRASH';
+  const [activeTab, setActiveTab] = useState<TabType>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // Template deletion state
+  // Template deletion & trash state
   const [templateToDelete, setTemplateToDelete] = useState<WhatsAppTemplate | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [restoringId, setRestoringId] = useState<string | null>(null);
+
+  // Separate active and trashed templates
+  const activeTemplates = templates.filter((t) => !t.isDeleted && !t.inTrash);
+  const trashedTemplates = templates.filter((t) => t.isDeleted || t.inTrash);
 
   // Fetch initial templates from backend API on mount
   useEffect(() => {
@@ -52,7 +61,7 @@ export const TemplateLibraryPage: React.FC = () => {
       .catch(() => {});
   }, []);
 
-  // Delete template from backend and WATI/Meta
+  // Soft-delete: Move template to Trash (safeguarding past sent message records and delivery reports)
   const handleDeleteTemplate = async () => {
     if (!templateToDelete) return;
     setIsDeleting(true);
@@ -71,14 +80,23 @@ export const TemplateLibraryPage: React.FC = () => {
       const json = await res.json();
       if (json.success) {
         setTemplates((prev) =>
-          prev.filter((t) => t.id !== templateToDelete.id && t.name !== templateToDelete.name)
+          prev.map((t) =>
+            t.id === templateToDelete.id || t.name === templateToDelete.name
+              ? {
+                  ...t,
+                  isDeleted: true,
+                  inTrash: true,
+                  deletedAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
+                }
+              : t
+          )
         );
         success(
-          'Template Deleted',
-          json.message || `Template "${templateToDelete.name}" was permanently removed from WATI & Meta.`
+          'Template Moved to Trash',
+          `Template "${templateToDelete.name}" was moved to Trash. Historical broadcast delivery reports and sent records remain preserved.`
         );
       } else {
-        error('Deletion Failed', json.message || 'Could not delete template from WATI.');
+        error('Deletion Failed', json.message || 'Could not move template to trash.');
       }
     } catch (err: any) {
       error('Network Error', err.message || 'Failed to connect to backend server.');
@@ -88,14 +106,49 @@ export const TemplateLibraryPage: React.FC = () => {
     }
   };
 
+  // Restore template from Trash back to active library
+  const handleRestoreTemplate = async (tmpl: WhatsAppTemplate) => {
+    setRestoringId(tmpl.id);
+    try {
+      const res = await fetch(`/api/templates/${encodeURIComponent(tmpl.id)}/restore`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const json = await res.json();
+      if (json.success) {
+        setTemplates((prev) =>
+          prev.map((t) =>
+            t.id === tmpl.id || t.name === tmpl.name
+              ? { ...t, isDeleted: false, inTrash: false }
+              : t
+          )
+        );
+        success(
+          'Template Restored',
+          `Template "${tmpl.name}" has been restored to the active library.`
+        );
+      } else {
+        error('Restore Failed', json.message || 'Could not restore template.');
+      }
+    } catch (err: any) {
+      error('Network Error', err.message || 'Failed to connect to backend server.');
+    } finally {
+      setRestoringId(null);
+    }
+  };
+
   // Preview Modal
   const [previewingTemplate, setPreviewingTemplate] = useState<WhatsAppTemplate | null>(null);
 
   // Rejection Reason Modal
   const [rejectionModalTemplate, setRejectionModalTemplate] = useState<WhatsAppTemplate | null>(null);
 
-  const filteredTemplates = templates.filter((tmpl) => {
-    const matchesTab = activeTab === 'ALL' || tmpl.status === activeTab;
+  const displayList = activeTab === 'TRASH' ? trashedTemplates : activeTemplates;
+  const filteredTemplates = displayList.filter((tmpl) => {
+    const matchesTab =
+      activeTab === 'TRASH'
+        ? true
+        : activeTab === 'ALL' || tmpl.status === activeTab;
     const matchesSearch =
       tmpl.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tmpl.body.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -194,12 +247,23 @@ export const TemplateLibraryPage: React.FC = () => {
               }`}
             >
               {tab === 'ALL'
-                ? `All (${templates.length})`
+                ? `All Active (${activeTemplates.length})`
                 : `${tab.charAt(0) + tab.slice(1).toLowerCase()} (${
-                    templates.filter((t) => t.status === tab).length
+                    activeTemplates.filter((t) => t.status === tab).length
                   })`}
             </button>
           ))}
+          <button
+            onClick={() => setActiveTab('TRASH')}
+            className={`px-3 py-1.5 rounded-md transition-colors flex items-center gap-1.5 ${
+              activeTab === 'TRASH'
+                ? 'bg-amber-100/90 shadow-2xs font-bold text-amber-900 border border-amber-300'
+                : 'text-amber-800 hover:bg-amber-50'
+            }`}
+          >
+            <Trash2 className="w-3.5 h-3.5 text-amber-700" />
+            <span>Trash ({trashedTemplates.length})</span>
+          </button>
         </div>
 
         <div className="relative w-full sm:w-72">
@@ -220,7 +284,11 @@ export const TemplateLibraryPage: React.FC = () => {
           {filteredTemplates.map((tmpl) => (
             <div
               key={tmpl.id}
-              className="bg-white rounded-xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden"
+              className={`rounded-xl border shadow-xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden ${
+                tmpl.isDeleted || tmpl.inTrash
+                  ? 'bg-amber-50/20 border-amber-200'
+                  : 'bg-white border-slate-200/80'
+              }`}
             >
               <div className="p-5 space-y-3">
                 {/* Header Badges */}
@@ -228,7 +296,15 @@ export const TemplateLibraryPage: React.FC = () => {
                   <span className="text-[10px] uppercase font-bold text-slate-500 px-2 py-0.5 bg-slate-100 rounded border border-slate-200">
                     {tmpl.category} • {tmpl.language.toUpperCase()}
                   </span>
-                  <StatusBadge status={tmpl.status} />
+                  <div className="flex items-center gap-1.5">
+                    {(tmpl.isDeleted || tmpl.inTrash) && (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
+                        <Trash2 className="w-3 h-3 text-amber-700" />
+                        In Trash
+                      </span>
+                    )}
+                    <StatusBadge status={tmpl.status} />
+                  </div>
                 </div>
 
                 {/* Title */}
@@ -248,6 +324,19 @@ export const TemplateLibraryPage: React.FC = () => {
                   {tmpl.body}
                 </div>
 
+                {/* Historical Sent Records Safeguard Callout */}
+                {(tmpl.isDeleted || tmpl.inTrash) && (
+                  <div className="p-2.5 bg-emerald-50 rounded-lg border border-emerald-200/80 text-[11px] text-emerald-950 flex items-start gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold block">Sent Broadcast Records Preserved</span>
+                      <span className="text-[10px] text-emerald-800 leading-tight block mt-0.5">
+                        All broadcasts, sent messages, and delivery reports using this template remain 100% visible and intact.
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Variables & Buttons info */}
                 <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
                   <span>{tmpl.variables.length} Dynamic Variables</span>
@@ -264,54 +353,68 @@ export const TemplateLibraryPage: React.FC = () => {
                   <Smartphone className="w-3.5 h-3.5" /> Preview
                 </button>
 
-                <div className="flex items-center gap-1">
-                  {tmpl.status === 'REJECTED' && (
+                {tmpl.isDeleted || tmpl.inTrash ? (
+                  <div className="flex items-center gap-1.5">
                     <button
-                      onClick={() => setRejectionModalTemplate(tmpl)}
-                      className="px-2.5 py-1.5 text-rose-600 hover:bg-rose-50 rounded-md font-semibold flex items-center gap-1"
+                      onClick={() => handleRestoreTemplate(tmpl)}
+                      disabled={restoringId === tmpl.id}
+                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md font-bold flex items-center gap-1.5 text-xs shadow-2xs transition-colors disabled:opacity-50"
+                      title="Restore template back to active library"
                     >
-                      <AlertCircle className="w-3.5 h-3.5" /> Reason
+                      <RotateCcw className={`w-3.5 h-3.5 ${restoringId === tmpl.id ? 'animate-spin' : ''}`} />
+                      <span>{restoringId === tmpl.id ? 'Restoring...' : 'Restore to Library'}</span>
                     </button>
-                  )}
-
-                  {isSuperAdmin && (
-                    <button
-                      onClick={() => handleDuplicateDraft(tmpl)}
-                      className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 rounded-md"
-                      title="Duplicate as Draft"
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-
-                  {tmpl.status === 'APPROVED' ? (
-                    <button
-                      onClick={() => navigate('/campaigns/create')}
-                      className="px-3 py-1.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-md font-semibold flex items-center gap-1 shadow-2xs transition-colors"
-                    >
-                      <Send className="w-3.5 h-3.5" /> Use in Campaign
-                    </button>
-                  ) : (
-                    isSuperAdmin && (
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    {tmpl.status === 'REJECTED' && (
                       <button
-                        onClick={() => handleEditDraft(tmpl)}
-                        className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-md font-semibold flex items-center gap-1 transition-colors"
+                        onClick={() => setRejectionModalTemplate(tmpl)}
+                        className="px-2.5 py-1.5 text-rose-600 hover:bg-rose-50 rounded-md font-semibold flex items-center gap-1"
                       >
-                        <Edit3 className="w-3.5 h-3.5" /> Edit Draft
+                        <AlertCircle className="w-3.5 h-3.5" /> Reason
                       </button>
-                    )
-                  )}
+                    )}
 
-                  {canManageTemplates && (
-                    <button
-                      onClick={() => setTemplateToDelete(tmpl)}
-                      className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-md transition-colors"
-                      title="Delete Template from WATI & Meta"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
+                    {isSuperAdmin && (
+                      <button
+                        onClick={() => handleDuplicateDraft(tmpl)}
+                        className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 rounded-md"
+                        title="Duplicate as Draft"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+
+                    {tmpl.status === 'APPROVED' ? (
+                      <button
+                        onClick={() => navigate('/campaigns/create')}
+                        className="px-3 py-1.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-md font-semibold flex items-center gap-1 shadow-2xs transition-colors"
+                      >
+                        <Send className="w-3.5 h-3.5" /> Use in Campaign
+                      </button>
+                    ) : (
+                      isSuperAdmin && (
+                        <button
+                          onClick={() => handleEditDraft(tmpl)}
+                          className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-md font-semibold flex items-center gap-1 transition-colors"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" /> Edit Draft
+                        </button>
+                      )
+                    )}
+
+                    {canManageTemplates && (
+                      <button
+                        onClick={() => setTemplateToDelete(tmpl)}
+                        className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-md transition-colors"
+                        title="Move Template to Trash"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -438,31 +541,34 @@ export const TemplateLibraryPage: React.FC = () => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal (Reflected in WATI) */}
+      {/* Move to Trash Confirmation Modal (Preserves Historical Sent Data & Delivery Reports) */}
       {templateToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95 duration-200">
             <div className="flex items-start gap-3">
-              <div className="p-2.5 bg-rose-100 text-rose-600 rounded-xl shrink-0">
+              <div className="p-2.5 bg-amber-100 text-amber-700 rounded-xl shrink-0">
                 <Trash2 className="w-6 h-6" />
               </div>
               <div className="space-y-1">
                 <h3 className="text-base font-bold text-slate-900">
-                  Delete WhatsApp Template?
+                  Move Template to Trash?
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Are you sure you want to delete <span className="font-mono font-bold text-slate-800">{templateToDelete.name}</span>?
+                  Are you sure you want to move <span className="font-mono font-bold text-slate-800">{templateToDelete.name}</span> to Trash?
                 </p>
               </div>
             </div>
 
-            <div className="p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-1.5">
-              <div className="flex items-center gap-1.5 font-bold text-amber-800">
-                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                <span>WATI & Meta Gateway Synchronization</span>
+            <div className="p-3.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 space-y-1.5">
+              <div className="flex items-center gap-1.5 font-bold text-emerald-800">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Historical Sent Data Safeguard</span>
               </div>
-              <p className="text-[11px] leading-relaxed text-amber-800/90">
-                This action sends a live deletion request to the <strong>WATI API</strong> to delete this template across Meta WhatsApp Business accounts ({templateToDelete.language.toUpperCase()}). Any campaigns referencing this template will need to be reconfigured.
+              <p className="text-[11px] leading-relaxed text-emerald-900">
+                Moving this template to Trash hides it from active broadcast selection. <strong>All past broadcast logs, sent messages, read confirmations, and delivery reports will remain 100% intact and viewable.</strong>
+              </p>
+              <p className="text-[10px] text-emerald-700 font-medium pt-0.5">
+                You can restore this template back to the active library at any time from the Trash tab.
               </p>
             </div>
 
@@ -479,10 +585,10 @@ export const TemplateLibraryPage: React.FC = () => {
                 type="button"
                 onClick={handleDeleteTemplate}
                 disabled={isDeleting}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
               >
                 <Trash2 className={`w-3.5 h-3.5 ${isDeleting ? 'animate-spin' : ''}`} />
-                <span>{isDeleting ? 'Deleting from WATI...' : 'Yes, Delete from WATI'}</span>
+                <span>{isDeleting ? 'Moving to Trash...' : 'Yes, Move to Trash'}</span>
               </button>
             </div>
           </div>

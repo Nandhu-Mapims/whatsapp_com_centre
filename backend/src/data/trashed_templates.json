@@ -1,0 +1,20 @@
+{
+  "aph_notice_url3": {
+    "name": "aph_notice_url3",
+    "id": "6b0526f1d666e1e21d35980f",
+    "deletedAt": "2026-11-25 05:00:36",
+    "deletedBy": "Super Admin"
+  },
+  "aph_notice_url": {
+    "name": "aph_notice_url",
+    "id": "6b03bd79e103c1329b7f7604",
+    "deletedAt": "2026-11-25 05:00:43",
+    "deletedBy": "Super Admin"
+  },
+  "aph_account_activation1": {
+    "name": "aph_account_activation1",
+    "id": "6b053b7fa65b571ef2a16707",
+    "deletedAt": "2026-11-25 05:00:46",
+    "deletedBy": "Super Admin"
+  }
+}

@@ -25,6 +25,7 @@ import {
   ChevronDown,
   ChevronRight,
   Hospital,
+  Link2,
   X,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
@@ -120,6 +121,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
       icon: ShieldAlert,
       allowedRoles: ['Super Admin'],
       items: [
+        { title: 'Shortlink Creation', path: '/admin/shortlinks', icon: Link2, allowedRoles: ['Super Admin'] },
         { title: 'Users & Roles', path: '/admin/users', icon: ShieldAlert, allowedRoles: ['Super Admin'] },
         { title: 'WATI Integration', path: '/admin/wati', icon: Radio, allowedRoles: ['Super Admin'] },
         { title: 'Audit Logs', path: '/admin/audit', icon: FileSearch, allowedRoles: ['Super Admin'] },

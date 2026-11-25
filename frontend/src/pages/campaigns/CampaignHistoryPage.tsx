@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   History,
@@ -32,6 +32,17 @@ export const CampaignHistoryPage: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>(mockCampaigns);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
+
+  useEffect(() => {
+    fetch('/api/campaigns')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setCampaigns(json.data);
+        }
+      })
+      .catch((err) => console.warn('Using local fallback campaigns:', err));
+  }, []);
 
   // Detail drawer state
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);

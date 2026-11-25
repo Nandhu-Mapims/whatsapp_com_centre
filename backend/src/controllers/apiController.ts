@@ -39,6 +39,13 @@ const hospitalUsers = [
 
 // Realistic in-memory state store with database synchronization fallback
 
+// Working Phase / Production Mode Switch
+// In TEST MODE: All live dispatches (test send, bulk broadcasts, and retries) are strictly routed
+// to authorized test handsets (+91 95513 82296) to protect hospital staff from test traffic.
+export let IS_TEST_MODE = true;
+export const AUTHORIZED_TEST_PHONES = ['919551382296', '917200504251', '9551382296', '7200504251'];
+export const PRIMARY_TEST_PHONE = '919551382296';
+
 
 
 
@@ -85,61 +92,61 @@ if (employeesStore.length === 0) {
   ];
 }
 
+const getCampaignsCandidatePaths = () => [
+  path.resolve(__dirname, '../data/campaigns.json'),
+  path.resolve(__dirname, '../../src/data/campaigns.json'),
+  path.resolve(__dirname, '../../dist/data/campaigns.json'),
+  path.resolve(process.cwd(), 'backend/src/data/campaigns.json'),
+  path.resolve(process.cwd(), 'src/data/campaigns.json'),
+  path.resolve(process.cwd(), 'backend/dist/data/campaigns.json'),
+  path.resolve(process.cwd(), 'dist/data/campaigns.json'),
+];
+
 let campaignsStore: any[] = [];
-try {
-  const cPath = path.resolve(__dirname, '../data/campaigns.json');
-  if (fs.existsSync(cPath)) {
-    campaignsStore = JSON.parse(fs.readFileSync(cPath, 'utf8'));
+for (const cPath of getCampaignsCandidatePaths()) {
+  try {
+    if (fs.existsSync(cPath)) {
+      const parsed = JSON.parse(fs.readFileSync(cPath, 'utf8'));
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        campaignsStore = parsed;
+        console.log(`[API Controller] Loaded ${campaignsStore.length} campaigns from ${cPath}`);
+        break;
+      }
+    }
+  } catch (err: any) {
+    console.warn(`[API Controller] Could not load campaigns from ${cPath}:`, err.message);
   }
-} catch (err: any) {
-  console.warn('[API Controller] Could not load campaigns.json:', err.message);
 }
 
 if (campaignsStore.length === 0) {
   campaignsStore = [
     {
-      id: 'cmp-01',
-      campaignId: 'CMP-2026-089',
-      title: 'Emergency Night Shift Roster Announcement',
-      categoryScope: 'Medical / Clinical, Nursing Staff',
-      departmentScope: 'Emergency & Trauma Care, Intensive Care Unit (ICU & CCU)',
-      templateId: 'tmpl-01',
-      templateName: 'aph_test_sample',
-      selectedRecipientsCount: 156,
-      createdBy: 'P. Rajesh Kumar',
-      createdById: 'u-3',
-      createdAt: '2026-10-29 10:30',
-      status: 'Completed',
-      approvedBy: 'Prof. M. Vijayalakshmi',
-      submittedCount: 156,
-      deliveredCount: 151,
-      readCount: 139,
-      failedCount: 5,
-      priority: 'Urgent',
-    },
-    {
-      id: 'cmp-02',
-      campaignId: 'CMP-2026-091',
-      title: 'NABH 5th Edition Mock Audit Readiness Notice',
-      categoryScope: 'Nursing Staff, Allied Health Sciences',
-      departmentScope: 'Intensive Care Unit (ICU & CCU), Radiology & Imaging',
-      templateId: 'tmpl-02',
-      templateName: 'aph_notice_url',
-      selectedRecipientsCount: 128,
-      createdBy: 'Admin Office',
-      createdById: 'u-4',
-      createdAt: '2026-11-23 10:15',
-      status: 'Completed',
-      submittedCount: 128,
-      deliveredCount: 124,
-      readCount: 110,
-      failedCount: 4,
+      id: 'cmp-1795506235084',
+      campaignId: 'CMP-2026-099',
+      title: 'Incident Reporting Application Login Announcement',
+      categoryScope: 'All Staff (Teaching & Non-Teaching)',
+      departmentScope: 'All Departments',
+      designationScope: 'All Designations',
+      templateId: '6b053847c36a64c74061ae90',
+      templateName: 'aph_notice_url4',
+      templateBody: 'Om sakthi,\nOur Incident Reporting Application is {{1}} \nKindly {{2}}\n\n{{3}}\n\nLogin Credentials:\n👤 Username: Your Employee ID\n🔑 Password: mapims@123\n\nThank you for your cooperation.\n\n',
+      customMessage: 'Om sakthi,\nOur Incident Reporting Application is {{1}} \nKindly {{2}}\n\n{{3}}\n\nLogin Credentials:\n👤 Username: Your Employee ID\n🔑 Password: mapims@123\n\nThank you for your cooperation.\n\n',
+      selectedRecipientsCount: 1046,
+      createdBy: 'Super Admin',
+      createdById: 'u-admin',
+      createdAt: '2026-11-24 13:13',
+      status: 'Sent',
+      submittedCount: 1046,
+      deliveredCount: 1011,
+      readCount: 784,
+      failedCount: 0,
       priority: 'Normal',
+      sentCount: 35,
     },
   ];
 }
 
-let auditLogsStore: any[] = [
+export let auditLogsStore: any[] = [
   {
     id: 'aud-01',
     timestamp: '2026-10-30 11:45:10',
@@ -431,12 +438,13 @@ export const createCampaign = (req: AuthRequest, res: Response) => {
   };
 
   campaignsStore.unshift(newCampaign);
-  try {
-    const cPath = path.resolve(__dirname, '../data/campaigns.json');
-    fs.writeFileSync(cPath, JSON.stringify(campaignsStore, null, 2));
-  } catch (err: any) {
-    console.warn('[API Controller] Failed to persist campaigns.json:', err.message);
-  }
+  getCampaignsCandidatePaths().forEach((cp) => {
+    try {
+      if (fs.existsSync(path.dirname(cp))) {
+        fs.writeFileSync(cp, JSON.stringify(campaignsStore, null, 2));
+      }
+    } catch {}
+  });
   console.log(
     `[Campaign] Broadcast "${title}" created for ${finalCount} unique recipients (zero duplicates guaranteed).`
   );
@@ -448,8 +456,16 @@ export const createCampaign = (req: AuthRequest, res: Response) => {
 
   // If launching an active broadcast, dispatch via WATI bulk messaging pipeline
   if (!isDraft && uniqueRecipientsList.length > 0) {
+    let dispatchPhoneList = uniqueRecipientsList;
+    if (IS_TEST_MODE) {
+      console.log(
+        `[TEST MODE SAFEGUARD] System is in TEST MODE during active working phase. Diverting bulk dispatch of "${title}" (${uniqueRecipientsList.length} staff) exclusively to authorized test handset +${PRIMARY_TEST_PHONE} to safeguard real hospital staff.`
+      );
+      dispatchPhoneList = [PRIMARY_TEST_PHONE];
+    }
+
     const rawParams = Array.isArray(req.body.parameters) ? req.body.parameters : [];
-    const receivers = uniqueRecipientsList.map((phone) => {
+    const receivers = dispatchPhoneList.map((phone) => {
       const emp = employeesStore.find((e) => {
         const ePhone = (e.whatsappNumber || '').replace(/[^0-9]/g, '');
         const pPhone = phone.replace(/[^0-9]/g, '');
@@ -474,7 +490,7 @@ export const createCampaign = (req: AuthRequest, res: Response) => {
     })
       .then((batchResult) => {
         console.log(
-          `[Campaign Dispatch] Bulk broadcast "${title}" dispatched to ${batchResult.dispatchedCount} staff members.`
+          `[Campaign Dispatch] Bulk broadcast "${title}" dispatched to ${batchResult.dispatchedCount} recipient(s) (${IS_TEST_MODE ? 'TEST MODE: Diverted safely to +91 95513 82296' : 'LIVE PRODUCTION'}).`
         );
       })
       .catch((err) => {
@@ -497,11 +513,19 @@ export const dispatchCampaign = async (req: AuthRequest, res: Response) => {
       ? campaign.recipientNumbers
       : employeesStore.map((e) => e.whatsappNumber).filter(Boolean);
 
+  let dispatchRecipients = recipients;
+  if (IS_TEST_MODE) {
+    console.log(
+      `[TEST MODE SAFEGUARD] System in TEST MODE during active working phase. Diverting dispatch of campaign "${campaign.title}" (${recipients.length} recipients) exclusively to test phone +${PRIMARY_TEST_PHONE}`
+    );
+    dispatchRecipients = [PRIMARY_TEST_PHONE];
+  }
+
   const rawParams = Array.isArray(campaign.parameters)
     ? campaign.parameters
     : [{ name: '1', value: 'https://inc.mapims.edu.in/login' }];
 
-  const receivers = recipients.map((phone: string) => {
+  const receivers = dispatchRecipients.map((phone: string) => {
     const emp = employeesStore.find((e) => {
       const ePhone = (e.whatsappNumber || '').replace(/[^0-9]/g, '');
       const pPhone = phone.replace(/[^0-9]/g, '');
@@ -519,7 +543,7 @@ export const dispatchCampaign = async (req: AuthRequest, res: Response) => {
     return { whatsappNumber: phone, customParams };
   });
 
-  recipients.forEach((p: string) => {
+  dispatchRecipients.forEach((p: string) => {
     const clean = p.replace(/[^0-9]/g, '');
     if (clean) trackedPhoneNumbers.add(clean);
   });
@@ -536,14 +560,22 @@ export const dispatchCampaign = async (req: AuthRequest, res: Response) => {
   res.json({
     success: batchResult.success,
     message: batchResult.success
-      ? `Live broadcast successfully triggered via WATI to ${batchResult.dispatchedCount} staff members.`
+      ? (IS_TEST_MODE
+          ? `[TEST MODE ACTIVE] Broadcast triggered safely! Delivered exclusively to test handset +${PRIMARY_TEST_PHONE}. Real hospital staff were protected.`
+          : `Live broadcast successfully triggered via WATI to ${batchResult.dispatchedCount} staff members.`)
       : `WATI Bulk Dispatch Failed: ${batchResult.error}`,
     dispatchedCount: batchResult.dispatchedCount,
+    isTestMode: IS_TEST_MODE,
   });
 };
 
 // Tracked WhatsApp numbers for live WATI report queries
-const trackedPhoneNumbers = new Set<string>(['919551382296', '917200504251']);
+const trackedPhoneNumbers = new Set<string>([
+  '919551382296',
+  '917200504251',
+  '919962460782',
+  '919894078015',
+]);
 
 export const testSendTemplate = async (req: AuthRequest, res: Response) => {
   const { whatsappNumber, templateName, broadcastTitle, parameters } = req.body;
@@ -565,7 +597,13 @@ export const testSendTemplate = async (req: AuthRequest, res: Response) => {
         message: 'Please provide a valid 10-digit WhatsApp number (supported with or without +91).',
       });
     }
-    const targetNumber = norm.digits;
+    let targetNumber = norm.digits;
+    if (IS_TEST_MODE && !AUTHORIZED_TEST_PHONES.includes(targetNumber)) {
+      console.log(
+        `[TEST MODE SAFEGUARD] Target number +${targetNumber} is not in authorized test list. Diverting test send to primary test handset +${PRIMARY_TEST_PHONE}.`
+      );
+      targetNumber = PRIMARY_TEST_PHONE;
+    }
 
     // Track for live delivery receipts
     trackedPhoneNumbers.add(targetNumber);
@@ -684,7 +722,11 @@ export const getDeliveryReports = async (req: Request, res: Response) => {
 
       // Try to match with registered campaign in campaignsStore
       const matchingCampaign = campaignsStore.find(
-        (c) => (c.templateName || '').toLowerCase() === templateName.toLowerCase() || c.id === `cmp-${templateName}`
+        (c) =>
+          c.id === item.campaignId ||
+          c.campaignId === item.campaignId ||
+          (c.templateName && c.templateName.toLowerCase() === templateName.toLowerCase()) ||
+          c.id === `cmp-${templateName}`
       );
       const campaignTitle = matchingCampaign?.title || (templateName.startsWith('aph_')
         ? `APH: ${templateName.replace(/_/g, ' ').toUpperCase()}`
@@ -759,9 +801,20 @@ export const retryMessage = async (req: AuthRequest, res: Response) => {
     return res.status(400).json({ success: false, message: 'messageId or whatsappNumber is required.' });
   }
 
+  let targetPhone = customPhone || whatsappNumber;
+  if (IS_TEST_MODE) {
+    const cleanDigits = (targetPhone || '').replace(/[^0-9]/g, '');
+    if (!AUTHORIZED_TEST_PHONES.includes(cleanDigits)) {
+      console.log(
+        `[TEST MODE SAFEGUARD] Diverting retry message from non-test handset +${targetPhone} to authorized test handset +${PRIMARY_TEST_PHONE}.`
+      );
+      targetPhone = PRIMARY_TEST_PHONE;
+    }
+  }
+
   const result = await RetryService.manualRetry(
     messageId || 'adhoc',
-    customPhone || whatsappNumber,
+    targetPhone,
     templateName,
     parameters
   );
@@ -848,14 +901,57 @@ export const getAuditLogs = (req: Request, res: Response) => {
 // 6. WhatsApp WATI Templates Controller (Live Store - No mock templates)
 let templatesStore: any[] = [];
 
+// Persistent Trash store for soft-deleted templates
+let trashedTemplatesStore: Record<string, any> = {};
+const getTrashCandidatePaths = () => [
+  path.resolve(process.cwd(), 'backend/src/data/trashed_templates.json'),
+  path.resolve(process.cwd(), 'backend/dist/data/trashed_templates.json'),
+  path.resolve(__dirname, '../data/trashed_templates.json'),
+  path.resolve(__dirname, '../../src/data/trashed_templates.json'),
+];
+
+for (const p of getTrashCandidatePaths()) {
+  try {
+    if (fs.existsSync(p)) {
+      trashedTemplatesStore = JSON.parse(fs.readFileSync(p, 'utf8'));
+      break;
+    }
+  } catch {}
+}
+
+const persistTrashStore = () => {
+  getTrashCandidatePaths().forEach((cp) => {
+    try {
+      if (fs.existsSync(path.dirname(cp))) {
+        fs.writeFileSync(cp, JSON.stringify(trashedTemplatesStore, null, 2));
+      }
+    } catch {}
+  });
+};
+
 export const getTemplates = async (req: Request, res: Response) => {
   try {
     const live = await WatiService.fetchTemplates();
     if (live && live.length > 0) {
-      // Merge live Meta-approved templates with any local unsynced drafts
+      // Merge live Meta-approved templates with any local unsynced drafts, preserving trash state
       const liveNames = new Set(live.map((t: any) => t.name));
       const localDrafts = templatesStore.filter((t) => !liveNames.has(t.name) && t.status === 'DRAFT');
-      templatesStore = [...live, ...localDrafts];
+
+      const mergedLive = live.map((t: any) => {
+        const trashed = trashedTemplatesStore[t.name] || (t.id && trashedTemplatesStore[t.id]);
+        if (trashed) {
+          return {
+            ...t,
+            isDeleted: true,
+            inTrash: true,
+            deletedAt: trashed.deletedAt,
+            deletedBy: trashed.deletedBy,
+          };
+        }
+        return t;
+      });
+
+      templatesStore = [...mergedLive, ...localDrafts];
     }
   } catch (err: any) {
     console.warn('[API Controller] Live WATI template fetch failed, serving cached store:', err.message);
@@ -1005,7 +1101,21 @@ export const createTemplate = async (req: AuthRequest, res: Response) => {
 export const syncTemplates = async (req: Request, res: Response) => {
   try {
     const liveTemplates = await WatiService.fetchTemplates();
-    templatesStore = liveTemplates || [];
+
+    templatesStore = (liveTemplates || []).map((t: any) => {
+      const trashed = trashedTemplatesStore[t.name] || (t.id && trashedTemplatesStore[t.id]);
+      if (trashed) {
+        return {
+          ...t,
+          isDeleted: true,
+          inTrash: true,
+          deletedAt: trashed.deletedAt,
+          deletedBy: trashed.deletedBy,
+        };
+      }
+      return t;
+    });
+
     res.json({
       success: true,
       message: `Synchronized ${templatesStore.length} templates with live WATI endpoint.`,
@@ -1028,49 +1138,177 @@ export const deleteTemplate = async (req: AuthRequest, res: Response) => {
 
   const { id } = req.params;
   const queryName = (req.query.name as string) || '';
-  const language = (req.query.language as string) || 'en';
+  const isPermanent = req.query.permanent === 'true';
 
-  console.log(`[API Controller] Request to delete template id="${id}", name="${queryName}" by ${req.user?.name || 'Admin'}...`);
+  console.log(
+    `[API Controller] Request to ${isPermanent ? 'permanently purge' : 'move to trash'} template id="${id}", name="${queryName}" by ${req.user?.name || 'Admin'}...`
+  );
 
   // Find target template in templatesStore
   const target = templatesStore.find(
     (t) => t.id === id || t.name === id || t.watiTemplateId === id || (queryName && t.name === queryName)
   );
 
+  if (!target) {
+    return res.status(404).json({ success: false, message: 'Template not found.' });
+  }
+
   const targetName = target ? (target.name || target.watiTemplateId) : (queryName || id);
-  const targetLang = target?.language || language || 'en';
 
-  // 1. Delete from WATI and Meta WhatsApp gateway
-  const watiRes = await WatiService.deleteTemplateInWati({
-    templateName: targetName,
-    language: targetLang,
-  });
+  if (isPermanent) {
+    // Permanent deletion from database
+    if (req.user?.role !== 'Super Admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only Super Admin can permanently purge templates from trash.',
+      });
+    }
 
-  // 2. Remove from local in-memory store
-  templatesStore = templatesStore.filter(
-    (t) => t.id !== id && t.name !== targetName && t.watiTemplateId !== targetName
-  );
+    templatesStore = templatesStore.filter(
+      (t) => t.id !== id && t.name !== targetName && t.watiTemplateId !== targetName
+    );
 
-  // 3. Log into System Audit Trail
+    delete trashedTemplatesStore[targetName];
+    if (target.id) delete trashedTemplatesStore[target.id];
+    persistTrashStore();
+
+    auditLogsStore.unshift({
+      id: `aud-${Date.now()}`,
+      timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
+      actor: req.user?.name || 'Administrator',
+      actorRole: req.user?.role || 'Super Admin',
+      action: 'TEMPLATE_PERMANENTLY_PURGED',
+      module: 'Template Management',
+      resourceId: targetName,
+      details: `Template "${targetName}" was permanently removed from trash.`,
+      ipAddress: req.ip || '127.0.0.1',
+      status: 'SUCCESS',
+    });
+
+    return res.json({
+      success: true,
+      message: `Template "${targetName}" permanently removed from trash.`,
+      deletedId: id,
+      deletedName: targetName,
+      data: templatesStore,
+    });
+  }
+
+  // Soft Delete: Move to Trash
+  // Crucial: Keeps the template in storage so historical sent campaigns, reports, and delivery receipts are 100% preserved!
+  target.isDeleted = true;
+  target.inTrash = true;
+  target.deletedAt = new Date().toISOString().replace('T', ' ').slice(0, 19);
+  target.deletedBy = req.user?.name || 'Administrator';
+
+  trashedTemplatesStore[targetName] = {
+    name: targetName,
+    id: target.id,
+    deletedAt: target.deletedAt,
+    deletedBy: target.deletedBy,
+  };
+  persistTrashStore();
+
   auditLogsStore.unshift({
     id: `aud-${Date.now()}`,
     timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
     actor: req.user?.name || 'Administrator',
     actorRole: req.user?.role || 'Super Admin',
-    action: 'TEMPLATE_DELETED',
+    action: 'TEMPLATE_MOVED_TO_TRASH',
     module: 'Template Management',
     resourceId: targetName,
-    details: `Deleted WhatsApp template "${targetName}" from WATI and local library. Result: ${watiRes.message}`,
+    details: `Moved template "${targetName}" to Trash. Historical sent records and delivery receipts remain completely preserved.`,
     ipAddress: req.ip || '127.0.0.1',
-    status: watiRes.success ? 'SUCCESS' : 'WARNING',
+    status: 'SUCCESS',
   });
+
+  console.log(`[Template] "${targetName}" moved to Trash. Sent data preserved.`);
 
   res.json({
     success: true,
-    message: watiRes.message || `Template "${targetName}" deleted successfully from WATI.`,
+    message: `Template "${targetName}" moved to Trash. Historical sent records and delivery reports remain preserved.`,
     deletedId: id,
     deletedName: targetName,
     data: templatesStore,
+  });
+};
+
+export const restoreTemplate = async (req: AuthRequest, res: Response) => {
+  if (req.user && !['Super Admin', 'MD', 'HR'].includes(req.user.role)) {
+    return res.status(403).json({
+      success: false,
+      message: 'Access Denied: You lack permissions to restore templates.',
+    });
+  }
+
+  const { id } = req.params;
+  const target = templatesStore.find(
+    (t) => t.id === id || t.name === id || t.watiTemplateId === id
+  );
+
+  if (!target) {
+    return res.status(404).json({ success: false, message: 'Template not found.' });
+  }
+
+  target.isDeleted = false;
+  target.inTrash = false;
+  delete target.deletedAt;
+  delete target.deletedBy;
+
+  delete trashedTemplatesStore[target.name];
+  if (target.id) delete trashedTemplatesStore[target.id];
+  persistTrashStore();
+
+  auditLogsStore.unshift({
+    id: `aud-${Date.now()}`,
+    timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
+    actor: req.user?.name || 'Administrator',
+    actorRole: req.user?.role || 'Super Admin',
+    action: 'TEMPLATE_RESTORED_FROM_TRASH',
+    module: 'Template Management',
+    resourceId: target.name,
+    details: `Restored template "${target.name}" from Trash to active library.`,
+    ipAddress: req.ip || '127.0.0.1',
+    status: 'SUCCESS',
+  });
+
+  console.log(`[Template] "${target.name}" restored from Trash.`);
+
+  res.json({
+    success: true,
+    message: `Template "${target.name}" restored from Trash to active library.`,
+    data: templatesStore,
+  });
+};
+
+export const getSystemMode = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    isTestMode: IS_TEST_MODE,
+    mode: IS_TEST_MODE ? 'TEST' : 'LIVE',
+    primaryTestPhone: PRIMARY_TEST_PHONE,
+    authorizedPhones: AUTHORIZED_TEST_PHONES,
+    statusMessage: IS_TEST_MODE
+      ? 'Safe Working Sandbox active. Broadcasts and test sends are strictly locked to authorized test handset (+91 95513 82296).'
+      : 'LIVE Production Mode. Broadcasts will be delivered to real hospital staff.',
+  });
+};
+
+export const setSystemMode = (req: AuthRequest, res: Response) => {
+  const { isTestMode, mode } = req.body;
+  if (typeof isTestMode === 'boolean') {
+    IS_TEST_MODE = isTestMode;
+  } else if (typeof mode === 'string') {
+    IS_TEST_MODE = mode.toUpperCase() === 'TEST';
+  }
+  console.log(`[System Mode] Switched to: ${IS_TEST_MODE ? 'TEST MODE (Safe Sandbox)' : 'LIVE PRODUCTION'}`);
+  res.json({
+    success: true,
+    isTestMode: IS_TEST_MODE,
+    mode: IS_TEST_MODE ? 'TEST' : 'LIVE',
+    message: IS_TEST_MODE
+      ? 'System switched to TEST MODE. Hospital staff are protected; dispatches route to +91 95513 82296.'
+      : 'System switched to LIVE PRODUCTION MODE. Caution: Broadcasts will reach real hospital staff.',
   });
 };
 

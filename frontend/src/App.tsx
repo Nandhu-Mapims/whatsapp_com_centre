@@ -30,6 +30,8 @@ import { UsersRolesPage } from './pages/admin/UsersRolesPage';
 import { WatiIntegrationPage } from './pages/admin/WatiIntegrationPage';
 import { AuditLogsPage } from './pages/admin/AuditLogsPage';
 import { ConsentOptOutPage } from './pages/admin/ConsentOptOutPage';
+import { ShortlinksPage } from './pages/admin/ShortlinksPage';
+import { ShortlinkAnalyticsPage } from './pages/admin/ShortlinkAnalyticsPage';
 
 const queryClient = new QueryClient();
 
@@ -226,6 +228,28 @@ export function App() {
                       moduleName="System Audit Trail"
                     >
                       <AuditLogsPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="admin/shortlinks"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin']}
+                      moduleName="Shortlink Creation"
+                    >
+                      <ShortlinksPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="admin/shortlinks/:id/analytics"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin']}
+                      moduleName="Shortlink Analytics"
+                    >
+                      <ShortlinkAnalyticsPage />
                     </RoleRoute>
                   }
                 />

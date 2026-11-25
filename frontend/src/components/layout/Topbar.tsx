@@ -159,6 +159,18 @@ export const Topbar: React.FC<TopbarProps> = ({
           />
         </div>
 
+        {/* Safe Working Phase Sandbox Badge */}
+        <div
+          className="flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-50 border border-amber-200/90 rounded-lg text-xs text-amber-900 font-semibold shadow-2xs"
+          title="Safe Working Phase Sandbox Active: Hospital staff (1,046) are protected. All broadcasts & tests route to +91 95513 82296."
+        >
+          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
+          <span className="font-bold text-amber-800 text-[11px] sm:text-xs">TEST MODE</span>
+          <span className="hidden md:inline text-[10px] text-amber-700 font-mono font-medium">
+            (+91 95513 82296)
+          </span>
+        </div>
+
         {/* Role Switcher for Interactive RBAC Demo */}
         <div className="relative">
           <button

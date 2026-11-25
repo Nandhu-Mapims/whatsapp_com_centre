@@ -20,10 +20,22 @@ import {
   createTemplate,
   syncTemplates,
   deleteTemplate,
+  restoreTemplate,
   updateEmployeePhone,
   getDeliveryReports,
   retryMessage,
+  getSystemMode,
+  setSystemMode,
 } from '../controllers/apiController.js';
+
+import {
+  getShortlinks,
+  getShortlinkById,
+  createShortlink,
+  updateShortlink,
+  toggleShortlinkStatus,
+  getShortlinkAnalytics,
+} from '../controllers/shortlinkController.js';
 
 const router = Router();
 
@@ -94,6 +106,12 @@ router.delete(
   requireRole('Super Admin', 'MD', 'HR'),
   deleteTemplate
 );
+router.post(
+  '/templates/:id/restore',
+  authenticate,
+  requireRole('Super Admin', 'MD', 'HR'),
+  restoreTemplate
+);
 
 // Reports routes (Live WATI delivery receipts & Retry)
 router.get('/reports/delivery', getDeliveryReports);
@@ -104,5 +122,17 @@ router.post('/wati/webhook', handleWatiWebhook);
 
 // Audit logs (Strictly Super Admin Alone)
 router.get('/audit', authenticate, requireRole('Super Admin'), getAuditLogs);
+
+// Shortlink Creation & Management (Admin RBAC restricted)
+router.get('/shortlinks', authenticate, requireRole('Super Admin'), getShortlinks);
+router.post('/shortlinks', authenticate, requireRole('Super Admin'), createShortlink);
+router.get('/shortlinks/:id', authenticate, requireRole('Super Admin'), getShortlinkById);
+router.put('/shortlinks/:id', authenticate, requireRole('Super Admin'), updateShortlink);
+router.patch('/shortlinks/:id/toggle', authenticate, requireRole('Super Admin'), toggleShortlinkStatus);
+router.get('/shortlinks/:id/analytics', authenticate, requireRole('Super Admin'), getShortlinkAnalytics);
+
+// System mode (Safe Working Sandbox vs Live Production)
+router.get('/system/mode', getSystemMode);
+router.post('/system/mode', authenticate, requireRole('Super Admin', 'MD'), setSystemMode);
 
 export default router;

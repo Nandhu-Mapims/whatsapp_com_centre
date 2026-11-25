@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_js_1 = require("../middleware/auth.js");
 const apiController_js_1 = require("../controllers/apiController.js");
+const shortlinkController_js_1 = require("../controllers/shortlinkController.js");
 const router = (0, express_1.Router)();
 // Auth routes
 router.post('/auth/login', apiController_js_1.login);
@@ -27,6 +28,7 @@ router.get('/templates', auth_js_1.authenticate, apiController_js_1.getTemplates
 router.post('/templates', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), apiController_js_1.createTemplate);
 router.post('/templates/sync', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'MS', 'MD'), apiController_js_1.syncTemplates);
 router.delete('/templates/:id', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'MD', 'HR'), apiController_js_1.deleteTemplate);
+router.post('/templates/:id/restore', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'MD', 'HR'), apiController_js_1.restoreTemplate);
 // Reports routes (Live WATI delivery receipts & Retry)
 router.get('/reports/delivery', apiController_js_1.getDeliveryReports);
 router.post('/reports/retry', apiController_js_1.retryMessage);
@@ -34,4 +36,14 @@ router.post('/reports/retry', apiController_js_1.retryMessage);
 router.post('/wati/webhook', apiController_js_1.handleWatiWebhook);
 // Audit logs (Strictly Super Admin Alone)
 router.get('/audit', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), apiController_js_1.getAuditLogs);
+// Shortlink Creation & Management (Admin RBAC restricted)
+router.get('/shortlinks', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.getShortlinks);
+router.post('/shortlinks', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.createShortlink);
+router.get('/shortlinks/:id', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.getShortlinkById);
+router.put('/shortlinks/:id', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.updateShortlink);
+router.patch('/shortlinks/:id/toggle', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.toggleShortlinkStatus);
+router.get('/shortlinks/:id/analytics', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.getShortlinkAnalytics);
+// System mode (Safe Working Sandbox vs Live Production)
+router.get('/system/mode', apiController_js_1.getSystemMode);
+router.post('/system/mode', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'MD'), apiController_js_1.setSystemMode);
 exports.default = router;

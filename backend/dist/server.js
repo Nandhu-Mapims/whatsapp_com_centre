@@ -11,6 +11,7 @@ const env_js_1 = require("./config/env.js");
 const db_js_1 = require("./config/db.js");
 const apiRoutes_js_1 = __importDefault(require("./routes/apiRoutes.js"));
 const retryService_js_1 = require("./services/retryService.js");
+const shortlinkController_js_1 = require("./controllers/shortlinkController.js");
 const app = (0, express_1.default)();
 // Security and utility middleware
 app.use((0, helmet_1.default)());
@@ -32,6 +33,9 @@ app.get('/api/health', (req, res) => {
         env: env_js_1.ENV.NODE_ENV,
     });
 });
+// Public shortlink redirection route (no authentication required)
+app.get('/shortlinks/:alias', shortlinkController_js_1.handleShortlinkRedirect);
+app.get('/s/:alias', shortlinkController_js_1.handleShortlinkRedirect);
 // Mount modular API routes
 app.use('/api', apiRoutes_js_1.default);
 // Global Error Handler

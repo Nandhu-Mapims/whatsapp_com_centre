@@ -19,6 +19,14 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
+      '/shortlinks': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '^/s(/.*)?$': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
     },
   },
 })

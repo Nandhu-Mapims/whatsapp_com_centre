@@ -48,7 +48,8 @@ export const CreateCampaignPage: React.FC = () => {
   const [step, setStep] = useState<FlowStep>(1);
 
   // Common: Campaign Header
-  const [title, setTitle] = useState('Hospital Clinical & Duty Advisory');
+  const [title, setTitle] = useState('');
+  const [hasUserEditedTitle, setHasUserEditedTitle] = useState(false);
   const [priority, setPriority] = useState<'Normal' | 'Urgent' | 'Emergency'>('Normal');
 
   // STEP 1: Template Selection & Message Editing
@@ -71,12 +72,13 @@ export const CreateCampaignPage: React.FC = () => {
       })
       .then((json) => {
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          setAvailableTemplates(json.data);
-          const noticeUrlTmpl = json.data.find((t: any) => t.name === 'aph_notice_url');
-          const approved = json.data.find((t: any) => t.status === 'APPROVED');
+          const activeOnly = json.data.filter((t: any) => !t.isDeleted && !t.inTrash);
+          setAvailableTemplates(activeOnly);
+          const noticeUrlTmpl = activeOnly.find((t: any) => t.name === 'aph_notice_url');
+          const approved = activeOnly.find((t: any) => t.status === 'APPROVED');
           setSelectedTemplateId((prev) => {
-            const exists = json.data.some((t: any) => t.id === prev);
-            return exists ? prev : noticeUrlTmpl ? noticeUrlTmpl.id : approved ? approved.id : json.data[0].id;
+            const exists = activeOnly.some((t: any) => t.id === prev);
+            return exists ? prev : noticeUrlTmpl ? noticeUrlTmpl.id : approved ? approved.id : activeOnly[0]?.id;
           });
         }
       })
@@ -111,6 +113,24 @@ export const CreateCampaignPage: React.FC = () => {
       }
     );
   }, [availableTemplates, selectedTemplateId]);
+
+  // Dynamically suggest a clean campaign title based on the selected template unless user already edited it
+  useEffect(() => {
+    if (!hasUserEditedTitle && activeTemplate) {
+      const tmplName = activeTemplate.name || activeTemplate.watiTemplateId || '';
+      if (tmplName.includes('notice_url')) {
+        setTitle('Incident Reporting Portal Notification');
+      } else if (tmplName.includes('test_sample')) {
+        setTitle('Emergency Ward Clinical Advisory');
+      } else if (tmplName) {
+        const cleanTmplName = tmplName
+          .replace(/^aph_/, '')
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+        setTitle(`${cleanTmplName} Notification`);
+      }
+    }
+  }, [activeTemplate?.id, hasUserEditedTitle]);
 
   // Dynamic variable parameters map (Source of Truth for {{1}}, {{2}}, {{3}})
   const [variableValues, setVariableValues] = useState<Record<string, string>>({
@@ -679,6 +699,11 @@ export const CreateCampaignPage: React.FC = () => {
       )
     );
 
+    if (!title.trim()) {
+      error('Campaign Title Required', 'Please enter a campaign title before launching the broadcast.');
+      return;
+    }
+
     if (uniqueRecipients.length === 0) {
       error('No Eligible Recipients', 'Please select at least one eligible staff member with opted-in WhatsApp.');
       return;
@@ -690,7 +715,7 @@ export const CreateCampaignPage: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title,
+          title: title.trim(),
           templateId: activeTemplate.id,
           templateName: activeTemplate.watiTemplateId || activeTemplate.name,
           templateBody: activeTemplate.body,
@@ -727,9 +752,12 @@ export const CreateCampaignPage: React.FC = () => {
 
       const json = await res.json();
       if (res.ok && json.success) {
+        try {
+          sessionStorage.removeItem('hospital_campaigns');
+        } catch {}
         success(
           'Broadcast Launched Successfully',
-          `Dispatched "${title}" to ${eligibleCount} hospital recipients via WATI.`
+          `Dispatched "${title.trim()}" to ${eligibleCount} hospital recipients via WATI.`
         );
         navigate('/campaigns/history');
       } else {
@@ -901,9 +929,12 @@ export const CreateCampaignPage: React.FC = () => {
                     type="text"
                     required
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g. ICU Night Shift Roster Announcement"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                      setHasUserEditedTitle(true);
+                    }}
+                    placeholder="Enter Campaign Title (e.g. Incident Reporting Portal Notification)"
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
                   />
                 </div>
                 <div>
@@ -1168,7 +1199,13 @@ export const CreateCampaignPage: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStep(2)}
+                  onClick={() => {
+                    if (!title.trim()) {
+                      error('Campaign Title Required', 'Please provide a descriptive title for this broadcast before proceeding.');
+                      return;
+                    }
+                    setStep(2);
+                  }}
                   className="px-5 py-2.5 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-xl font-bold flex items-center gap-2 shadow-xs transition-colors"
                 >
                   <span>Save & Continue to Test Message</span>
@@ -1206,8 +1243,9 @@ export const CreateCampaignPage: React.FC = () => {
                       Live WATI Test Dispatch
                     </span>
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-full border border-emerald-300">
-                    Safe Dev Sandbox
+                  <span className="text-[10px] font-bold text-amber-800 bg-amber-100/90 px-2.5 py-0.5 rounded-full border border-amber-300 flex items-center gap-1.5 shadow-2xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
+                    Test Mode Active • Protected (+91 95513 82296)
                   </span>
                 </div>
 
@@ -1847,6 +1885,22 @@ export const CreateCampaignPage: React.FC = () => {
                 <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-200">
                   Ready to Dispatch
                 </span>
+              </div>
+
+              {/* Working Sandbox Safeguard Notice */}
+              <div className="p-4 bg-amber-50/90 border border-amber-300 rounded-xl flex items-start gap-3 shadow-2xs">
+                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div className="text-xs text-amber-900">
+                  <div className="font-bold flex items-center gap-2">
+                    <span>🧪 Active Working Phase: Safe Test Mode Active</span>
+                    <span className="text-[10px] bg-amber-200/90 text-amber-800 px-2 py-0.5 rounded font-mono font-bold">
+                      STAFF PROTECTED
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-amber-800 mt-1 leading-relaxed">
+                    All WhatsApp dispatches are strictly locked and diverted to your authorized test handset (<strong>+91 95513 82296</strong>). Real hospital staff ({eligibleCount} doctors & nurses) will <strong>never</strong> receive test broadcasts during this working phase.
+                  </p>
+                </div>
               </div>
 
               {/* Dispatch Summary */}
