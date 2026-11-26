@@ -32,6 +32,10 @@ import { AuditLogsPage } from './pages/admin/AuditLogsPage';
 import { ConsentOptOutPage } from './pages/admin/ConsentOptOutPage';
 import { ShortlinksPage } from './pages/admin/ShortlinksPage';
 import { ShortlinkAnalyticsPage } from './pages/admin/ShortlinkAnalyticsPage';
+import { VaatiTemplatesPage } from './pages/vaati/VaatiTemplatesPage';
+import { CreateVaatiTemplatePage } from './pages/vaati/CreateVaatiTemplatePage';
+import { VaatiGatewayPage } from './pages/vaati/VaatiGatewayPage';
+import { VaatiRepliesPage } from './pages/vaati/VaatiRepliesPage';
 
 const queryClient = new QueryClient();
 
@@ -110,7 +114,7 @@ export function App() {
                   }
                 />
 
-                {/* Module 3: WhatsApp Templates */}
+                {/* Module 3: WhatsApp Templates (WATI) */}
                 <Route
                   path="templates"
                   element={
@@ -143,6 +147,56 @@ export function App() {
                       <MediaLibraryPage />
                     </RoleRoute>
                   }
+                />
+
+                {/* Module 3B: VAATI Self-Hosted WhatsApp Templates & Gateway */}
+                <Route
+                  path="vaati/templates"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'HR', 'MS', 'MD']}
+                      moduleName="VAATI Templates Studio"
+                    >
+                      <VaatiTemplatesPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="vaati/templates/create"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'HR', 'MS', 'MD']}
+                      moduleName="Create VAATI Template"
+                    >
+                      <CreateVaatiTemplatePage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="vaati/gateway"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'HR', 'MS', 'MD']}
+                      moduleName="VAATI Gateway Status"
+                    >
+                      <VaatiGatewayPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="vaati/replies"
+                  element={
+                    <RoleRoute
+                      allowedRoles={['Super Admin', 'HR', 'MS', 'MD']}
+                      moduleName="VAATI Template Replies"
+                    >
+                      <VaatiRepliesPage />
+                    </RoleRoute>
+                  }
+                />
+                <Route
+                  path="vaati"
+                  element={<Navigate to="/vaati/templates" replace />}
                 />
 
                 {/* Module 4: Campaign Management */}

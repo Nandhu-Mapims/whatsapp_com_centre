@@ -1,0 +1,19 @@
+[
+  {
+    "waMessageId": "true_54997156950167@lid_3EB0693394E2CB1CCA5B88_out",
+    "waStanzaId": "3EB0693394E2CB1CCA5B88",
+    "session": "tenant_efs",
+    "chatId": "919551382296@c.us",
+    "recipientPhone": "+919551382296",
+    "recipientName": "Shreya (Test Lead)",
+    "templateId": "v-tmpl-08",
+    "templateName": "vaati_admin_question",
+    "templateTitle": "Admin Question / Staff Response Collection",
+    "messageType": "text",
+    "sentText": "Om sakthi,\nDear Dr. A. Saravanan,\n\n*Question from Admin:*\nAre you available for tomorrow's morning clinical briefing at 08:30 AM? Please share your availability or reason.\n\nKindly send your response directly by replying to this WhatsApp message.\n\n_💬 Reply directly to this message to save your answer._\n\n_Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)_",
+    "allowReplies": true,
+    "replyPrompt": "💬 Reply directly to this message to save your answer.",
+    "sentBy": "Super Admin",
+    "sentAt": "2026-11-26T06:15:36.205Z"
+  }
+]

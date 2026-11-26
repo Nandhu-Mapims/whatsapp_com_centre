@@ -83,6 +83,17 @@ const CampaignSchema = new mongoose_1.Schema({
     readCount: { type: Number, default: 0 },
     failedCount: { type: Number, default: 0 },
     priority: { type: String, enum: ['Normal', 'Urgent', 'Emergency'], default: 'Normal' },
+    gateway: { type: String, enum: ['WATI', 'VAATI'], default: 'WATI' },
+    customTextMessage: { type: String },
+    messageType: { type: String, enum: ['text', 'url_text', 'image_text', 'pdf_text', 'poll'], default: 'text' },
+    ctaUrl: { type: String },
+    mediaUrl: { type: String },
+    mediaFilename: { type: String },
+    mediaMimetype: { type: String },
+    pollOptions: [{ type: String }],
+    multipleAnswers: { type: Boolean, default: false },
+    allowReplies: { type: Boolean, default: false },
+    replyPrompt: { type: String },
     idempotencyKey: { type: String },
 }, { timestamps: true });
 exports.CampaignModel = mongoose_1.default.model('Campaign', CampaignSchema);
@@ -94,6 +105,7 @@ const DeliveryLogSchema = new mongoose_1.Schema({
     maskedNumber: { type: String, required: true },
     whatsappNumber: { type: String, required: true },
     templateName: { type: String, required: true },
+    gateway: { type: String, enum: ['WATI', 'VAATI'], default: 'WATI' },
     submittedAt: { type: Date, default: Date.now },
     providerStatus: {
         type: String,

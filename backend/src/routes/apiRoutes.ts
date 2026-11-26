@@ -26,6 +26,8 @@ import {
   retryMessage,
   getSystemMode,
   setSystemMode,
+  getGatewayStatus,
+  toggleGateway,
 } from '../controllers/apiController.js';
 
 import {
@@ -36,6 +38,23 @@ import {
   toggleShortlinkStatus,
   getShortlinkAnalytics,
 } from '../controllers/shortlinkController.js';
+
+import {
+  getVaatiTemplates,
+  getVaatiTemplateById,
+  createVaatiTemplate,
+  updateVaatiTemplate,
+  deleteVaatiTemplate,
+  testSendVaatiTemplate,
+  toggleVaatiTemplateReply,
+} from '../controllers/vaatiTemplateController.js';
+import {
+  handleVaatiWebhook,
+  getVaatiReplies,
+  syncVaatiRepliesNow,
+  updateVaatiReplyStatus,
+  deleteVaatiReply,
+} from '../controllers/vaatiReplyController.js';
 
 const router = Router();
 
@@ -134,5 +153,25 @@ router.get('/shortlinks/:id/analytics', authenticate, requireRole('Super Admin')
 // System mode (Safe Working Sandbox vs Live Production)
 router.get('/system/mode', getSystemMode);
 router.post('/system/mode', authenticate, requireRole('Super Admin', 'MD'), setSystemMode);
+
+// Gateway Management (WATI vs VAATI)
+router.get('/gateway/status', getGatewayStatus);
+router.post('/gateway/toggle', authenticate, requireRole('Super Admin', 'MD', 'HR'), toggleGateway);
+
+// VAATI Custom Templates Management
+router.get('/vaati/templates', authenticate, getVaatiTemplates);
+router.get('/vaati/templates/:id', authenticate, getVaatiTemplateById);
+router.post('/vaati/templates', authenticate, requireRole('Super Admin', 'HR', 'MS', 'MD'), createVaatiTemplate);
+router.put('/vaati/templates/:id', authenticate, requireRole('Super Admin', 'HR', 'MS', 'MD'), updateVaatiTemplate);
+router.patch('/vaati/templates/:id/reply-toggle', authenticate, requireRole('Super Admin', 'HR', 'MS', 'MD'), toggleVaatiTemplateReply);
+router.delete('/vaati/templates/:id', authenticate, requireRole('Super Admin', 'HR', 'MS', 'MD'), deleteVaatiTemplate);
+router.post('/vaati/templates/test-send', authenticate, requireRole('Super Admin', 'HR', 'MS', 'MD'), testSendVaatiTemplate);
+
+// VAATI Webhook & User Replies Inbox (Saved to MongoDB)
+router.post('/vaati/webhook', handleVaatiWebhook);
+router.get('/vaati/replies', authenticate, getVaatiReplies);
+router.post('/vaati/replies/sync', authenticate, requireRole('Super Admin', 'HR', 'MS', 'MD'), syncVaatiRepliesNow);
+router.patch('/vaati/replies/:id/status', authenticate, requireRole('Super Admin', 'HR', 'MS', 'MD'), updateVaatiReplyStatus);
+router.delete('/vaati/replies/:id', authenticate, requireRole('Super Admin', 'HR', 'MS', 'MD'), deleteVaatiReply);
 
 export default router;

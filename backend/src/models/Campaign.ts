@@ -45,6 +45,17 @@ export interface ICampaign extends Document {
   readCount: number;
   failedCount: number;
   priority: 'Normal' | 'Urgent' | 'Emergency';
+  gateway?: 'WATI' | 'VAATI';
+  customTextMessage?: string;
+  messageType?: 'text' | 'url_text' | 'image_text' | 'pdf_text' | 'poll';
+  ctaUrl?: string;
+  mediaUrl?: string;
+  mediaFilename?: string;
+  mediaMimetype?: string;
+  pollOptions?: string[];
+  multipleAnswers?: boolean;
+  allowReplies?: boolean;
+  replyPrompt?: string;
   idempotencyKey?: string;
 }
 
@@ -97,6 +108,17 @@ const CampaignSchema = new Schema<ICampaign>(
     readCount: { type: Number, default: 0 },
     failedCount: { type: Number, default: 0 },
     priority: { type: String, enum: ['Normal', 'Urgent', 'Emergency'], default: 'Normal' },
+    gateway: { type: String, enum: ['WATI', 'VAATI'], default: 'WATI' },
+    customTextMessage: { type: String },
+    messageType: { type: String, enum: ['text', 'url_text', 'image_text', 'pdf_text', 'poll'], default: 'text' },
+    ctaUrl: { type: String },
+    mediaUrl: { type: String },
+    mediaFilename: { type: String },
+    mediaMimetype: { type: String },
+    pollOptions: [{ type: String }],
+    multipleAnswers: { type: Boolean, default: false },
+    allowReplies: { type: Boolean, default: false },
+    replyPrompt: { type: String },
     idempotencyKey: { type: String },
   },
   { timestamps: true }
@@ -112,6 +134,7 @@ export interface IDeliveryLog extends Document {
   maskedNumber: string;
   whatsappNumber: string;
   templateName: string;
+  gateway?: 'WATI' | 'VAATI';
   submittedAt: Date;
   providerStatus: 'queued' | 'submitted' | 'sent' | 'delivered' | 'read' | 'failed';
   statusTimestamp: Date;
@@ -130,6 +153,7 @@ const DeliveryLogSchema = new Schema<IDeliveryLog>(
     maskedNumber: { type: String, required: true },
     whatsappNumber: { type: String, required: true },
     templateName: { type: String, required: true },
+    gateway: { type: String, enum: ['WATI', 'VAATI'], default: 'WATI' },
     submittedAt: { type: Date, default: Date.now },
     providerStatus: {
       type: String,

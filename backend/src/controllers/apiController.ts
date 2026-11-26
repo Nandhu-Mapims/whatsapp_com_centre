@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken';
 import { ENV } from '../config/env.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { WatiService } from '../services/watiService.js';
+import { VaatiService, VaatiMessageType } from '../services/vaatiService.js';
+import { VaatiReplyService } from '../services/vaatiReplyService.js';
 import { RetryService } from '../services/retryService.js';
 import { ExcelService } from '../services/excelService.js';
 import { QueueService } from '../services/queueService.js';
@@ -435,6 +437,19 @@ export const createCampaign = (req: AuthRequest, res: Response) => {
     readCount: Math.floor(finalCount * 0.75),
     failedCount: 0,
     priority: priority || 'Normal',
+    gateway: (req.body.gateway || 'WATI').toUpperCase(),
+    messageType: (['text', 'url_text', 'image_text', 'pdf_text', 'poll'].includes(req.body.messageType)
+      ? req.body.messageType
+      : 'text') as VaatiMessageType,
+    footer: req.body.footer ? String(req.body.footer).trim() : undefined,
+    ctaUrl: req.body.ctaUrl ? String(req.body.ctaUrl).trim() : undefined,
+    mediaUrl: req.body.mediaUrl ? String(req.body.mediaUrl).trim() : undefined,
+    mediaFilename: req.body.mediaFilename ? String(req.body.mediaFilename).trim() : undefined,
+    mediaMimetype: req.body.mediaMimetype ? String(req.body.mediaMimetype).trim() : undefined,
+    pollOptions: Array.isArray(req.body.pollOptions) ? req.body.pollOptions : undefined,
+    multipleAnswers: Boolean(req.body.multipleAnswers),
+    allowReplies: Boolean(req.body.allowReplies),
+    replyPrompt: req.body.replyPrompt ? String(req.body.replyPrompt).trim() : undefined,
   };
 
   campaignsStore.unshift(newCampaign);
@@ -446,7 +461,7 @@ export const createCampaign = (req: AuthRequest, res: Response) => {
     } catch {}
   });
   console.log(
-    `[Campaign] Broadcast "${title}" created for ${finalCount} unique recipients (zero duplicates guaranteed).`
+    `[Campaign] Broadcast "${title}" created for ${finalCount} unique recipients (gateway: ${newCampaign.gateway}).`
   );
   // Track unique recipients for live delivery report synchronization
   uniqueRecipientsList.forEach((p) => {
@@ -454,7 +469,7 @@ export const createCampaign = (req: AuthRequest, res: Response) => {
     if (clean) trackedPhoneNumbers.add(clean);
   });
 
-  // If launching an active broadcast, dispatch via WATI bulk messaging pipeline
+  // If launching an active broadcast, dispatch via selected gateway (WATI or VAATI)
   if (!isDraft && uniqueRecipientsList.length > 0) {
     let dispatchPhoneList = uniqueRecipientsList;
     if (IS_TEST_MODE) {
@@ -465,37 +480,107 @@ export const createCampaign = (req: AuthRequest, res: Response) => {
     }
 
     const rawParams = Array.isArray(req.body.parameters) ? req.body.parameters : [];
-    const receivers = dispatchPhoneList.map((phone) => {
-      const emp = employeesStore.find((e) => {
-        const ePhone = (e.whatsappNumber || '').replace(/[^0-9]/g, '');
-        const pPhone = phone.replace(/[^0-9]/g, '');
-        return ePhone.endsWith(pPhone.slice(-10));
+
+    if (newCampaign.gateway === 'VAATI') {
+      if (VaatiService.isEnabled()) {
+        const receivers = dispatchPhoneList.map((phone) => {
+          const emp = employeesStore.find((e) => {
+            const ePhone = (e.whatsappNumber || '').replace(/[^0-9]/g, '');
+            const pPhone = phone.replace(/[^0-9]/g, '');
+            return ePhone.endsWith(pPhone.slice(-10));
+          });
+
+          let text = customMessage || templateBody || 'Hospital Notification from MAPIMS';
+          if (emp?.name) {
+            text = text.replace(/{{employee\.name}}/g, emp.name);
+          }
+          if (rawParams.length > 0) {
+            rawParams.forEach((p: any) => {
+              if (p.name && p.value) {
+                text = text.replace(new RegExp(`{{${p.name}}}`, 'g'), p.value);
+              }
+            });
+          }
+          return { whatsappNumber: phone, text };
+        });
+
+        VaatiService.sendBatchMessages({
+          broadcastTitle: title,
+          receivers,
+          footer: newCampaign.footer,
+          allowReplies: Boolean(newCampaign.allowReplies),
+          replyPrompt: newCampaign.replyPrompt,
+          messageType: newCampaign.messageType,
+          ctaUrl: newCampaign.ctaUrl,
+          mediaUrl: newCampaign.mediaUrl,
+          mediaFilename: newCampaign.mediaFilename,
+          mediaMimetype: newCampaign.mediaMimetype,
+          pollOptions: newCampaign.pollOptions,
+          multipleAnswers: newCampaign.multipleAnswers,
+          session: req.body.session,
+        })
+          .then(async (batchResult) => {
+            for (const dm of batchResult.dispatchedMessages || []) {
+              await VaatiReplyService.recordOutboundDispatch({
+                waMessageId: dm.waMessageId,
+                session: req.body.session,
+                whatsappNumber: dm.whatsappNumber,
+                templateId: newCampaign.templateId || newCampaign.templateName,
+                templateName: newCampaign.templateName,
+                templateTitle: newCampaign.title,
+                campaignId: newCampaign.campaignId,
+                campaignTitle: newCampaign.title,
+                messageType: newCampaign.messageType,
+                sentText: dm.sentText,
+                allowReplies: Boolean(newCampaign.allowReplies),
+                replyPrompt: newCampaign.replyPrompt,
+                sentBy: newCampaign.createdBy,
+              });
+            }
+            console.log(
+              `[Campaign Dispatch] Bulk broadcast "${title}" dispatched via VAATI to ${batchResult.dispatchedCount} recipient(s).`
+            );
+          })
+          .catch((err) => {
+            console.error(`[Campaign Dispatch] Error during VAATI bulk dispatch:`, err.message);
+          });
+      } else {
+        console.warn(`[Campaign Dispatch] VAATI is turned OFF. Skipping automatic VAATI dispatch.`);
+      }
+    } else {
+      // Default: WATI Cloud API
+      const receivers = dispatchPhoneList.map((phone) => {
+        const emp = employeesStore.find((e) => {
+          const ePhone = (e.whatsappNumber || '').replace(/[^0-9]/g, '');
+          const pPhone = phone.replace(/[^0-9]/g, '');
+          return ePhone.endsWith(pPhone.slice(-10));
+        });
+
+        const customParams = rawParams.map((p: any) => {
+          let val = p.value || '';
+          if (val === '{{employee.name}}' || val.includes('employee.name')) {
+            val = emp?.name || 'Hospital Staff';
+          }
+          return { name: p.name, value: val };
+        });
+
+        return { whatsappNumber: phone, customParams };
       });
 
-      const customParams = rawParams.map((p: any) => {
-        let val = p.value || '';
-        if (val === '{{employee.name}}' || val.includes('employee.name')) {
-          val = emp?.name || 'Hospital Staff';
-        }
-        return { name: p.name, value: val };
-      });
-
-      return { whatsappNumber: phone, customParams };
-    });
-
-    WatiService.sendBatchTemplateMessages({
-      templateName: templateName || 'aph_notice_url3',
-      broadcastTitle: title,
-      receivers,
-    })
-      .then((batchResult) => {
-        console.log(
-          `[Campaign Dispatch] Bulk broadcast "${title}" dispatched to ${batchResult.dispatchedCount} recipient(s) (${IS_TEST_MODE ? 'TEST MODE: Diverted safely to +91 95513 82296' : 'LIVE PRODUCTION'}).`
-        );
+      WatiService.sendBatchTemplateMessages({
+        templateName: templateName || 'aph_notice_url3',
+        broadcastTitle: title,
+        receivers,
       })
-      .catch((err) => {
-        console.error(`[Campaign Dispatch] Error during bulk dispatch:`, err.message);
-      });
+        .then((batchResult) => {
+          console.log(
+            `[Campaign Dispatch] Bulk broadcast "${title}" dispatched to ${batchResult.dispatchedCount} recipient(s) (${IS_TEST_MODE ? 'TEST MODE: Diverted safely to +91 95513 82296' : 'LIVE PRODUCTION'}).`
+          );
+        })
+        .catch((err) => {
+          console.error(`[Campaign Dispatch] Error during bulk dispatch:`, err.message);
+        });
+    }
   }
 
   res.status(201).json({ success: true, data: newCampaign });
@@ -548,6 +633,87 @@ export const dispatchCampaign = async (req: AuthRequest, res: Response) => {
     if (clean) trackedPhoneNumbers.add(clean);
   });
 
+  const selectedGateway = (campaign.gateway || 'WATI').toUpperCase();
+
+  if (selectedGateway === 'VAATI') {
+    if (!VaatiService.isEnabled()) {
+      return res.status(400).json({
+        success: false,
+        message: 'VAATI Gateway is currently turned OFF. Please turn ON VAATI in settings or switch campaign to WATI.',
+      });
+    }
+
+    const vaatiReceivers = dispatchRecipients.map((phone: string) => {
+      const emp = employeesStore.find((e) => {
+        const ePhone = (e.whatsappNumber || '').replace(/[^0-9]/g, '');
+        const pPhone = phone.replace(/[^0-9]/g, '');
+        return ePhone.endsWith(pPhone.slice(-10));
+      });
+
+      let text = campaign.customMessage || campaign.templateBody || 'Hospital Notification from MAPIMS';
+      if (emp?.name) {
+        text = text.replace(/{{employee\.name}}/g, emp.name);
+      }
+      if (rawParams.length > 0) {
+        rawParams.forEach((p: any) => {
+          if (p.name && p.value) {
+            text = text.replace(new RegExp(`{{${p.name}}}`, 'g'), p.value);
+          }
+        });
+      }
+      return { whatsappNumber: phone, text };
+    });
+
+    const batchResult = await VaatiService.sendBatchMessages({
+      broadcastTitle: campaign.title,
+      receivers: vaatiReceivers,
+      footer: campaign.footer,
+      allowReplies: Boolean(campaign.allowReplies),
+      replyPrompt: campaign.replyPrompt,
+      messageType: campaign.messageType,
+      ctaUrl: campaign.ctaUrl,
+      mediaUrl: campaign.mediaUrl,
+      mediaFilename: campaign.mediaFilename,
+      mediaMimetype: campaign.mediaMimetype,
+      pollOptions: campaign.pollOptions,
+      multipleAnswers: campaign.multipleAnswers,
+      session: req.body.session,
+    });
+
+    for (const dm of batchResult.dispatchedMessages || []) {
+      await VaatiReplyService.recordOutboundDispatch({
+        waMessageId: dm.waMessageId,
+        session: req.body.session,
+        whatsappNumber: dm.whatsappNumber,
+        templateId: campaign.templateId || campaign.templateName,
+        templateName: campaign.templateName,
+        templateTitle: campaign.title,
+        campaignId: campaign.campaignId,
+        campaignTitle: campaign.title,
+        messageType: campaign.messageType,
+        sentText: dm.sentText,
+        allowReplies: Boolean(campaign.allowReplies),
+        replyPrompt: campaign.replyPrompt,
+        sentBy: req.user?.name || campaign.createdBy,
+      });
+    }
+
+    campaign.status = 'Sent';
+    campaign.submittedCount = vaatiReceivers.length;
+
+    return res.json({
+      success: batchResult.success,
+      gateway: 'VAATI',
+      message: batchResult.success
+        ? (IS_TEST_MODE
+            ? `[TEST MODE ACTIVE] VAATI Broadcast dispatched safely to test handset +${PRIMARY_TEST_PHONE} via VAATI VPS gateway.`
+            : `Live broadcast successfully triggered via VAATI to ${batchResult.dispatchedCount} staff members.`)
+        : `VAATI Bulk Dispatch Failed: ${batchResult.error}`,
+      dispatchedCount: batchResult.dispatchedCount,
+      isTestMode: IS_TEST_MODE,
+    });
+  }
+
   const batchResult = await WatiService.sendBatchTemplateMessages({
     templateName: campaign.templateName || 'aph_notice_url3',
     broadcastTitle: campaign.title,
@@ -559,6 +725,7 @@ export const dispatchCampaign = async (req: AuthRequest, res: Response) => {
 
   res.json({
     success: batchResult.success,
+    gateway: 'WATI',
     message: batchResult.success
       ? (IS_TEST_MODE
           ? `[TEST MODE ACTIVE] Broadcast triggered safely! Delivered exclusively to test handset +${PRIMARY_TEST_PHONE}. Real hospital staff were protected.`
@@ -578,9 +745,28 @@ const trackedPhoneNumbers = new Set<string>([
 ]);
 
 export const testSendTemplate = async (req: AuthRequest, res: Response) => {
-  const { whatsappNumber, templateName, broadcastTitle, parameters } = req.body;
-  if (!whatsappNumber || !templateName) {
-    return res.status(400).json({ success: false, message: 'whatsappNumber and templateName are required.' });
+  const {
+    whatsappNumber,
+    templateName,
+    broadcastTitle,
+    parameters,
+    gateway,
+    customMessage,
+    footer,
+    templateId,
+    templateTitle,
+    allowReplies,
+    replyPrompt,
+    messageType,
+    ctaUrl,
+    mediaUrl,
+    mediaFilename,
+    mediaMimetype,
+    pollOptions,
+    multipleAnswers,
+  } = req.body;
+  if (!whatsappNumber) {
+    return res.status(400).json({ success: false, message: 'whatsappNumber is required.' });
   }
 
   try {
@@ -608,14 +794,97 @@ export const testSendTemplate = async (req: AuthRequest, res: Response) => {
     // Track for live delivery receipts
     trackedPhoneNumbers.add(targetNumber);
 
+    const selectedGateway = (gateway || 'WATI').toUpperCase();
+
+    if (selectedGateway === 'VAATI') {
+      if (!VaatiService.isEnabled()) {
+        return res.status(400).json({
+          success: false,
+          gateway: 'VAATI',
+          message: 'VAATI Gateway is currently turned OFF by admin. Please turn ON VAATI or switch to WATI.',
+        });
+      }
+
+      // Build readable message text
+      let textToSend = customMessage || '';
+      if (!textToSend) {
+        textToSend = `Om sakthi,\nOur application notice:\n${finalParams.map((p) => p.value).join('\n')}\n\nThank you,\nMelmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)`;
+      }
+
+      const cleanOptions = Array.isArray(pollOptions)
+        ? pollOptions.map((o: any) => String(o).trim()).filter(Boolean)
+        : [];
+      const resolvedType: VaatiMessageType =
+        messageType === 'url_text' ||
+        messageType === 'image_text' ||
+        messageType === 'pdf_text' ||
+        messageType === 'poll' ||
+        messageType === 'text'
+          ? messageType
+          : cleanOptions.length >= 2
+          ? 'poll'
+          : 'text';
+
+      console.log(
+        `[VAATI Test Dispatch] Dispatching (${resolvedType}) test to phone +${targetNumber} via VAATI VPS gateway...`
+      );
+
+      const vaatiResult = await VaatiService.dispatchMessage({
+        whatsappNumber: targetNumber,
+        text: textToSend,
+        footer,
+        allowReplies: Boolean(allowReplies),
+        replyPrompt,
+        messageType: resolvedType,
+        ctaUrl,
+        mediaUrl,
+        mediaFilename,
+        mediaMimetype,
+        pollOptions: cleanOptions,
+        multipleAnswers: Boolean(multipleAnswers),
+        session: req.body.session,
+        broadcastTitle: broadcastTitle || 'VAATI Test Dispatch',
+      });
+
+      if (vaatiResult.success) {
+        await VaatiReplyService.recordOutboundDispatch({
+          waMessageId: vaatiResult.providerMessageId,
+          session: req.body.session,
+          whatsappNumber: targetNumber,
+          templateId: templateId || templateName || 'vaati_campaign_test',
+          templateName: templateName || templateId || 'vaati_campaign_test',
+          templateTitle: templateTitle || broadcastTitle || 'VAATI Question Test',
+          messageType: resolvedType,
+          sentText: textToSend,
+          allowReplies: Boolean(allowReplies),
+          replyPrompt: replyPrompt ? String(replyPrompt) : undefined,
+          sentBy: req.user?.name || 'Authorized Staff',
+        });
+
+        return res.json({
+          success: true,
+          gateway: 'VAATI',
+          message: `Test (${resolvedType}) successfully delivered to +${targetNumber} via VAATI Gateway!`,
+          providerMessageId: vaatiResult.providerMessageId,
+        });
+      } else {
+        return res.status(500).json({
+          success: false,
+          gateway: 'VAATI',
+          message: vaatiResult.error || 'Failed to dispatch test message via VAATI gateway.',
+        });
+      }
+    }
+
+    // Default: WATI Cloud API
     console.log(
-      `[WATI Test Dispatch] Dispatching test to phone ${targetNumber} using template "${templateName}" with sanitized params:`,
+      `[WATI Test Dispatch] Dispatching test to phone ${targetNumber} using template "${templateName || 'aph_notice_url4'}" with sanitized params:`,
       finalParams
     );
 
     const result = await WatiService.sendTemplateMessage({
       whatsappNumber: targetNumber,
-      templateName,
+      templateName: templateName || 'aph_notice_url4',
       broadcastTitle: broadcastTitle || 'APH Connect Test Dispatch',
       parameters: finalParams,
     });
@@ -623,12 +892,14 @@ export const testSendTemplate = async (req: AuthRequest, res: Response) => {
     if (result.success) {
       res.json({
         success: true,
-        message: `Test message successfully delivered to +${targetNumber} via WATI (${templateName}).`,
+        gateway: 'WATI',
+        message: `Test message successfully delivered to +${targetNumber} via WATI (${templateName || 'aph_notice_url4'}).`,
         providerMessageId: result.providerMessageId,
       });
     } else {
       res.status(500).json({
         success: false,
+        gateway: 'WATI',
         message: result.error || 'Failed to dispatch test message via WATI.',
       });
     }
@@ -1310,6 +1581,48 @@ export const setSystemMode = (req: AuthRequest, res: Response) => {
       ? 'System switched to TEST MODE. Hospital staff are protected; dispatches route to +91 95513 82296.'
       : 'System switched to LIVE PRODUCTION MODE. Caution: Broadcasts will reach real hospital staff.',
   });
+};
+
+export const getGatewayStatus = async (req: Request, res: Response) => {
+  try {
+    const vaatiStatus = await VaatiService.getStatus();
+    res.json({
+      success: true,
+      data: {
+        activeGateway: VaatiService.isEnabled() ? 'VAATI' : 'WATI',
+        isVaatiEnabled: VaatiService.isEnabled(),
+        vaati: vaatiStatus,
+        wati: {
+          enabled: true,
+          endpoint: ENV.WATI_API_ENDPOINT,
+          status: 'ONLINE',
+        },
+      },
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const toggleGateway = async (req: AuthRequest, res: Response) => {
+  try {
+    const { gateway, enabled } = req.body;
+    if (gateway === 'VAATI' || gateway === 'vaati') {
+      VaatiService.setEnabled(Boolean(enabled));
+    }
+    const vaatiStatus = await VaatiService.getStatus();
+    res.json({
+      success: true,
+      message: `Gateway ${gateway || 'VAATI'} has been turned ${enabled ? 'ON' : 'OFF'} successfully.`,
+      data: {
+        activeGateway: VaatiService.isEnabled() ? 'VAATI' : 'WATI',
+        isVaatiEnabled: VaatiService.isEnabled(),
+        vaati: vaatiStatus,
+      },
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 };
 
 // Initial background sync on module load

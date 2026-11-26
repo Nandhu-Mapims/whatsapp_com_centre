@@ -35,6 +35,9 @@ import {
   Maximize2,
   Minimize2,
   Link2,
+  Zap,
+  Sparkles,
+  MessageSquare,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useAuth } from '../../context/AuthContext';
@@ -172,6 +175,48 @@ export const SimpleNavbar: React.FC = () => {
           path: '/templates/designer',
           icon: Palette,
           allowedRoles: ['Super Admin', 'MS', 'MD'],
+        },
+      ],
+    },
+    {
+      key: 'vaati',
+      label: 'VAATI',
+      basePath: '/vaati',
+      allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
+      items: [
+        {
+          title: 'VAATI Templates',
+          description: 'Custom templates without Meta approval (Free & Instant)',
+          path: '/vaati/templates',
+          icon: Zap,
+          badge: 'Free',
+          badgeVariant: 'amber',
+          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
+        },
+        {
+          title: 'Create VAATI Template',
+          description: 'Build your custom hospital templates with live WhatsApp preview',
+          path: '/vaati/templates/create',
+          icon: Sparkles,
+          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
+        },
+        {
+          title: 'Template Replies Inbox',
+          description: 'View staff replies saved to DB for reply-enabled questions',
+          path: '/vaati/replies',
+          icon: MessageSquare,
+          badge: 'DB',
+          badgeVariant: 'emerald',
+          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
+        },
+        {
+          title: 'Gateway & Node Status',
+          description: 'Live WAHA VPS engine, phone link & master power switch',
+          path: '/vaati/gateway',
+          icon: Radio,
+          badge: 'Live',
+          badgeVariant: 'emerald',
+          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
         },
       ],
     },
@@ -367,6 +412,11 @@ export const SimpleNavbar: React.FC = () => {
                     )}
                   >
                     <span>{group.label}</span>
+                    {group.key === 'vaati' && (
+                      <span className="text-[9px] px-1.5 py-0.5 rounded-md font-black bg-[#C76323] text-white shadow-2xs">
+                        ⚡
+                      </span>
+                    )}
                     <ChevronDown
                       className={cn(
                         'w-3.5 h-3.5 transition-transform duration-200 opacity-60',

@@ -6,6 +6,7 @@ import { ENV } from './config/env.js';
 import { connectDB } from './config/db.js';
 import apiRoutes from './routes/apiRoutes.js';
 import { RetryService } from './services/retryService.js';
+import { VaatiReplyService } from './services/vaatiReplyService.js';
 import { handleShortlinkRedirect } from './controllers/shortlinkController.js';
 
 const app = express();
@@ -15,13 +16,13 @@ app.use(helmet());
 app.use(
   cors({
     origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -54,6 +55,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 async function startServer() {
   await connectDB();
   RetryService.init();
+  VaatiReplyService.initAutoSync();
   app.listen(ENV.PORT, () => {
     console.log(`[APH Connect Backend] Server running on http://localhost:${ENV.PORT}`);
     console.log(`[APH Connect Backend] Health endpoint available at http://localhost:${ENV.PORT}/api/health`);

@@ -4,6 +4,8 @@ const express_1 = require("express");
 const auth_js_1 = require("../middleware/auth.js");
 const apiController_js_1 = require("../controllers/apiController.js");
 const shortlinkController_js_1 = require("../controllers/shortlinkController.js");
+const vaatiTemplateController_js_1 = require("../controllers/vaatiTemplateController.js");
+const vaatiReplyController_js_1 = require("../controllers/vaatiReplyController.js");
 const router = (0, express_1.Router)();
 // Auth routes
 router.post('/auth/login', apiController_js_1.login);
@@ -46,4 +48,21 @@ router.get('/shortlinks/:id/analytics', auth_js_1.authenticate, (0, auth_js_1.re
 // System mode (Safe Working Sandbox vs Live Production)
 router.get('/system/mode', apiController_js_1.getSystemMode);
 router.post('/system/mode', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'MD'), apiController_js_1.setSystemMode);
+// Gateway Management (WATI vs VAATI)
+router.get('/gateway/status', apiController_js_1.getGatewayStatus);
+router.post('/gateway/toggle', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'MD', 'HR'), apiController_js_1.toggleGateway);
+// VAATI Custom Templates Management
+router.get('/vaati/templates', auth_js_1.authenticate, vaatiTemplateController_js_1.getVaatiTemplates);
+router.get('/vaati/templates/:id', auth_js_1.authenticate, vaatiTemplateController_js_1.getVaatiTemplateById);
+router.post('/vaati/templates', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'HR', 'MS', 'MD'), vaatiTemplateController_js_1.createVaatiTemplate);
+router.put('/vaati/templates/:id', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'HR', 'MS', 'MD'), vaatiTemplateController_js_1.updateVaatiTemplate);
+router.patch('/vaati/templates/:id/reply-toggle', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'HR', 'MS', 'MD'), vaatiTemplateController_js_1.toggleVaatiTemplateReply);
+router.delete('/vaati/templates/:id', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'HR', 'MS', 'MD'), vaatiTemplateController_js_1.deleteVaatiTemplate);
+router.post('/vaati/templates/test-send', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'HR', 'MS', 'MD'), vaatiTemplateController_js_1.testSendVaatiTemplate);
+// VAATI Webhook & User Replies Inbox (Saved to MongoDB)
+router.post('/vaati/webhook', vaatiReplyController_js_1.handleVaatiWebhook);
+router.get('/vaati/replies', auth_js_1.authenticate, vaatiReplyController_js_1.getVaatiReplies);
+router.post('/vaati/replies/sync', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'HR', 'MS', 'MD'), vaatiReplyController_js_1.syncVaatiRepliesNow);
+router.patch('/vaati/replies/:id/status', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'HR', 'MS', 'MD'), vaatiReplyController_js_1.updateVaatiReplyStatus);
+router.delete('/vaati/replies/:id', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'HR', 'MS', 'MD'), vaatiReplyController_js_1.deleteVaatiReply);
 exports.default = router;

@@ -26,6 +26,9 @@ import {
   ChevronRight,
   Hospital,
   Link2,
+  Zap,
+  Sparkles,
+  MessageSquare,
   X,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
@@ -96,6 +99,17 @@ export const AppSidebar: React.FC<SidebarProps> = ({
         { title: 'Template Library', path: '/templates', icon: FileText },
         { title: 'Template Designer', path: '/templates/designer', icon: Palette },
         { title: 'Media Library', path: '/templates/media', icon: ImageIcon },
+      ],
+    },
+    {
+      title: 'VAATI Studio',
+      key: 'vaati',
+      icon: Zap,
+      items: [
+        { title: 'VAATI Templates', path: '/vaati/templates', icon: Zap },
+        { title: 'Create Template', path: '/vaati/templates/create', icon: Sparkles },
+        { title: 'Template Replies', path: '/vaati/replies', icon: MessageSquare },
+        { title: 'Gateway Health', path: '/vaati/gateway', icon: Radio },
       ],
     },
     {

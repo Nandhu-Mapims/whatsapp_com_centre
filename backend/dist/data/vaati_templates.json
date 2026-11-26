@@ -1,0 +1,259 @@
+[
+  {
+    "id": "v-tmpl-1795665524012",
+    "name": "vaati_1_tap_yes_no_poll",
+    "title": "1-Tap Confirmation Buttons (Yes / No Poll)",
+    "category": "Hospital Applications",
+    "messageType": "text",
+    "header": "EFS application",
+    "body": "EFS application is live now!\n\nYou can access using the link below:\nhttps://staff.feedback.mapims.edu.in/feedback/general",
+    "footer": "Adhiparasakthi Hospitals",
+    "variables": [],
+    "status": "ACTIVE",
+    "createdBy": "Super Admin",
+    "createdAt": "2026-11-26 09:28:44",
+    "updatedAt": "2026-11-26 09:28:44"
+  },
+  {
+    "id": "v-tmpl-01",
+    "name": "vaati_inc_app_credentials",
+    "title": "Incident Reporting App Announcement & Credentials",
+    "category": "Hospital Applications",
+    "header": "Incident Reporting Application Live",
+    "body": "Om sakthi,\nOur {{app_name}} is now live!\n\nKindly click the link below to log in and complete your profile:\n🔗 {{app_url}}\n\nLogin Credentials:\n👤 Username: {{username}}\n🔑 Password: {{password}}\n\nThank you for your cooperation.",
+    "footer": "Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)",
+    "variables": [
+      {
+        "key": "app_name",
+        "description": "Application Name",
+        "sampleValue": "Incident Reporting Application"
+      },
+      {
+        "key": "app_url",
+        "description": "Portal Web Link",
+        "sampleValue": "https://inc.mapims.edu.in/login"
+      },
+      {
+        "key": "username",
+        "description": "Login Username",
+        "sampleValue": "Your Employee ID"
+      },
+      {
+        "key": "password",
+        "description": "Login Password",
+        "sampleValue": "mapims@123"
+      }
+    ],
+    "status": "ACTIVE",
+    "createdBy": "Super Admin",
+    "createdAt": "2026-11-25 10:00:00",
+    "updatedAt": "2026-11-25 10:00:00"
+  },
+  {
+    "id": "v-tmpl-02",
+    "name": "vaati_app_url_notice",
+    "title": "URL + Text: Hospital Application Portal Notice",
+    "category": "Hospital Applications",
+    "messageType": "url_text",
+    "header": "Hospital Application Notice",
+    "body": "Om sakthi,\nOur {{app_name}} is now live!\n\nKindly access the portal using the link below:\n🔗 {{app_url}}\n\nThank you for your cooperation.",
+    "ctaUrl": "{{app_url}}",
+    "footer": "Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)",
+    "variables": [
+      {
+        "key": "app_name",
+        "description": "Application Name",
+        "sampleValue": "Incident Reporting Application"
+      },
+      {
+        "key": "app_url",
+        "description": "Portal Web Link",
+        "sampleValue": "https://inc.mapims.edu.in/login"
+      }
+    ],
+    "status": "ACTIVE",
+    "createdBy": "Super Admin",
+    "createdAt": "2026-11-25 10:05:00",
+    "updatedAt": "2026-11-25 10:05:00"
+  },
+  {
+    "id": "v-tmpl-03",
+    "name": "vaati_duty_roster",
+    "title": "Clinical Duty & Shift Schedule Notification",
+    "category": "Clinical Duty",
+    "header": "Duty Roster Notification",
+    "body": "Om sakthi,\nDear {{employee.name}},\nYour duty schedule for {{department}} has been updated:\n\n📅 Effective Date: {{effective_date}}\n⏰ Shift: {{shift_details}}\n🏥 Ward/Unit: {{ward_unit}}\n\nKindly acknowledge and report on time.",
+    "footer": "Nursing & Clinical Operations, MAPIMS",
+    "variables": [
+      {
+        "key": "employee.name",
+        "description": "Staff Member Name",
+        "sampleValue": "Dr. A. Saravanan"
+      },
+      {
+        "key": "department",
+        "description": "Department Name",
+        "sampleValue": "Emergency & Trauma Care"
+      },
+      {
+        "key": "effective_date",
+        "description": "Schedule Date",
+        "sampleValue": "Today"
+      },
+      {
+        "key": "shift_details",
+        "description": "Shift Timing",
+        "sampleValue": "Morning Shift (07:00 AM - 03:00 PM)"
+      },
+      {
+        "key": "ward_unit",
+        "description": "Unit / Room",
+        "sampleValue": "ICU Block A"
+      }
+    ],
+    "status": "ACTIVE",
+    "createdBy": "Super Admin",
+    "createdAt": "2026-11-25 10:10:00",
+    "updatedAt": "2026-11-25 10:10:00"
+  },
+  {
+    "id": "v-tmpl-04",
+    "name": "vaati_emergency_code",
+    "title": "Emergency Code Alert / Urgent Clinical Broadcast",
+    "category": "Emergency",
+    "header": "🚨 EMERGENCY CLINICAL ALERT",
+    "body": "🚨 URGENT HOSPITAL BROADCAST\nCode: {{code_name}}\nLocation: {{location}}\nRequired Specialty: {{team_specialty}}\n\nAll designated clinical responders please report immediately.",
+    "footer": "Emergency Command Centre, MAPIMS",
+    "variables": [
+      {
+        "key": "code_name",
+        "description": "Code Type",
+        "sampleValue": "Code Blue (Cardiac Arrest)"
+      },
+      {
+        "key": "location",
+        "description": "Hospital Location",
+        "sampleValue": "Ward 3 - Bed 14"
+      },
+      {
+        "key": "team_specialty",
+        "description": "Response Team",
+        "sampleValue": "ICU Resuscitation Team"
+      }
+    ],
+    "status": "ACTIVE",
+    "createdBy": "Super Admin",
+    "createdAt": "2026-11-25 10:15:00",
+    "updatedAt": "2026-11-25 10:15:00"
+  },
+  {
+    "id": "v-tmpl-05",
+    "name": "vaati_yes_no_confirmation",
+    "title": "1-Tap Confirmation Buttons (Yes / No Poll)",
+    "category": "Hospital Applications",
+    "messageType": "poll",
+    "body": "Confirmation: Do you want to confirm {{action_topic}} for {{schedule_date}}?",
+    "pollOptions": [
+      "Yes, Confirm 👍",
+      "No, Cancel ❌"
+    ],
+    "multipleAnswers": false,
+    "allowReplies": true,
+    "replyPrompt": "💬 Tap an option or reply with remarks.",
+    "variables": [
+      {
+        "key": "action_topic",
+        "description": "Action / Appointment / Delivery",
+        "sampleValue": "your delivery / appointment"
+      },
+      {
+        "key": "schedule_date",
+        "description": "Date or Window",
+        "sampleValue": "today"
+      }
+    ],
+    "status": "ACTIVE",
+    "createdBy": "Super Admin",
+    "createdAt": "2026-11-26 09:15:00",
+    "updatedAt": "2026-11-26 09:15:00"
+  },
+  {
+    "id": "v-tmpl-06",
+    "name": "vaati_image_text_notice",
+    "title": "Image + Text: Hospital Event / Circular Poster",
+    "category": "Hospital Applications",
+    "messageType": "image_text",
+    "header": "Visual Hospital Announcement",
+    "body": "Om sakthi,\n{{announcement_title}}\n\nKindly check the attached image circular for details and schedule.\n\nThank you,\nMAPIMS Administration",
+    "mediaUrl": "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800",
+    "mediaFilename": "MAPIMS_Poster.jpg",
+    "mediaMimetype": "image/jpeg",
+    "variables": [
+      {
+        "key": "announcement_title",
+        "description": "Announcement Headline",
+        "sampleValue": "Annual Clinical Safety & NABH Workshop is scheduled this week."
+      }
+    ],
+    "status": "ACTIVE",
+    "createdBy": "Super Admin",
+    "createdAt": "2026-11-26 09:50:00",
+    "updatedAt": "2026-11-26 09:50:00"
+  },
+  {
+    "id": "v-tmpl-07",
+    "name": "vaati_pdf_text_circular",
+    "title": "PDF + Text: Official Circular / Duty Order Document",
+    "category": "Clinical Duty",
+    "messageType": "pdf_text",
+    "header": "Official Hospital PDF Circular",
+    "body": "Om sakthi,\nDear {{employee.name}},\nPlease find attached the official {{document_title}} PDF for your reference and necessary action.\n\nRegards,\nMAPIMS Administration",
+    "mediaUrl": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+    "mediaFilename": "MAPIMS_Official_Circular.pdf",
+    "mediaMimetype": "application/pdf",
+    "variables": [
+      {
+        "key": "employee.name",
+        "description": "Recipient Name",
+        "sampleValue": "Dr. A. Saravanan"
+      },
+      {
+        "key": "document_title",
+        "description": "Circular / Document Title",
+        "sampleValue": "Hospital Application User Guide & Circular"
+      }
+    ],
+    "status": "ACTIVE",
+    "createdBy": "Super Admin",
+    "createdAt": "2026-11-26 09:50:00",
+    "updatedAt": "2026-11-26 09:50:00"
+  },
+  {
+    "id": "v-tmpl-08",
+    "name": "vaati_admin_question",
+    "title": "Admin Question / Staff Response Collection",
+    "category": "Staff Notification",
+    "messageType": "text",
+    "header": "Quick Staff Question",
+    "body": "Om sakthi,\nDear {{employee.name}},\n\n*Question from Admin:*\n{{question_text}}\n\nKindly send your response directly by replying to this WhatsApp message.",
+    "footer": "Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)",
+    "allowReplies": true,
+    "replyPrompt": "💬 Reply directly to this message to save your answer.",
+    "variables": [
+      {
+        "key": "employee.name",
+        "description": "Recipient Name",
+        "sampleValue": "Dr. A. Saravanan"
+      },
+      {
+        "key": "question_text",
+        "description": "Admin Question Content",
+        "sampleValue": "Are you available for tomorrow's morning clinical briefing at 08:30 AM? Please share your availability or reason."
+      }
+    ],
+    "status": "ACTIVE",
+    "createdBy": "Super Admin",
+    "createdAt": "2026-11-26 11:30:00",
+    "updatedAt": "2026-11-26 11:45:44"
+  }
+]

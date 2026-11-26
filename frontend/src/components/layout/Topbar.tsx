@@ -47,6 +47,10 @@ export const Topbar: React.FC<TopbarProps> = ({
         return 'Department Management';
       case 'templates':
         return 'WhatsApp Templates';
+      case 'vaati':
+        return 'VAATI Studio';
+      case 'gateway':
+        return 'VAATI Gateway';
       case 'designer':
         return 'Template Designer';
       case 'media':
