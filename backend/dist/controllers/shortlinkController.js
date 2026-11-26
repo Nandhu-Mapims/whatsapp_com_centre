@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleShortlinkRedirect = exports.getShortlinkAnalytics = exports.toggleShortlinkStatus = exports.updateShortlink = exports.createShortlink = exports.getShortlinkById = exports.getShortlinks = void 0;
+exports.handleShortlinkRedirect = exports.getShortlinkAnalytics = exports.deleteShortlink = exports.toggleShortlinkStatus = exports.updateShortlink = exports.createShortlink = exports.getShortlinkById = exports.getShortlinks = void 0;
 exports.getShortlinkBaseUrl = getShortlinkBaseUrl;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -20,152 +20,53 @@ const getShortlinkCandidatePaths = () => [
     path_1.default.resolve(__dirname, '../../dist/data/shortlinks.json'),
 ];
 let shortlinksStore = [];
-// Seed default high-value hospital shortlinks if none exist
-const initialShortlinks = [
-    {
-        id: 'lnk-aph-01',
-        title: 'Incident Reporting Application Login Announcement',
-        destinationUrl: 'https://incident.mapims.edu.in/auth/login?source=aph_connect',
-        alias: 'incident-wa',
-        campaignChannel: 'WhatsApp',
-        isActive: true,
-        expiresAt: null,
-        createdBy: 'Super Admin',
-        createdById: 'u-1',
-        totalOpens: 842,
-        humanOpens: 726,
-        botOpens: 116,
-        lastOpenedAt: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(),
-        updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(),
-        clicks: [
-            {
-                id: 'clk-001',
-                timestamp: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
-                timestampIst: (0, shortlinkUtils_js_1.formatToKolkataTime)(new Date(Date.now() - 1000 * 60 * 18)),
-                isLikelyHuman: true,
-                isBot: false,
-                clickType: 'human',
-                deviceType: 'Mobile',
-                browser: 'Google Chrome',
-                os: 'Android 14',
-                country: 'India',
-                region: 'Tamil Nadu',
-                city: 'Kanchipuram',
-                referrer: 'WhatsApp Mobile App',
-                userAgentSummary: 'Chrome on Android 14 (Mobile)',
-            },
-            {
-                id: 'clk-002',
-                timestamp: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
-                timestampIst: (0, shortlinkUtils_js_1.formatToKolkataTime)(new Date(Date.now() - 1000 * 60 * 25)),
-                isLikelyHuman: false,
-                isBot: true,
-                clickType: 'preview',
-                deviceType: 'Bot',
-                browser: 'WhatsApp Link Preview',
-                os: 'WhatsApp Service',
-                country: 'India',
-                region: 'Tamil Nadu',
-                city: 'Hospital Intranet / Local',
-                referrer: 'Unavailable',
-                userAgentSummary: 'WhatsApp automated link previewer',
-            },
-            {
-                id: 'clk-003',
-                timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-                timestampIst: (0, shortlinkUtils_js_1.formatToKolkataTime)(new Date(Date.now() - 1000 * 60 * 45)),
-                isLikelyHuman: true,
-                isBot: false,
-                clickType: 'human',
-                deviceType: 'Desktop',
-                browser: 'Microsoft Edge',
-                os: 'Windows 10/11',
-                country: 'India',
-                region: 'Tamil Nadu',
-                city: 'Chennai',
-                referrer: 'Unavailable',
-                userAgentSummary: 'Microsoft Edge on Windows 10/11 (Desktop)',
-            },
-        ],
-    },
-    {
-        id: 'lnk-aph-02',
-        title: 'Emergency Night Shift Roster QR Code',
-        destinationUrl: 'https://roster.mapims.edu.in/emergency-ward?shift=night',
-        alias: 'duty-roster-qr',
-        campaignChannel: 'QR Code',
-        isActive: true,
-        expiresAt: null,
-        createdBy: 'Super Admin',
-        createdById: 'u-1',
-        totalOpens: 318,
-        humanOpens: 304,
-        botOpens: 14,
-        lastOpenedAt: new Date(Date.now() - 1000 * 60 * 62).toISOString(),
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(),
-        updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(),
-        clicks: [
-            {
-                id: 'clk-004',
-                timestamp: new Date(Date.now() - 1000 * 60 * 62).toISOString(),
-                timestampIst: (0, shortlinkUtils_js_1.formatToKolkataTime)(new Date(Date.now() - 1000 * 60 * 62)),
-                isLikelyHuman: true,
-                isBot: false,
-                clickType: 'human',
-                deviceType: 'Mobile',
-                browser: 'Apple Safari',
-                os: 'iOS',
-                country: 'India',
-                region: 'Tamil Nadu',
-                city: 'Chengalpattu',
-                referrer: 'QR Code Scan',
-                userAgentSummary: 'Apple Safari on iOS (Mobile)',
-            },
-        ],
-    },
-    {
-        id: 'lnk-aph-03',
-        title: 'NABH Quality & Safety Compliance Checklist',
-        destinationUrl: 'https://quality.mapims.edu.in/nabh-guidelines-2026.pdf',
-        alias: 'nabh-safety',
-        campaignChannel: 'Website',
-        isActive: true,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
-        createdBy: 'Super Admin',
-        createdById: 'u-1',
-        totalOpens: 195,
-        humanOpens: 172,
-        botOpens: 23,
-        lastOpenedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
-        updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
-        clicks: [],
-    },
-];
-// Load shortlinks from JSON on startup
+// Load persisted shortlinks from JSON on startup (zero dummy/seed data)
 try {
-    let loaded = false;
     for (const p of getShortlinkCandidatePaths()) {
         if (fs_1.default.existsSync(p)) {
             const data = JSON.parse(fs_1.default.readFileSync(p, 'utf8'));
-            if (Array.isArray(data) && data.length > 0) {
+            if (Array.isArray(data)) {
                 shortlinksStore = data;
-                console.log(`[Shortlinks] Loaded ${shortlinksStore.length} links from ${p}`);
-                loaded = true;
+                console.log(`[Shortlinks] Loaded ${shortlinksStore.length} live links from ${p}`);
                 break;
             }
         }
     }
-    if (!loaded) {
-        shortlinksStore = [...initialShortlinks];
-        persistShortlinksStore();
-    }
 }
 catch (err) {
     console.error('[Shortlinks] Failed to read shortlinks store:', err.message);
-    shortlinksStore = [...initialShortlinks];
+    shortlinksStore = [];
 }
+// Hydrate from MongoDB once connected so live DB state stays authoritative
+const mongoose_1 = __importDefault(require("mongoose"));
+let hasHydratedFromMongo = false;
+const ensureMongoHydrated = async () => {
+    if (hasHydratedFromMongo || mongoose_1.default.connection.readyState !== 1)
+        return;
+    try {
+        const docs = await Shortlink_js_1.ShortlinkModel.find({}).sort({ createdAt: -1 }).lean();
+        hasHydratedFromMongo = true;
+        if (docs.length > 0) {
+            const byAlias = new Map();
+            shortlinksStore.forEach((l) => byAlias.set(String(l.alias).toLowerCase(), l));
+            docs.forEach((d) => {
+                const key = String(d.alias).toLowerCase();
+                const existing = byAlias.get(key);
+                if (!existing || (d.totalOpens || 0) >= (existing.totalOpens || 0)) {
+                    byAlias.set(key, {
+                        ...d,
+                        id: existing?.id || String(d._id),
+                    });
+                }
+            });
+            shortlinksStore = Array.from(byAlias.values()).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            persistShortlinksStore();
+        }
+    }
+    catch (err) {
+        console.warn('[Shortlinks] Mongo hydration notice:', err.message);
+    }
+};
 // Persist shortlinks to disk across candidates
 function persistShortlinksStore() {
     getShortlinkCandidatePaths().forEach((cp) => {
@@ -218,6 +119,7 @@ function formatShortlinkForClient(link, req) {
  */
 const getShortlinks = async (req, res) => {
     try {
+        await ensureMongoHydrated();
         const formatted = shortlinksStore.map((l) => formatShortlinkForClient(l, req));
         // Summary statistics
         const totalLinks = formatted.length;
@@ -474,6 +376,32 @@ const toggleShortlinkStatus = async (req, res) => {
     }
 };
 exports.toggleShortlinkStatus = toggleShortlinkStatus;
+/**
+ * DELETE /api/shortlinks/:id
+ * Delete a shortlink permanently from live store and MongoDB
+ */
+const deleteShortlink = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const idx = shortlinksStore.findIndex((l) => l.id === id || l.alias === id.toLowerCase());
+        if (idx === -1) {
+            return res.status(404).json({ success: false, message: 'Shortlink not found.' });
+        }
+        const [removed] = shortlinksStore.splice(idx, 1);
+        persistShortlinksStore();
+        await Shortlink_js_1.ShortlinkModel.deleteOne({ alias: removed.alias }).catch(() => { });
+        res.json({
+            success: true,
+            message: `Shortlink "/shortlinks/${removed.alias}" deleted.`,
+            deletedId: removed.id,
+        });
+    }
+    catch (err) {
+        console.error('[Shortlinks] deleteShortlink error:', err);
+        res.status(500).json({ success: false, message: 'Failed to delete shortlink.' });
+    }
+};
+exports.deleteShortlink = deleteShortlink;
 /**
  * GET /api/shortlinks/:id/analytics
  * Retrieve rich link analytics with date filtering

@@ -1,21 +1,5 @@
 [
   {
-    "id": "emp-test-9551",
-    "employeeId": "MAP-9551",
-    "name": "Shreya (Test Lead)",
-    "category": "Medical / Clinical",
-    "staffType": "Teaching",
-    "department": "Emergency & Trauma Care",
-    "designation": "Senior Consultant - ER",
-    "whatsappNumber": "+919551382296",
-    "maskedNumber": "+91 95513 \u2022\u2022\u2022\u2022\u2022\u2022",
-    "consentStatus": "Opted-In",
-    "consentSource": "WATI Verified Contact",
-    "consentDate": "2026-11-16",
-    "active": true,
-    "lastUpdated": "2026-11-20"
-  },
-  {
     "id": "emp-t-10038",
     "employeeId": "10038",
     "name": "Dr Ramesh T",

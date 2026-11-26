@@ -109,7 +109,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
         { title: 'VAATI Templates', path: '/vaati/templates', icon: Zap },
         { title: 'Create Template', path: '/vaati/templates/create', icon: Sparkles },
         { title: 'Template Replies', path: '/vaati/replies', icon: MessageSquare },
-        { title: 'Gateway Health', path: '/vaati/gateway', icon: Radio },
+        { title: 'Gateway Health', path: '/vaati/gateway', icon: Radio, allowedRoles: ['Super Admin'] },
       ],
     },
     {

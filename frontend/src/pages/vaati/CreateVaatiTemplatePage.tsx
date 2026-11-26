@@ -22,179 +22,6 @@ import { VaatiFormatEditor, VaatiPreviewAttachment } from '../../components/vaat
 import { WhatsAppFormattingToolbar, WhatsAppFormattedText } from '../../components/vaati/WhatsAppFormattingToolbar';
 import { useToast } from '../../context/ToastContext';
 
-interface TemplatePreset {
-  id: string;
-  name: string;
-  title: string;
-  category: string;
-  messageType?: VaatiMessageType;
-  header?: string;
-  body: string;
-  footer?: string;
-  ctaUrl?: string;
-  mediaUrl?: string;
-  mediaFilename?: string;
-  mediaMimetype?: string;
-  pollOptions?: string[];
-  multipleAnswers?: boolean;
-  allowReplies?: boolean;
-  replyPrompt?: string;
-  sampleValues: Record<string, string>;
-}
-
-const PRESETS: TemplatePreset[] = [
-  {
-    id: 'preset-url-text',
-    name: 'URL + Text',
-    title: 'URL + Text: Hospital Application Notice',
-    category: 'Hospital Applications',
-    messageType: 'url_text',
-    header: 'Hospital Application Live',
-    body: `Om sakthi,\nOur {{app_name}} is now live!\n\nKindly click the link below to open the portal:\n🔗 {{app_url}}\n\nThank you for your cooperation.`,
-    ctaUrl: '{{app_url}}',
-    footer: 'Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)',
-    sampleValues: {
-      app_name: 'Incident Reporting Application',
-      app_url: 'https://inc.mapims.edu.in/login',
-    },
-  },
-  {
-    id: 'preset-image-text',
-    name: 'Image + Text',
-    title: 'Image + Text: Hospital Event / Circular Poster',
-    category: 'Hospital Applications',
-    messageType: 'image_text',
-    header: 'Visual Hospital Announcement',
-    body: `Om sakthi,\n{{announcement_title}}\n\nKindly check the attached poster image for schedule and details.`,
-    mediaUrl: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800',
-    mediaFilename: 'MAPIMS_Poster.jpg',
-    mediaMimetype: 'image/jpeg',
-    footer: 'Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)',
-    sampleValues: {
-      announcement_title: 'Annual Clinical Safety & NABH Workshop is scheduled this week.',
-    },
-  },
-  {
-    id: 'preset-pdf-text',
-    name: 'PDF + Text',
-    title: 'PDF + Text: Official Hospital Circular',
-    category: 'Clinical Duty',
-    messageType: 'pdf_text',
-    header: 'Official Hospital PDF Circular',
-    body: `Om sakthi,\nDear {{employee.name}},\nPlease find attached the official {{document_title}} PDF for your reference and necessary action.`,
-    mediaUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-    mediaFilename: 'MAPIMS_Official_Circular.pdf',
-    mediaMimetype: 'application/pdf',
-    footer: 'MAPIMS Administration',
-    sampleValues: {
-      'employee.name': 'Dr. A. Saravanan',
-      document_title: 'Hospital Application User Guide & Circular',
-    },
-  },
-  {
-    id: 'preset-yes-no-poll',
-    name: '1-Tap Yes / No Poll',
-    title: '1-Tap Confirmation Buttons (Yes / No Poll)',
-    category: 'Hospital Applications',
-    messageType: 'poll',
-    body: 'Confirmation: Do you want to confirm {{action_topic}} for {{schedule_date}}?',
-    pollOptions: ['Yes, Confirm 👍', 'No, Cancel ❌'],
-    multipleAnswers: false,
-    allowReplies: true,
-    replyPrompt: '💬 Tap an option or reply with your remarks.',
-    sampleValues: {
-      action_topic: 'your delivery / appointment',
-      schedule_date: 'today',
-    },
-  },
-  {
-    id: 'preset-admin-question',
-    name: 'Ask Question (Reply ON)',
-    title: 'Admin Question / Staff Response Collection',
-    category: 'Staff Notification',
-    messageType: 'text',
-    header: 'Quick Staff Question',
-    body: `Om sakthi,\nDear {{employee.name}},\n\n*Question from Admin:*\n{{question_text}}\n\nKindly send your answer by replying to this WhatsApp message.`,
-    footer: 'Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)',
-    allowReplies: true,
-    replyPrompt: '💬 Reply directly to this message to submit your answer.',
-    sampleValues: {
-      'employee.name': 'Dr. A. Saravanan',
-      question_text: 'Are you available for tomorrow’s morning clinical briefing at 08:30 AM? Please reply with your confirmation.',
-    },
-  },
-  {
-    id: 'preset-app-login',
-    name: 'Incident Reporting App Notice',
-    title: 'Incident Reporting Application Announcement & Credentials',
-    category: 'Hospital Applications',
-    header: 'Incident Reporting Application Live',
-    body: `Om sakthi,\nOur {{app_name}} is now live!\n\nKindly click the link below to log in and complete your profile:\n🔗 {{app_url}}\n\nLogin Credentials:\n👤 Username: {{username}}\n🔑 Password: {{password}}\n\nThank you for your cooperation.`,
-    footer: 'Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)',
-    sampleValues: {
-      app_name: 'Incident Reporting Application',
-      app_url: 'https://inc.mapims.edu.in/login',
-      username: 'Your Employee ID',
-      password: 'mapims@123',
-    },
-  },
-  {
-    id: 'preset-app-url',
-    name: 'Application Web Link',
-    title: 'Hospital Web Application Portal Notice',
-    category: 'Hospital Applications',
-    header: 'Hospital Application Notice',
-    body: `Om sakthi,\nOur {{app_name}} is now live!\n\nKindly access the portal using the link below:\n🔗 {{app_url}}\n\nThank you for your cooperation.`,
-    footer: 'Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)',
-    sampleValues: {
-      app_name: 'Incident Reporting Application',
-      app_url: 'https://inc.mapims.edu.in/login',
-    },
-  },
-  {
-    id: 'preset-lab-reports',
-    name: 'Lab & Diagnostic Portal',
-    title: 'Hospital Lab & Diagnostic Reports Access',
-    category: 'Hospital Applications',
-    header: 'Clinical Diagnostic Portal Live',
-    body: `Om sakthi,\nDear Staff,\nThe MAPIMS Clinical Diagnostics & Lab Reports portal is now active.\n\nAccess Link:\n🔗 {{portal_url}}\n\nStaff can view verified pathology and biochemistry reports online.\nThank you.`,
-    footer: 'Central Diagnostic Laboratory, MAPIMS',
-    sampleValues: {
-      portal_url: 'https://lab.mapims.edu.in',
-    },
-  },
-  {
-    id: 'preset-duty-roster',
-    name: 'Clinical Duty Roster',
-    title: 'Department Duty Roster & Shift Schedule',
-    category: 'Clinical Duty',
-    header: 'Duty Roster Notification',
-    body: `Om sakthi,\nDear {{employee.name}},\nYour duty schedule for {{department}} has been updated:\n\n📅 Effective Date: {{effective_date}}\n⏰ Shift: {{shift_details}}\n🏥 Ward/Unit: {{ward_unit}}\n\nKindly review and report as scheduled.`,
-    footer: 'Nursing & Clinical Operations, MAPIMS',
-    sampleValues: {
-      'employee.name': 'Dr. A. Saravanan',
-      department: 'Emergency & Trauma Care',
-      effective_date: 'Tomorrow',
-      shift_details: 'Morning Shift (07:00 AM - 03:00 PM)',
-      ward_unit: 'Emergency Ward Block B',
-    },
-  },
-  {
-    id: 'preset-emergency-alert',
-    name: 'Emergency Code Alert',
-    title: 'Urgent Clinical Code & Emergency Advisory',
-    category: 'Emergency',
-    header: '🚨 EMERGENCY CLINICAL ALERT',
-    body: `🚨 URGENT HOSPITAL BROADCAST\nCode: {{code_name}}\nLocation: {{location}}\nRequired Team: {{team_specialty}}\n\nAll designated clinical responders please report immediately.`,
-    footer: 'Emergency Command Centre, MAPIMS',
-    sampleValues: {
-      code_name: 'Code Blue (Cardiac Arrest)',
-      location: 'Ward 3 - Bed 14',
-      team_specialty: 'ICU Resuscitation Team',
-    },
-  },
-];
-
 export const CreateVaatiTemplatePage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -279,42 +106,8 @@ export const CreateVaatiTemplatePage: React.FC = () => {
         })
         .catch((err) => console.error('Failed to load template:', err))
         .finally(() => setIsLoadingExisting(false));
-    } else {
-      // Default initial preset
-      handleApplyPreset(PRESETS[0]);
     }
   }, [editId]);
-
-  const handleApplyPreset = (preset: TemplatePreset) => {
-    setTitle(preset.title);
-    setCategory(preset.category);
-    setMessageType(preset.messageType || 'text');
-    setHeader(preset.header || '');
-    setBody(preset.body);
-    setFooter(preset.footer || 'Melmaruvathur Adhiparasakthi Institute of Medical Sciences (MAPIMS)');
-    setCtaUrl(preset.ctaUrl || '');
-    setMediaUrl(preset.mediaUrl || '');
-    setMediaFilename(preset.mediaFilename || '');
-    setMediaMimetype(preset.mediaMimetype || '');
-    if (Array.isArray(preset.pollOptions) && preset.pollOptions.length >= 2) {
-      setPollOptions(preset.pollOptions);
-    }
-    setMultipleAnswers(Boolean(preset.multipleAnswers));
-    setAllowReplies(Boolean(preset.allowReplies));
-    setReplyPrompt(
-      preset.replyPrompt || '💬 Reply directly to this message to submit your response.'
-    );
-    setSampleValues((prev) => ({ ...prev, ...preset.sampleValues }));
-    if (!name || name.startsWith('vaati_')) {
-      setName(
-        'vaati_' +
-          preset.name
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '_')
-            .replace(/^_+|_+$/g, '')
-      );
-    }
-  };
 
   // Derive variables from body
   const detectedVariables = useMemo(() => {
@@ -483,7 +276,7 @@ export const CreateVaatiTemplatePage: React.FC = () => {
       {/* Page Header */}
       <PageHeader
         title={editId ? 'Edit VAATI Template' : 'Create VAATI WhatsApp Template'}
-        description="Compose your own custom message without Meta template approval. Supports unlimited variables, portal links, and instant test delivery."
+        description="Compose custom WhatsApp messages with rich text formatting, media attachments, 1-tap polls, and optional user reply collection."
       >
         <button
           onClick={() => navigate('/vaati/templates')}
@@ -498,30 +291,6 @@ export const CreateVaatiTemplatePage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Builder Form */}
         <div className="lg:col-span-7 space-y-5">
-          {/* Preset Buttons */}
-          <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="font-extrabold text-slate-900 text-xs flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-[#C76323]" />
-                <span>Quick Hospital Application Presets</span>
-              </span>
-              <span className="text-[10px] text-slate-400">Tap to load template</span>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {PRESETS.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => handleApplyPreset(p)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-50 hover:bg-amber-50 hover:text-amber-900 hover:border-amber-300 border border-slate-200 text-slate-700 transition-all flex items-center gap-1.5"
-                >
-                  <span>{p.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Form Fields */}
           <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-4 text-xs">
             {/* Title & Category */}

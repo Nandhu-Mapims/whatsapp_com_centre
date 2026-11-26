@@ -176,8 +176,8 @@ export function App() {
                   path="vaati/gateway"
                   element={
                     <RoleRoute
-                      allowedRoles={['Super Admin', 'HR', 'MS', 'MD']}
-                      moduleName="VAATI Gateway Status"
+                      allowedRoles={['Super Admin']}
+                      moduleName="VAATI Gateway & Node Status"
                     >
                       <VaatiGatewayPage />
                     </RoleRoute>

@@ -44,13 +44,14 @@ router.post('/shortlinks', auth_js_1.authenticate, (0, auth_js_1.requireRole)('S
 router.get('/shortlinks/:id', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.getShortlinkById);
 router.put('/shortlinks/:id', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.updateShortlink);
 router.patch('/shortlinks/:id/toggle', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.toggleShortlinkStatus);
+router.delete('/shortlinks/:id', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.deleteShortlink);
 router.get('/shortlinks/:id/analytics', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), shortlinkController_js_1.getShortlinkAnalytics);
 // System mode (Safe Working Sandbox vs Live Production)
 router.get('/system/mode', apiController_js_1.getSystemMode);
 router.post('/system/mode', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'MD'), apiController_js_1.setSystemMode);
 // Gateway Management (WATI vs VAATI)
 router.get('/gateway/status', apiController_js_1.getGatewayStatus);
-router.post('/gateway/toggle', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin', 'MD', 'HR'), apiController_js_1.toggleGateway);
+router.post('/gateway/toggle', auth_js_1.authenticate, (0, auth_js_1.requireRole)('Super Admin'), apiController_js_1.toggleGateway);
 // VAATI Custom Templates Management
 router.get('/vaati/templates', auth_js_1.authenticate, vaatiTemplateController_js_1.getVaatiTemplates);
 router.get('/vaati/templates/:id', auth_js_1.authenticate, vaatiTemplateController_js_1.getVaatiTemplateById);

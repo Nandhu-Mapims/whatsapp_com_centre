@@ -186,11 +186,9 @@ export const SimpleNavbar: React.FC = () => {
       items: [
         {
           title: 'VAATI Templates',
-          description: 'Custom templates without Meta approval (Free & Instant)',
+          description: 'Create & manage custom VAATI WhatsApp templates',
           path: '/vaati/templates',
           icon: Zap,
-          badge: 'Free',
-          badgeVariant: 'amber',
           allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
         },
         {
@@ -216,7 +214,7 @@ export const SimpleNavbar: React.FC = () => {
           icon: Radio,
           badge: 'Live',
           badgeVariant: 'emerald',
-          allowedRoles: ['Super Admin', 'HR', 'MS', 'MD'],
+          allowedRoles: ['Super Admin'],
         },
       ],
     },

@@ -73,27 +73,6 @@ try {
   console.error('[API Controller] Failed to load employees.json:', err.message);
 }
 
-if (employeesStore.length === 0) {
-  employeesStore = [
-    {
-      id: 'emp-test-9551',
-      employeeId: 'MAP-9551',
-      name: 'Shreya (Test Lead)',
-      category: 'Medical / Clinical',
-      staffType: 'Teaching',
-      department: 'Emergency & Trauma Care',
-      designation: 'Senior Consultant - ER',
-      whatsappNumber: '+919551382296',
-      maskedNumber: '+91 95513 ••••••',
-      consentStatus: 'Opted-In',
-      consentSource: 'WATI Verified Contact',
-      consentDate: '2026-11-16',
-      active: true,
-      lastUpdated: '2026-11-20',
-    },
-  ];
-}
-
 const getCampaignsCandidatePaths = () => [
   path.resolve(__dirname, '../data/campaigns.json'),
   path.resolve(__dirname, '../../src/data/campaigns.json'),

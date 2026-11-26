@@ -36,6 +36,7 @@ import {
   createShortlink,
   updateShortlink,
   toggleShortlinkStatus,
+  deleteShortlink,
   getShortlinkAnalytics,
 } from '../controllers/shortlinkController.js';
 
@@ -148,6 +149,7 @@ router.post('/shortlinks', authenticate, requireRole('Super Admin'), createShort
 router.get('/shortlinks/:id', authenticate, requireRole('Super Admin'), getShortlinkById);
 router.put('/shortlinks/:id', authenticate, requireRole('Super Admin'), updateShortlink);
 router.patch('/shortlinks/:id/toggle', authenticate, requireRole('Super Admin'), toggleShortlinkStatus);
+router.delete('/shortlinks/:id', authenticate, requireRole('Super Admin'), deleteShortlink);
 router.get('/shortlinks/:id/analytics', authenticate, requireRole('Super Admin'), getShortlinkAnalytics);
 
 // System mode (Safe Working Sandbox vs Live Production)
@@ -156,7 +158,7 @@ router.post('/system/mode', authenticate, requireRole('Super Admin', 'MD'), setS
 
 // Gateway Management (WATI vs VAATI)
 router.get('/gateway/status', getGatewayStatus);
-router.post('/gateway/toggle', authenticate, requireRole('Super Admin', 'MD', 'HR'), toggleGateway);
+router.post('/gateway/toggle', authenticate, requireRole('Super Admin'), toggleGateway);
 
 // VAATI Custom Templates Management
 router.get('/vaati/templates', authenticate, getVaatiTemplates);

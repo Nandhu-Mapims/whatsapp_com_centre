@@ -1456,30 +1456,47 @@ export const CreateCampaignPage: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-0.5">
-                      Switch between self-hosted VAATI (zero per-message fee) or Meta Cloud WATI API.
+                      Switch between VAATI Gateway and WATI Cloud API.
                     </p>
                   </div>
 
-                  {/* VAATI Master Power Switch */}
+                  {/* VAATI Master Power Switch (Super Admin Only) */}
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] font-bold text-slate-600">VAATI Engine:</span>
-                    <button
-                      type="button"
-                      disabled={isTogglingGateway}
-                      onClick={() => handleToggleVaati(!gatewayStatus?.isVaatiEnabled)}
-                      className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 border shadow-2xs ${
-                        gatewayStatus?.isVaatiEnabled
-                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
-                          : 'bg-rose-100 hover:bg-rose-200 text-rose-800 border-rose-300'
-                      }`}
-                    >
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          gatewayStatus?.isVaatiEnabled ? 'bg-white animate-pulse' : 'bg-rose-600'
+                    {currentUser.role === 'Super Admin' ? (
+                      <button
+                        type="button"
+                        disabled={isTogglingGateway}
+                        onClick={() => handleToggleVaati(!gatewayStatus?.isVaatiEnabled)}
+                        className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 border shadow-2xs ${
+                          gatewayStatus?.isVaatiEnabled
+                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
+                            : 'bg-rose-100 hover:bg-rose-200 text-rose-800 border-rose-300'
                         }`}
-                      />
-                      <span>{gatewayStatus?.isVaatiEnabled ? 'VAATI ON' : 'VAATI OFF'}</span>
-                    </button>
+                      >
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            gatewayStatus?.isVaatiEnabled ? 'bg-white animate-pulse' : 'bg-rose-600'
+                          }`}
+                        />
+                        <span>{gatewayStatus?.isVaatiEnabled ? 'VAATI ON' : 'VAATI OFF'}</span>
+                      </button>
+                    ) : (
+                      <span
+                        className={`px-3 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1.5 border ${
+                          gatewayStatus?.isVaatiEnabled
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                            : 'bg-rose-50 text-rose-800 border-rose-200'
+                        }`}
+                      >
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            gatewayStatus?.isVaatiEnabled ? 'bg-emerald-500' : 'bg-rose-600'
+                          }`}
+                        />
+                        <span>{gatewayStatus?.isVaatiEnabled ? 'VAATI ON' : 'VAATI OFF'}</span>
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -1512,7 +1529,7 @@ export const CreateCampaignPage: React.FC = () => {
                             </span>
                           </div>
                           <div className="text-[10px] text-slate-500">
-                            Zero Meta fees • Direct WhatsApp Web dispatch
+                            Custom templates & direct WhatsApp dispatch
                           </div>
                         </div>
                       </div>
@@ -1546,7 +1563,7 @@ export const CreateCampaignPage: React.FC = () => {
                         </span>
                       </div>
                       <span className="font-bold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded">
-                        Unlimited Free
+                        Custom Gateway
                       </span>
                     </div>
                   </div>
@@ -1654,7 +1671,7 @@ export const CreateCampaignPage: React.FC = () => {
                   className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] shadow-2xs"
                 >
                   {vaatiTemplates.length > 0 && (
-                    <optgroup label="⚡ VAATI Custom Templates (No Meta Fee / Direct VPS)">
+                    <optgroup label="⚡ VAATI Custom Templates">
                       {vaatiTemplates.map((t) => (
                         <option key={t.id} value={t.id}>
                           ⚡ {t.name} ({t.category || 'Hospital Applications'})

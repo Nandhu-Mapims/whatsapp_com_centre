@@ -210,7 +210,7 @@ export const VaatiGatewayPage: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Host: <span className="font-mono text-slate-700">instabox.tech (Port 3001)</span> • Session: <span className="font-mono text-slate-700">{gatewayStatus?.vaati?.session || 'tenant_efs'}</span>
+                Session: <span className="font-mono text-slate-700">{gatewayStatus?.vaati?.session || 'tenant_efs'}</span>
               </p>
             </div>
           </div>
@@ -234,33 +234,28 @@ export const VaatiGatewayPage: React.FC = () => {
         </div>
 
         {/* Detailed Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
-              Linked WhatsApp Number
+              Linked WhatsApp Session
             </span>
             <span className="font-extrabold text-slate-900 text-sm mt-1 block font-mono">
-              {gatewayStatus?.vaati?.phone || '+91 95513 82296'}
+              {gatewayStatus?.vaati?.session || 'tenant_efs'}
             </span>
             <span className="text-[10px] text-slate-500 mt-0.5 block">
-              Profile: {gatewayStatus?.vaati?.pushName || 'Shreyasaran'}
-              {gatewayStatus?.vaati?.connectedSessions && gatewayStatus.vaati.connectedSessions.length > 1 && (
-                <span className="ml-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded">
-                  {gatewayStatus.vaati.connectedSessions.length} Handsets Online
-                </span>
-              )}
+              {isOnline ? 'Connected & Ready' : 'Disconnected'}
             </span>
           </div>
 
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
-              Message Cost
+              Gateway Status
             </span>
-            <span className="font-extrabold text-emerald-700 text-sm mt-1 block">
-              ₹0.00 / Free
+            <span className={`font-extrabold text-sm mt-1 block ${isEnabled ? 'text-emerald-700' : 'text-rose-700'}`}>
+              {isEnabled ? 'Enabled (Active)' : 'Disabled (OFF)'}
             </span>
             <span className="text-[10px] text-slate-500 mt-0.5 block">
-              Direct VPS WhatsApp Web
+              Switch ON/OFF anytime
             </span>
           </div>
 
@@ -273,24 +268,6 @@ export const VaatiGatewayPage: React.FC = () => {
             </span>
             <span className="text-[10px] text-slate-500 mt-0.5 block">
               Auto-activates if VAATI is OFF
-            </span>
-          </div>
-
-          <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
-              External Super Admin
-            </span>
-            <a
-              href="https://4001-agq5mu2udnuf7vw22ngl3q4tnq.instabox.tech"
-              target="_blank"
-              rel="noreferrer"
-              className="font-bold text-[#C76323] hover:underline text-xs mt-1 inline-flex items-center gap-1"
-            >
-              <span>Open Port 4001</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
-            <span className="text-[10px] text-slate-400 block mt-0.5">
-              WAHA Multi-tenant Portal
             </span>
           </div>
         </div>
@@ -463,23 +440,23 @@ export const VaatiGatewayPage: React.FC = () => {
           <div className="space-y-3 text-slate-600 leading-relaxed">
             <div className="p-3 bg-white rounded-xl border border-slate-200">
               <span className="font-bold text-slate-900 block mb-0.5">
-                1. No Meta Marketing Auto-Categorization
+                1. Rich Custom Formats & Two-Way Replies
               </span>
-              Meta frequently changes application notices to "MARKETING" category, multiplying costs. With VAATI, your messages are sent as pure direct text without Meta classification.
+              Send Text, URL + Text, Image + Text, PDF + Text, and 1-Tap Response Polls, and optionally collect staff replies into MongoDB.
             </div>
 
             <div className="p-3 bg-white rounded-xl border border-slate-200">
               <span className="font-bold text-slate-900 block mb-0.5">
-                2. Instant Publishing (No 24h Approval Wait)
+                2. Custom Hospital Templates
               </span>
-              Create custom templates for any hospital application (Incident Reporting, Lab, Duty Roster) and broadcast immediately without waiting for Meta review.
+              Create templates for hospital applications, duty rosters, and clinical notices without wait cycles.
             </div>
 
             <div className="p-3 bg-white rounded-xl border border-slate-200">
               <span className="font-bold text-slate-900 block mb-0.5">
                 3. Total Safety with On/Off Control
               </span>
-              You can turn VAATI ON or OFF at any moment. When OFF, the system smoothly falls back to WATI without any service interruption.
+              You can turn VAATI ON or OFF at any moment. When OFF, the system falls back cleanly to WATI without service interruption.
             </div>
           </div>
         </div>

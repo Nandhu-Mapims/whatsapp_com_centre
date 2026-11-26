@@ -318,7 +318,7 @@ export const VaatiTemplatesPage: React.FC = () => {
       {/* Header */}
       <PageHeader
         title="VAATI Templates Studio"
-        description="Create, edit, and broadcast your own custom WhatsApp templates. Self-hosted • Zero Meta template approval fees • Instant activation."
+        description="Create, edit, and broadcast your own custom WhatsApp templates."
       >
         <div className="flex items-center gap-2">
           <button
@@ -328,13 +328,15 @@ export const VaatiTemplatesPage: React.FC = () => {
             <MessageSquare className="w-4 h-4 text-emerald-600" />
             <span>Replies Inbox ({totalRepliesCount})</span>
           </button>
-          <button
-            onClick={() => navigate('/vaati/gateway')}
-            className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-xs flex items-center gap-2 transition-colors border border-slate-300"
-          >
-            <Radio className="w-4 h-4 text-emerald-600" />
-            <span>Node Status</span>
-          </button>
+          {currentUser.role === 'Super Admin' && (
+            <button
+              onClick={() => navigate('/vaati/gateway')}
+              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-xs flex items-center gap-2 transition-colors border border-slate-300"
+            >
+              <Radio className="w-4 h-4 text-emerald-600" />
+              <span>Node Status</span>
+            </button>
+          )}
           <button
             onClick={() => navigate('/vaati/templates/create')}
             className="px-4 py-2 bg-[#C76323] hover:bg-[#B0541C] text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-xs transition-all"
@@ -354,10 +356,7 @@ export const VaatiTemplatesPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <span className="font-extrabold text-slate-900 text-sm">
-                VAATI Self-Hosted WhatsApp Engine
-              </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-200/80 text-amber-900 border border-amber-300">
-                Independent Node
+                VAATI WhatsApp Gateway
               </span>
             </div>
             <div className="text-xs text-slate-600 flex items-center gap-2 mt-0.5">
@@ -371,39 +370,54 @@ export const VaatiTemplatesPage: React.FC = () => {
               <span className="font-semibold">
                 {gatewayStatus?.isVaatiEnabled
                   ? gatewayStatus?.vaati?.online
-                    ? `Linked: ${gatewayStatus?.vaati?.phone || 'Online'} (${gatewayStatus?.vaati?.pushName || 'Karthi'})`
+                    ? 'Connected & Ready'
                     : 'Engine Starting...'
                   : 'VAATI Gateway Turned OFF'}
               </span>
-              <span className="text-slate-400">•</span>
-              <span className="text-emerald-700 font-bold">Zero Meta Conversation Charges</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <button
-            type="button"
-            disabled={isTogglingGateway}
-            onClick={() => handleToggleVaati(!gatewayStatus?.isVaatiEnabled)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border shadow-2xs ${
-              gatewayStatus?.isVaatiEnabled
-                ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
-                : 'bg-rose-100 hover:bg-rose-200 text-rose-800 border-rose-300'
-            }`}
-          >
-            <span
-              className={`w-2 h-2 rounded-full ${
-                gatewayStatus?.isVaatiEnabled ? 'bg-white animate-pulse' : 'bg-rose-600'
+          {currentUser.role === 'Super Admin' ? (
+            <button
+              type="button"
+              disabled={isTogglingGateway}
+              onClick={() => handleToggleVaati(!gatewayStatus?.isVaatiEnabled)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border shadow-2xs ${
+                gatewayStatus?.isVaatiEnabled
+                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
+                  : 'bg-rose-100 hover:bg-rose-200 text-rose-800 border-rose-300'
               }`}
-            />
-            <span>{gatewayStatus?.isVaatiEnabled ? 'VAATI Gateway: ACTIVE' : 'VAATI Gateway: OFF'}</span>
-          </button>
+            >
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  gatewayStatus?.isVaatiEnabled ? 'bg-white animate-pulse' : 'bg-rose-600'
+                }`}
+              />
+              <span>{gatewayStatus?.isVaatiEnabled ? 'VAATI Gateway: ACTIVE' : 'VAATI Gateway: OFF'}</span>
+            </button>
+          ) : (
+            <span
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 border ${
+                gatewayStatus?.isVaatiEnabled
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : 'bg-rose-50 text-rose-800 border-rose-200'
+              }`}
+            >
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  gatewayStatus?.isVaatiEnabled ? 'bg-emerald-500' : 'bg-rose-600'
+                }`}
+              />
+              <span>{gatewayStatus?.isVaatiEnabled ? 'VAATI Gateway: ACTIVE' : 'VAATI Gateway: OFF'}</span>
+            </span>
+          )}
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs">
           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
             Custom Templates
@@ -412,43 +426,19 @@ export const VaatiTemplatesPage: React.FC = () => {
             {templates.length} Active
           </span>
           <span className="text-[10px] text-emerald-600 font-semibold mt-0.5 block">
-            ✓ Ready for mass dispatch
+            ✓ Ready for broadcast dispatch
           </span>
         </div>
 
         <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs">
           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
-            Meta Approval
-          </span>
-          <span className="text-xl font-extrabold text-amber-700 mt-1 block">
-            Not Required
-          </span>
-          <span className="text-[10px] text-slate-500 font-medium mt-0.5 block">
-            Instant live publishing
-          </span>
-        </div>
-
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs">
-          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
-            Cost Per Message
+            Reply Collection
           </span>
           <span className="text-xl font-extrabold text-emerald-700 mt-1 block">
-            ₹0.00 / Free
+            {templates.filter((t) => Boolean(t.allowReplies)).length} Question Templates ON
           </span>
           <span className="text-[10px] text-slate-500 font-medium mt-0.5 block">
-            No Meta per-session fees
-          </span>
-        </div>
-
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs">
-          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
-            Active Node
-          </span>
-          <span className="text-xl font-extrabold text-slate-900 mt-1 block truncate">
-            {gatewayStatus?.vaati?.phone || '+91 99624 60782'}
-          </span>
-          <span className="text-[10px] text-slate-500 font-medium mt-0.5 block truncate">
-            {gatewayStatus?.vaati?.pushName || 'Karthi'} (Port 3001)
+            {totalRepliesCount} saved user replies in DB
           </span>
         </div>
       </div>
