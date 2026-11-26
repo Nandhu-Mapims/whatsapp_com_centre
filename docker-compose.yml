@@ -1,32 +1,14 @@
 services:
-  mongo:
-    image: mongo:7
-    container_name: aph-connect-mongo
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aph-connect-frontend
     restart: unless-stopped
+    depends_on:
+      - backend
     ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
-
-  redis:
-    image: redis:7-alpine
-    container_name: aph-connect-redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
+      - "${FRONTEND_PORT:-1025}:80"
 
   backend:
     build:
@@ -40,29 +22,47 @@ services:
       redis:
         condition: service_healthy
     ports:
-      - "5000:5000"
+      - "${BACKEND_PORT:-2025}:2025"
     env_file:
       - ./backend/.env
     environment:
-      PORT: 5000
+      PORT: 2025
       NODE_ENV: production
-      MONGO_URI: mongodb://mongo:27017/ewccms_mapims
+      MONGO_URI: mongodb://mongo:3025/ewccms_mapims
       REDIS_URL: redis://redis:6379
     volumes:
       - ./backend/src/data:/app/src/data
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: aph-connect-frontend
+  mongo:
+    image: mongo:7
+    container_name: aph-connect-mongo
     restart: unless-stopped
-    depends_on:
-      - backend
+    command: ["mongod", "--port", "3025", "--bind_ip_all"]
     ports:
-      - "${FRONTEND_PORT:-8080}:80"
+      - "${MONGO_PORT:-3025}:3025"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "3025", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  redis:
+    image: redis:7-alpine
+    container_name: aph-connect-redis
+    restart: unless-stopped
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mongo_data:
   redis_data:
-
